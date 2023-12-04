@@ -412,15 +412,7 @@ function App() {
   ];
 
   const resetKesmeTab = () => {
-    setKesmeCalculations({
-      diameter: [0, 0],
-      numberOfSticks: [0, 0],
-      totalHeigthWeight: 0,
-      totalWidthWeight: 0,
-      height: 0,
-      width: 0,
-      // Reset other fields here
-    });
+    setCombinedKesmeCalculations([]);
   };
 
   const openKesmeTabFromManual = () => {
