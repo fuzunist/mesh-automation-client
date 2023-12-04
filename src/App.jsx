@@ -885,6 +885,8 @@ function App() {
                       }));
                     }}
                     type="number"
+                    max={1000}
+                    min={0}
                   />
                 </div>
               </div>
@@ -900,6 +902,8 @@ function App() {
                       }));
                     }}
                     type="number"
+                    max={1000}
+                    min={0}
                   />
                 </div>
               </div>
