@@ -557,6 +557,8 @@ function App() {
                         );
                       }}
                       type="number"
+                      max={1000}
+                      min={0}
                     />
                   )}
                 </div>
@@ -570,6 +572,8 @@ function App() {
                       setMesh((mesh) => ({ ...mesh, width: parseInt(value) }));
                     }}
                     type="number"
+                    max={1000}
+                    min={0}
                   />
                 </div>
               </div>
@@ -592,6 +596,7 @@ function App() {
                       console.log("Boy Çubuğu updated value:", value);
                     }}
                     type="number"
+                    
                     disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
