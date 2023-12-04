@@ -11,7 +11,7 @@ const ManuelMesh = ({
   frontFilament,
   rightFilament,
   apertureSize,
- 
+
   backgroundColor = "yellow",
 }) => {
   const { numberOfSticks } = manuelCalculated;
@@ -38,11 +38,8 @@ const ManuelMesh = ({
     numberOfSticks,
   ]);
 
-
   const offsetX = (containerSize.width - width) / 2;
   const offsetY = (containerSize.height - height) / 2;
-
-
 
   const downloadAsPng = () => {
     const element = divRef.current;
@@ -287,26 +284,26 @@ const ManuelMesh = ({
               </g>
               <line
                 x1={lineMargin}
-                y1={height - lineMargin + 10}
+                y1={height - lineMargin + 20}
                 x2={width - lineMargin}
-                y2={height - lineMargin + 10}
+                y2={height - lineMargin + 20}
                 stroke="black"
                 strokeWidth={1.5}
               />
 
               <text
                 x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 20} // Adjust the y position for spacing
+                y={height - lineMargin + 40} // Adjust the y position for spacing
                 fill="black"
                 textAnchor="middle"
-                fontSize="8"
+                fontSize="11"
               >
                 {width} cm
               </text>
 
               <text
                 x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 14} // Adjust the y position for spacing
+                y={height - lineMargin + 70} // Adjust the y position to be near the bottom
                 fill="black"
                 textAnchor="middle"
                 fontSize="8"
@@ -315,9 +312,9 @@ const ManuelMesh = ({
               </text>
 
               <line
-                x1={lineMargin - 10}
+                x1={width + lineMargin + 20}
                 y1={lineMargin}
-                x2={lineMargin - 10}
+                x2={width + lineMargin + 20}
                 y2={height - lineMargin}
                 stroke="black"
                 strokeWidth={1.5}
@@ -325,12 +322,14 @@ const ManuelMesh = ({
 
               {/* Text beside the line */}
               <text
-                x={lineMargin + 10} // Adjust the x position for spacing
+                x={width + lineMargin + 30} // Adjust the x position for spacing
                 y={(height - 14 - lineMargin) / 2} // Center the text vertically
                 fill="black"
                 textAnchor="middle"
-                fontSize="8"
-                transform={`rotate(-90, ${lineMargin + 5}, ${height / 2})`}
+                fontSize="11"
+                transform={`rotate(-90, ${width + lineMargin + 40}, ${
+                  (height - 14 - lineMargin) / 2
+                })`}
               >
                 {height} cm
               </text>
