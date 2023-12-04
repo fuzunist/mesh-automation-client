@@ -11,11 +11,11 @@ const ManuelMesh = ({
   frontFilament,
   rightFilament,
   apertureSize,
-  stroke,
+ 
   backgroundColor = "yellow",
 }) => {
   const { numberOfSticks } = manuelCalculated;
-
+  const stroke = "black";
   const divRef = useRef();
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
@@ -37,6 +37,12 @@ const ManuelMesh = ({
     apertureSize,
     numberOfSticks,
   ]);
+
+
+  const offsetX = (containerSize.width - width) / 2;
+  const offsetY = (containerSize.height - height) / 2;
+
+
 
   const downloadAsPng = () => {
     const element = divRef.current;
@@ -99,6 +105,17 @@ const ManuelMesh = ({
 
   const svgRef = useRef();
 
+  useEffect(() => {
+    const extraPadding = 180; // Adjust this value as needed
+    const maxWidth = Math.max(...widthSticks, width) + extraPadding;
+    const maxHeight = Math.max(...heightSticks, height) + extraPadding;
+
+    setContainerSize({
+      width: maxWidth,
+      height: maxHeight,
+    });
+  }, [widthSticks, heightSticks, width, height]);
+
   const downloadPdf = async () => {
     console.log("Starting PDF download process...");
 
@@ -150,44 +167,33 @@ const ManuelMesh = ({
     <div className="flex flex-col ">
       <div
         ref={divRef}
+        className="flex flex-col items-center justify-center p-auto bg-white rounded-lg shadow"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "auto",
-          backgroundColor: "#ffffff",
-          borderRadius: "15px",
-          boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
         }}
       >
         <div
-          className="svg-container"
+          className="svg-container shadow-md rounded overflow-hidden p-3 bg-light-gray"
           style={{
-            boxShadow: "0 3px 6px rgba(0,0,0,0.16)",
-            borderRadius: "8px",
-            overflow: "contain",
-            padding: "12px",
-            backgroundColor: "lightgray",
             width: `${containerSize.width}px`,
             height: `${containerSize.height}px`,
           }}
         >
           <svg
             ref={svgRef}
-            width="70vw"
-            height="50vh"
-            viewBox={viewBox}
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
             preserveAspectRatio="xMidYMid meet"
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
           >
-            <g transform={`translate(${margin},${margin})`}>
+            <g transform={`translate(${offsetX + margin},${offsetY + margin})`}>
               {heightSticks.map((stick, index) => (
                 <line
                   key={`h-${index}`}
-                  x1={lineMargin}
+                  x1={0}
                   y1={stick}
-                  x2={width - lineMargin}
+                  x2={width}
                   y2={stick}
                   stroke={stroke}
                   strokeWidth={1.5}
@@ -197,9 +203,9 @@ const ManuelMesh = ({
                 <line
                   key={`w-${index}`}
                   x1={stick}
-                  y1={lineMargin}
+                  y1={0}
                   x2={stick}
-                  y2={height - lineMargin}
+                  y2={height}
                   stroke={stroke}
                   strokeWidth={1.5}
                 />
