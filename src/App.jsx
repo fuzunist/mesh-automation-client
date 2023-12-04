@@ -26,7 +26,7 @@ const initialValues = {
     totalWeight: 0,
   },
   mesh: {
-    type: "Çit Hasırı",
+    type: "Döşeme Hasırı",
     code: Object.keys(meshFeatures)[0], // First key in meshFeatures
     name: Object.keys(meshFeatures[Object.keys(meshFeatures)[0]])[0], // First name in the selected code
     height: 500,
@@ -406,8 +406,8 @@ function App() {
   };
 
   const meshTypeOptions = [
-    { label: "Çit Hasırı", value: "Ç" },
-    { label: "Döşeme Hasırı", value: "N" },
+    { label: "Çit Hasırı", value: "Çit Hasırı" },
+    { label: "Döşeme Hasırı", value: "Döşeme Hasırı" },
     { label: "Perde Hasırı", value: "Perde Hasırı" },
   ];
 
@@ -600,7 +600,7 @@ function App() {
                       console.log("Boy Çubuğu updated value:", value);
                     }}
                     type="number"
-                    disabled={mesh.type === "P"}
+                    disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
               </div>
@@ -623,7 +623,7 @@ function App() {
                       console.log("En Çubuğu updated value:", value);
                     }}
                     type="number"
-                    disabled={mesh.type === "P"}
+                    disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
               </div>
