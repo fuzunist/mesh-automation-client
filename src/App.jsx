@@ -408,7 +408,7 @@ function App() {
   const meshTypeOptions = [
     { label: "Çit Hasırı", value: "Ç" },
     { label: "Döşeme Hasırı", value: "N" },
-    { label: "Perde Hasırı", value: "P" },
+    { label: "Perde Hasırı", value: "Perde Hasırı" },
   ];
 
   const resetKesmeTab = () => {
@@ -479,7 +479,7 @@ function App() {
                     options={["", ...Object.keys(meshFeatures)]}
                     disabled={mesh.type === "Perde Hasırı"}
                   />
-                  {console.log("Is code select disabled?", mesh.type === "P")}
+                  {console.log("Is code select disabled?", mesh.type === "Perde Hasırı")}
                 </div>
               </div>
               <div className="flex items-center">
@@ -504,7 +504,7 @@ function App() {
                   Hasır Boyu:
                 </span>
                 <div className="flex-1">
-                  {mesh.type === "P" ? (
+                  {mesh.type === "Perde Hasırı" ? (
                     <Select
                       value={mesh.height}
                       onChange={(value) => {
