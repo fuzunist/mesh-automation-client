@@ -1146,10 +1146,10 @@ function App() {
                         </td>
 
                         <td key="{index}" className="border p-2">
-                          {calculated.diameter[0]?.toFixed(2) || "N/A"}
+                          {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
-                          {calculated.diameter[1]?.toFixed(2) || "N/A"}
+                          {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                       <tr key="{key}">
@@ -1157,10 +1157,10 @@ function App() {
                           GÖZ ARALIĞI
                         </td>
                         <td key="{index}" className="border p-2">
-                          {calculated.apertureSize[0]?.toFixed(2) || "N/A"}
+                          {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
-                          {calculated.apertureSize[1]?.toFixed(2) || "N/A"}
+                          {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                       <tr key="{key}">
@@ -1168,10 +1168,10 @@ function App() {
                           ÇUBUK SAYISI
                         </td>
                         <td key="{index}" className="border p-2">
-                          {calculated.numberOfSticks[0] ?? "N/A"}
+                          {manuelCalculated.numberOfSticks[0] ?? "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
-                          {calculated.numberOfSticks[1] ?? "N/A"}
+                          {manuelCalculated.numberOfSticks[1] ?? "N/A"}
                         </td>
                       </tr>
                     </tbody>
@@ -1199,7 +1199,7 @@ function App() {
                           Ön Filiz Boyu
                         </td>
                         <td className="border p-2">
-                          {calculated.frontFilament?.toFixed(2) || "N/A"}
+                          {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                       <tr key="{key}">
@@ -1207,7 +1207,7 @@ function App() {
                           Arka Filiz Boyu
                         </td>
                         <td className="border p-2">
-                          {calculated.backFilament?.toFixed(2) || "N/A"}
+                          {manuelMesh.backFilament?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                       <tr key="{key}">
@@ -1216,7 +1216,7 @@ function App() {
                           Sağ Filiz Boyu
                         </td>
                         <td className="border p-2">
-                          {calculated.rightFilament?.toFixed(2) || "N/A"}
+                          {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                       <tr key="{key}">
@@ -1225,7 +1225,7 @@ function App() {
                           Sol Filiz Boyu
                         </td>
                         <td className="border p-2">
-                          {calculated.leftFilament?.toFixed(2) || "N/A"}
+                          {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                     </tbody>
@@ -1254,7 +1254,7 @@ function App() {
                         Boy Birim KG
                       </td>
                       <td className="border p-2">
-                        {calculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
+                        {manuelCalculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
                       </td>
                     </tr>
 
@@ -1263,7 +1263,7 @@ function App() {
                         En Birim KG
                       </td>
                       <td className="border p-2">
-                        {calculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
+                        {manuelCalculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1272,7 +1272,7 @@ function App() {
                       </td>
                       <td className="border p-2">
                         {" "}
-                        {calculated.totalHeigthWeight?.toFixed(2) || "N/A"}
+                        {manuelCalculated.totalHeigthWeight?.toFixed(2) || "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1280,7 +1280,7 @@ function App() {
                         En Toplam KG
                       </td>
                       <td className="border p-2">
-                        {calculated.totalWidthWeight?.toFixed(2) || "N/A"}
+                        {manuelCalculated.totalWidthWeight?.toFixed(2) || "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1289,7 +1289,7 @@ function App() {
                       </td>
                       <td className="border p-2">
                         {" "}
-                        {calculated.unitMeshWeight?.toFixed(2) || "N/A"}
+                        {manuelCalculated.unitMeshWeight?.toFixed(2) || "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1298,7 +1298,7 @@ function App() {
                         Toplam Ağırlık
                       </td>
                       <td className="border p-2">
-                        {calculated.totalWeight?.toFixed(2) || "N/A"}
+                        {manuelCalculated.totalWeight?.toFixed(2) || "N/A"}
                       </td>
                     </tr>
                   </tbody>
