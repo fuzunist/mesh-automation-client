@@ -8,6 +8,7 @@ import ManuelMesh from "./components/ManuelMesh";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import html2canvas from "html2canvas";
+import Header from "./components/Header";
 
 const initialValues = {
   calculated: {
