@@ -436,9 +436,6 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col w-screen">
-     
-    <Header />
     <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
       <TabList>
         <Tab>Otomatik Hesapla</Tab>
@@ -447,7 +444,7 @@ function App() {
       </TabList>
 
       <TabPanel>
-        < div className="flex flex-row items-start mr-4">
+        <div className="flex flex-row items-start mr-4">
           <div className=" flex flex-col md:flex-column md:w-[25%] justify-start px-4 py-2 gap-10 mt-8">
             <div className="flex flex-col gap-3 flex-1 h-full justify-between ">
               <div className="flex items-center ">
@@ -851,19 +848,18 @@ function App() {
           </div>
           {!!calculated.totalWeight && (
             <div className="flex justify-center items-center max-w-[75%] mx-auto ">
-            <div className="flex w-full  overflow-y-scroll mt-8 mb-16">
-              <Mesh
-
-                calculated={calculated}
-                height={mesh.width}
-                width={mesh.height}
-                firm="Mongery Yazılım"
-                type={mesh.type}
-                piece={mesh.piece}
-                quality="TS 4559 EKİM 1985"
-                stroke="black"
-              />
-            </div>
+              <div className="flex w-full  overflow-y-scroll mt-8 mb-16">
+                <Mesh
+                  calculated={calculated}
+                  height={mesh.width}
+                  width={mesh.height}
+                  firm="Mongery Yazılım"
+                  type={mesh.type}
+                  piece={mesh.piece}
+                  quality="TS 4559 EKİM 1985"
+                  stroke="black"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -1462,7 +1458,6 @@ function App() {
         </div>
       </TabPanel>
     </Tabs>
-    </div>
   );
 }
 

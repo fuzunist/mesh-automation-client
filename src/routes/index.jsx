@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Root from "./Root";
 import NotFound from "@/pages/NotFound";
 import Logout from "@/pages/Logout";
+import ContentLayout from "@/layouts/ContentLayout";
 
 const routes = createBrowserRouter([
   {
@@ -29,16 +30,22 @@ const routes = createBrowserRouter([
   },
 
   {
-    path: "dashboard",
-    element: <App />,
-  },
-  {
     path: "*",
-    element: <NotFound />,
-  }
+    element: <ContentLayout />,
+    children:[
+    {
+      path: "dashboard",
+      element: <App />
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    }
 
+    ]
+  },
+ 
 
-  
 ]);
 
 export default routes;
