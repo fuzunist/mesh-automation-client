@@ -2,7 +2,7 @@
 import FormikForm from "../../components/FormikForm";
 import { login } from "../../services/auth";
 import { setUser } from "../../store/actions/user";
-
+import Loader from "@/components/Loader";
 import { useState, useRef, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Helmet } from "react-helmet";
@@ -11,9 +11,21 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
   let content;
+  let load=false;
   const [error, setError] = useState("");
   const [_, setCookies] = useCookies(["access_token", "refresh_token"]);
 
+  useEffect(()=>{
+    const timeout=setTimeout(()=>{
+
+        load=true
+    },1000)
+
+    return ()=>{
+        clearTimeout(timeout)
+        load=false
+    }
+  },[])
   const initialValues = {
     username: {
       tag: "input",
@@ -61,6 +73,7 @@ const Login = () => {
     setUser(response);
     navigate("/dashboard");
   };
+  
 
   content = (
     <>
@@ -101,7 +114,7 @@ const Login = () => {
   </div> */}
     </>
   );
-  return content;
+  return !load ? content : <Loader />;
 };
 
 export default Login;
