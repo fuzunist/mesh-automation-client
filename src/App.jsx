@@ -8,7 +8,6 @@ import ManuelMesh from "./components/ManuelMesh";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import html2canvas from "html2canvas";
-import Header from "./components/Header";
 
 const initialValues = {
   calculated: {
@@ -438,8 +437,7 @@ function App() {
   return (
     <div className="flex flex-col w-screen">
      
-        <Header />
-
+    <Header />
     <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
       <TabList>
         <Tab>Otomatik Hesapla</Tab>
@@ -448,8 +446,8 @@ function App() {
       </TabList>
 
       <TabPanel>
-        <>
-          <div className=" flex flex-col md:flex-row justify-start px-4 py-2 gap-10 mt-8">
+        < div className="flex flex-row items-start mr-4">
+          <div className=" flex flex-col md:flex-column md:w-[25%] justify-start px-4 py-2 gap-10 mt-8">
             <div className="flex flex-col gap-3 flex-1 h-full justify-between ">
               <div className="flex items-center ">
                 <span className="flex-1 text-sm font-semibold">
@@ -476,7 +474,10 @@ function App() {
                     options={["", ...Object.keys(meshFeatures)]}
                     disabled={mesh.type === "Perde Hasırı"}
                   />
-                  {console.log("Is code select disabled?", mesh.type === "Perde Hasırı")}
+                  {console.log(
+                    "Is code select disabled?",
+                    mesh.type === "Perde Hasırı"
+                  )}
                 </div>
               </div>
               <div className="flex items-center">
@@ -601,7 +602,6 @@ function App() {
                       console.log("Boy Çubuğu updated value:", value);
                     }}
                     type="number"
-                    
                     disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
@@ -661,8 +661,8 @@ function App() {
                 </div>
               )}
             </div>
-            <div className="flex flex-col md:w-[60%] -mt-5 ">
-              <div className="flex flex-row justify-between gap-x-4">
+            <div className="flex flex-col max-w-full -mt-5 ">
+              <div className="flex flex-col justify-between gap-x-4">
                 <div className="mb-4 w-full">
                   <h2 className="text-sm font-semibold uppercase text-center">
                     Çubuk
@@ -849,8 +849,10 @@ function App() {
             </div>
           </div>
           {!!calculated.totalWeight && (
-            <div className="flex justify-center items-center mt-8 mb-16">
+            <div className="flex justify-center items-center max-w-[75%] mx-auto ">
+            <div className="flex w-full  overflow-y-scroll mt-8 mb-16">
               <Mesh
+
                 calculated={calculated}
                 height={mesh.width}
                 width={mesh.height}
@@ -861,12 +863,12 @@ function App() {
                 stroke="black"
               />
             </div>
+            </div>
           )}
-        </>
+        </div>
       </TabPanel>
       <TabPanel>
         <>
-        
           <div className="flex flex-col md:flex-row justify-start px-4 py-2 gap-10 mt-8">
             <div className="flex flex-col gap-3 w-1/3">
               <div className="flex items-center">
@@ -1125,118 +1127,116 @@ function App() {
               )}
             </div>
             <div className="flex flex-col md:w-[60%] mt-4 gap-y-4 ">
-              
-                <div className="mb-4 w-full">
-                  <h2 className="text-sm font-semibold uppercase text-center">
-                    Çubuk
-                  </h2>
-                  <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border p-2 font-semibold uppercase">
-                          Özellikler
-                        </th>
-                        <th className="border p-2 font-semibold uppercase">
-                          Boy Çubuğu
-                        </th>
-                        <th className="border p-2 font-semibold uppercase">
-                          En Çubuğu
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          ÇAP
-                        </td>
+              <div className="mb-4 w-full">
+                <h2 className="text-sm font-semibold uppercase text-center">
+                  Çubuk
+                </h2>
+                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border p-2 font-semibold uppercase">
+                        Özellikler
+                      </th>
+                      <th className="border p-2 font-semibold uppercase">
+                        Boy Çubuğu
+                      </th>
+                      <th className="border p-2 font-semibold uppercase">
+                        En Çubuğu
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        ÇAP
+                      </td>
 
-                        <td key="{index}" className="border p-2">
-                          {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
-                        </td>
-                        <td key="{index}" className="border p-2">
-                          {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          GÖZ ARALIĞI
-                        </td>
-                        <td key="{index}" className="border p-2">
-                          {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
-                        </td>
-                        <td key="{index}" className="border p-2">
-                          {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          ÇUBUK SAYISI
-                        </td>
-                        <td key="{index}" className="border p-2">
-                          {manuelCalculated.numberOfSticks[0] ?? "N/A"}
-                        </td>
-                        <td key="{index}" className="border p-2">
-                          {manuelCalculated.numberOfSticks[1] ?? "N/A"}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                      <td key="{index}" className="border p-2">
+                        {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
+                      </td>
+                      <td key="{index}" className="border p-2">
+                        {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        GÖZ ARALIĞI
+                      </td>
+                      <td key="{index}" className="border p-2">
+                        {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
+                      </td>
+                      <td key="{index}" className="border p-2">
+                        {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        ÇUBUK SAYISI
+                      </td>
+                      <td key="{index}" className="border p-2">
+                        {manuelCalculated.numberOfSticks[0] ?? "N/A"}
+                      </td>
+                      <td key="{index}" className="border p-2">
+                        {manuelCalculated.numberOfSticks[1] ?? "N/A"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-                <div className="mb-4 w-full">
-                  <h2 className="text-sm font-semibold uppercase text-center">
-                    Filizler
-                  </h2>
-                  <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border p-2 font-semibold uppercase">
-                          Özellikler
-                        </th>
-                        <th className="border p-2 font-semibold uppercase">
-                          Değerler
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          Ön Filiz Boyu
-                        </td>
-                        <td className="border p-2">
-                          {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          Arka Filiz Boyu
-                        </td>
-                        <td className="border p-2">
-                          {manuelMesh.backFilament?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          {" "}
-                          Sağ Filiz Boyu
-                        </td>
-                        <td className="border p-2">
-                          {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          {" "}
-                          Sol Filiz Boyu
-                        </td>
-                        <td className="border p-2">
-                          {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              
+              <div className="mb-4 w-full">
+                <h2 className="text-sm font-semibold uppercase text-center">
+                  Filizler
+                </h2>
+                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border p-2 font-semibold uppercase">
+                        Özellikler
+                      </th>
+                      <th className="border p-2 font-semibold uppercase">
+                        Değerler
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        Ön Filiz Boyu
+                      </td>
+                      <td className="border p-2">
+                        {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        Arka Filiz Boyu
+                      </td>
+                      <td className="border p-2">
+                        {manuelMesh.backFilament?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        {" "}
+                        Sağ Filiz Boyu
+                      </td>
+                      <td className="border p-2">
+                        {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                    <tr key="{key}">
+                      <td className="border p-2 font-semibold uppercase">
+                        {" "}
+                        Sol Filiz Boyu
+                      </td>
+                      <td className="border p-2">
+                        {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               <div className="mb-4">
                 <h2 className="text-sm font-semibold uppercase text-center">
@@ -1259,7 +1259,8 @@ function App() {
                         Boy Birim KG
                       </td>
                       <td className="border p-2">
-                        {manuelCalculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
+                        {manuelCalculated.unitOfHeigthWeight?.toFixed(3) ||
+                          "N/A"}
                       </td>
                     </tr>
 
@@ -1268,7 +1269,8 @@ function App() {
                         En Birim KG
                       </td>
                       <td className="border p-2">
-                        {manuelCalculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
+                        {manuelCalculated.unitOfWidthWeight?.toFixed(3) ||
+                          "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1277,7 +1279,8 @@ function App() {
                       </td>
                       <td className="border p-2">
                         {" "}
-                        {manuelCalculated.totalHeigthWeight?.toFixed(2) || "N/A"}
+                        {manuelCalculated.totalHeigthWeight?.toFixed(2) ||
+                          "N/A"}
                       </td>
                     </tr>
                     <tr key="{key}">
@@ -1322,6 +1325,11 @@ function App() {
                 leftFilament={manuelMesh.leftFilament}
                 rightFilament={manuelMesh.rightFilament}
                 apertureSize={manuelMesh.apertureSize}
+                firm="Mongery Yazılım"
+                diameter={manuelMesh.diameter}
+                type={manuelMesh.type}
+                piece={manuelMesh.piece}
+                quality="TS 4559 EKİM 1985"
                 stroke="black"
               />
             </div>

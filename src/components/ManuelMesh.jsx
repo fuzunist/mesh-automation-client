@@ -11,10 +11,14 @@ const ManuelMesh = ({
   frontFilament,
   rightFilament,
   apertureSize,
-
   backgroundColor = "yellow",
+  diameter,
+  firm,
+  type,
+  piece,
+  quality,
 }) => {
-  const { numberOfSticks } = manuelCalculated;
+  const { numberOfSticks, unitMeshWeight } = manuelCalculated;
   const stroke = "black";
   const divRef = useRef();
 
@@ -47,23 +51,47 @@ const ManuelMesh = ({
       console.error("Div element is not found!");
       return;
     }
-
+    const scale = 2;
     html2canvas(element, {
-      scale: 1,
+      scale: scale,
       backgroundColor: null,
       logging: true,
       useCORS: true,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+      scrollX: -window.scrollX,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.offsetHeight,
     })
       .then((canvas) => {
         const logoImg = new Image();
         logoImg.src = "mongerylogo.png";
         logoImg.onload = () => {
-          const ctx = canvas.getContext("2d");
-          ctx.globalAlpha = 1.0; // Ensure this is set to 1 before drawing the image
+          const tempCanvas = document.createElement("canvas");
+          const tempCtx = tempCanvas.getContext("2d");
 
-          // Draw the watermark last to ensure it's on top
-          const pattern = ctx.createPattern(logoImg, "repeat");
-          ctx.globalAlpha = 0.1; // Set transparency for the watermark
+          // Desired height of the logo, maintaining 1:3 ratio
+          const logoHeight = 100; // You can adjust this value
+          const logoWidth = logoHeight * 3; // Maintaining the 1:3 ratio
+
+          tempCanvas.width = logoWidth;
+          tempCanvas.height = logoHeight;
+
+          // Draw the smaller logo on the temporary canvas
+          tempCtx.drawImage(logoImg, 0, 0, logoWidth, logoHeight);
+
+          // Create the pattern from the temporary canvas
+          const ctx = canvas.getContext("2d");
+          const pattern = ctx.createPattern(tempCanvas, "repeat");
+
+          if (pattern) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any previous transformation
+            pattern.setTransform(ctx.getTransform()); // Align pattern with canvas
+          }
+
+          
+          ctx.globalAlpha = 0.05; // Set transparency for the watermark
           ctx.fillStyle = pattern;
           ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with the watermark pattern
 
@@ -160,18 +188,63 @@ const ManuelMesh = ({
 
   const lineMargin = 0;
 
+  const renderInfoTable = () => (
+    <div className="overflow-x-auto w-full mt-4 p-4 text-xs">
+      <table className="min-w-full border-collapse border border-gray-800 ">
+        <tbody>
+          <tr>
+            <td className="border p-3 text-center w-36 h-36">
+              <img src="/mongerylogo.png" alt="Logo" className="mx-auto" />
+            </td>
+            <td className="border p-3">
+              <table className="w-full h-full border-collapse">
+                <tbody>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-1 font-bold">FIRMA:</td>
+                    <td className="p-1">{firm}</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-1 font-bold">HASIR TİPİ:</td>
+                    <td className="p-1">{type}</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-1 font-bold">ÇAP:</td>
+                    <td className="p-1">{diameter[0]}</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
+                    <td className="p-1">{unitMeshWeight.toFixed(2)}</td>
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="p-1 font-bold">KALİTE:</td>
+                    <td className="p-1">{quality}</td>
+                  </tr>
+                  <tr>
+                    <td className="p-1 font-bold">ÜRETİM ADETİ:</td>
+                    <td className="p-1">{piece}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col items-center place-content-center">
+      <div ref={divRef}>
       <div
-        ref={divRef}
-        className="flex flex-col items-center justify-center p-auto bg-white rounded-lg shadow"
+        
+        className="flex flex-col items-center justify-center p-auto bg-white  "
         style={{
           width: `${containerSize.width}px`,
           height: `${containerSize.height}px`,
         }}
       >
         <div
-          className="svg-container shadow-md rounded overflow-hidden p-3 bg-light-gray"
+          className="svg-container  overflow-hidden p-3 bg-light-gray"
           style={{
             width: `${containerSize.width}px`,
             height: `${containerSize.height}px`,
@@ -337,6 +410,16 @@ const ManuelMesh = ({
           </svg>
         </div>
       </div>
+      <div
+        style={{
+          width: `${containerSize.width}px`,
+          backgroundColor: "white",
+          marginTop: "-20px",
+        }}
+      >
+        {renderInfoTable()}
+      </div>
+      </div>
       <button
         onClick={downloadAsPng}
         style={{
@@ -355,7 +438,7 @@ const ManuelMesh = ({
         onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
         onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
       >
-        Download as PDF
+        Download as PNG
       </button>
     </div>
   );

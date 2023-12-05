@@ -26,7 +26,7 @@ const Mesh = ({
   } = calculated;
 
   const divRef = useRef(); // Reference to the div you want to capture
-  const svgRef = useRef();
+  
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
@@ -40,57 +40,75 @@ const Mesh = ({
     }
   }, [calculated, apertureSize, numberOfSticks]);
 
+  const offsetX = (containerSize.width - width) / 2;
+  const offsetY = (containerSize.height - height) / 2;
+
   const downloadAsPng = () => {
     const element = divRef.current;
     if (!element) {
       console.error("Div element is not found!");
       return;
     }
-
+    const scale = 2;
     html2canvas(element, {
-      scale: 1,
+      scale: scale,
       backgroundColor: null,
       logging: true,
       useCORS: true,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+      scrollX: -window.scrollX,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.offsetHeight,
     })
       .then((canvas) => {
-
         const logoImg = new Image();
-        logoImg.crossOrigin = "anonymous"; // Enable CORS if the image is from a different origin
-        logoImg.src = "/mongerylogo.png";
+        logoImg.src = "mongerylogo.png";
         logoImg.onload = () => {
+          const tempCanvas = document.createElement("canvas");
+          const tempCtx = tempCanvas.getContext("2d");
+
+          // Desired height of the logo, maintaining 1:3 ratio
+          const logoHeight = 100; // You can adjust this value
+          const logoWidth = logoHeight * 3; // Maintaining the 1:3 ratio
+
+          tempCanvas.width = logoWidth;
+          tempCanvas.height = logoHeight;
+
+          // Draw the smaller logo on the temporary canvas
+          tempCtx.drawImage(logoImg, 0, 0, logoWidth, logoHeight);
+
+          // Create the pattern from the temporary canvas
           const ctx = canvas.getContext("2d");
-          ctx.globalAlpha = 1.0; // Ensure this is set to 1 before drawing the image
-        
-          // Draw the watermark last to ensure it's on top
-          const pattern = ctx.createPattern(logoImg, "repeat");
-          ctx.globalAlpha = 0.1; // Set transparency for the watermark
+          const pattern = ctx.createPattern(tempCanvas, "repeat");
+
+          if (pattern) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any previous transformation
+            pattern.setTransform(ctx.getTransform()); // Align pattern with canvas
+          }
+
+          
+          ctx.globalAlpha = 0.05; // Set transparency for the watermark
           ctx.fillStyle = pattern;
-        
-          // Adjust the position and size to cover the whole canvas
-          // ctx.translate(0, 0); // Optionally adjust the starting position
-          ctx.fillRect(20, 10, 150, 100);
-        
+          ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with the watermark pattern
+
           canvas.toBlob((blob) => {
             saveAs(blob, "mesh.png");
             console.log("Download triggered");
           });
         };
-        
         logoImg.onerror = () => {
           console.error("Error loading watermark image");
         };
-        
-
-       
       })
       .catch((err) => {
         console.error("Error in capturing the div as PNG", err);
       });
   };
 
-  const margin = 50;
-  const viewBox = `10 20 ${width * 1.2} ${height * 1.2}`;
+  const margin = 10;
+  const viewBox = `0 0 ${width} ${height}`;
 
   const heightSticks = useMemo(() => {
     const sticks = [leftFilament];
@@ -108,10 +126,27 @@ const Mesh = ({
     return sticks;
   }, [calculated]);
 
+  
+  const svgRef = useRef();
+
+  useEffect(() => {
+    const extraPadding = 180; // Adjust this value as needed
+    const maxWidth = Math.max(...widthSticks, width) + extraPadding;
+    const maxHeight = Math.max(...heightSticks, height) + extraPadding;
+
+    setContainerSize({
+      width: maxWidth,
+      height: maxHeight,
+    });
+  }, [widthSticks, heightSticks, width, height]);
+
+  const reductionAmountWidth = width * 0.1;
+  const reductionAmountHeight = height * 0.1;
+
   const lineMargin = 0;
 
   const renderInfoTable = () => (
-    <div className="overflow-x-auto w-full mt-4 p-4">
+    <div className="overflow-x-auto w-full mt-4 p-4 text-xs">
       <table className="min-w-full border-collapse border border-gray-800 ">
         <tbody>
           <tr>
@@ -135,7 +170,7 @@ const Mesh = ({
                   </tr>
                   <tr className="border-b border-gray-800">
                     <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
-                    <td className="p-1">{unitMeshWeight}</td>
+                    <td className="p-1">{unitMeshWeight.toFixed(2)}</td>
                   </tr>
                   <tr className="border-b border-gray-800">
                     <td className="p-1 font-bold">KALİTE:</td>
@@ -155,48 +190,37 @@ const Mesh = ({
   );
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col items-center place-content-center ">
+      <div ref={divRef} >
       <div
-        ref={divRef}
+        
+        className="flex flex-col items-center justify-center p-auto bg-white"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "auto",
-          backgroundColor: "#ffffff",
-          borderRadius: "15px",
-          boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
         }}
       >
         <div
-          className="svg-container"
+          className="flex-col svg-container overflow-hidden p-3 bg-light-gray "
           style={{
-            boxShadow: "0 3px 6px rgba(0,0,0,0.16)",
-            borderRadius: "8px",
-            overflow: "contain",
-            padding: "12px",
-            backgroundColor: "lightgray",
-            paddingLeft: "36px",
             width: `${containerSize.width}px`,
             height: `${containerSize.height}px`,
           }}
         >
           <svg
             ref={svgRef}
-            width="70vw"
-            height="50vh"
-            viewBox={viewBox}
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
             preserveAspectRatio="xMidYMid meet"
-            style={{ width: "100%", height: "100%" }}
           >
-            <g transform={`translate(${margin},${margin})`}>
+            <g transform={`translate(${offsetX + margin},${offsetY + margin})`}>
               {heightSticks.map((stick, index) => (
                 <line
                   key={`h-${index}`}
-                  x1={lineMargin}
+                  x1={0}
                   y1={stick}
-                  x2={width - lineMargin}
+                  x2={width}
                   y2={stick}
                   stroke={stroke}
                   strokeWidth={1.5}
@@ -206,9 +230,9 @@ const Mesh = ({
                 <line
                   key={`w-${index}`}
                   x1={stick}
-                  y1={lineMargin}
+                  y1={0}
                   x2={stick}
-                  y2={height - lineMargin}
+                  y2={height}
                   stroke={stroke}
                   strokeWidth={1.5}
                 />
@@ -300,62 +324,71 @@ const Mesh = ({
 
               <line
                 x1={lineMargin}
-                y1={height - lineMargin + 10}
+                y1={height - lineMargin + 20}
                 x2={width - lineMargin}
-                y2={height - lineMargin + 10}
+                y2={height - lineMargin + 20}
                 stroke="black"
                 strokeWidth={1.5}
               />
 
               <text
                 x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 20} // Adjust the y position for spacing
+                y={height - lineMargin + 40} // Adjust the y position for spacing
                 fill="black"
                 textAnchor="middle"
-                fontSize="8"
+                fontSize="11"
               >
-                {width} {" "}cm
-             
+                {width} cm
               </text>
 
               <text
                 x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 40} // Adjust the y position for spacing
+                y={height - lineMargin + 70} // Adjust the y position for spacing
                 fill="black"
                 textAnchor="middle"
                 fontSize="8"
               >
                 ÇİZİM ÜZERİNDEKİ TÜM ÖLÇÜLER CM OLARAK VERİLMİŞTİR.
-             
               </text>
 
               <line
-        x1={lineMargin-30}
-        y1={lineMargin}
-        x2={lineMargin-30}
-        y2={height - lineMargin}
-        stroke="black"
-        strokeWidth={1.5}
-      />
+                x1={width + lineMargin + 20}
+                y1={lineMargin}
+                x2={width + lineMargin + 20}
+                y2={height - lineMargin}
+                stroke="black"
+                strokeWidth={1.5}
+              />
 
-      {/* Text beside the line */}
-      <text
-        x={lineMargin + 10} // Adjust the x position for spacing
-        y={(height -75 - lineMargin) / 2} // Center the text vertically
-        fill="black"
-        textAnchor="middle"
-        fontSize="8"
-        transform={`rotate(-90, ${lineMargin + 5}, ${height / 2})`}
-
-      >
-           {height}{" "} cm
-      </text>
-
-    
+              {/* Text beside the line */}
+              <text
+                x={width + lineMargin + 30} // Adjust the x position for spacing
+                y={(height - 14 - lineMargin) / 2} // Center the text vertically
+                fill="black"
+                textAnchor="middle"
+                fontSize="11"
+                transform={`rotate(-90, ${width + lineMargin + 40}, ${
+                  (height - 14 - lineMargin) / 2
+                })`}
+              >
+                {height} cm
+              </text>
             </g>
           </svg>
+          
         </div>
+        
+      </div>
+      <div
+        style={{
+          width: `${containerSize.width}px`,
+          backgroundColor: "white",
+          marginTop: "-20px",
+
+        }}
+      >
         {renderInfoTable()}
+      </div>
       </div>
       <button
         onClick={downloadAsPng}
@@ -363,7 +396,7 @@ const Mesh = ({
           marginTop: "10px",
           padding: "12px 18px",
           border: "none",
-          backgroundColor: "#0056b3",
+          backgroundColor: "black",
           color: "white",
           borderRadius: "6px",
           cursor: "pointer",
@@ -375,7 +408,7 @@ const Mesh = ({
         onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
         onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
       >
-        Download as PDF
+        Download as PNG
       </button>
     </div>
   );
