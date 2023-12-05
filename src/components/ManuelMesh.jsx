@@ -213,7 +213,7 @@ const ManuelMesh = ({
                   </tr>
                   <tr className="border-b border-gray-800">
                     <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
-                    <td className="p-1">{unitMeshWeight.toFixed(2)}</td>
+                    <td className="p-1">{unitMeshWeight.toFixed(2) + " +/- 0.5 KG"}</td>
                   </tr>
                   <tr className="border-b border-gray-800">
                     <td className="p-1 font-bold">KALİTE:</td>

@@ -9,6 +9,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import html2canvas from "html2canvas";
 import Header from "./components/Header";
+import { handleDeleteRow } from './utils/tableHelpers';
 
 const initialValues = {
   calculated: {
@@ -69,6 +70,10 @@ function App() {
   const [mesh, setMesh] = useState(initialValues.mesh);
   const [manuelMesh, setManuelMesh] = useState(initialValues.manuelMesh);
 
+  const [showMessage, setShowMessage] = useState(false);
+
+  const [filamentError, setFilamentError] = useState("");
+
   const [error, setError] = useState("");
   const [tabIndex, setTabIndex] = useState(0);
   const tabsRef = useRef(null);
@@ -128,19 +133,34 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    setError("");
-    setCalculated(initialValues.calculated);
+  let isMeshValid = true;
 
-    if (
-      !mesh.type ||
-      !mesh.code ||
-      !mesh.name ||
-      !mesh.height ||
-      !mesh.width ||
-      !mesh.piece
-    )
-      return setError("Tüm alanların doldurulması zorunludur.");
+  useEffect(() => {
+    setCalculated(initialValues.calculated);
+    console.log("mesh.type:", mesh.type);
+    console.log("mesh.code:", mesh.code);
+    console.log("mesh.name:", mesh.name);
+    console.log("mesh.height:", mesh.height);
+    console.log("mesh.width:", mesh.width);
+    console.log("mesh.piece:", mesh.piece);
+    console.log("mesh valid mi:", isMeshValid);
+
+    isMeshValid =
+      mesh.type &&
+      mesh.code &&
+      mesh.name &&
+      mesh.height &&
+      mesh.width &&
+      mesh.piece;
+
+    console.log("mesh valid mi 2:", isMeshValid);
+
+    if (!isMeshValid) {
+      setError("Tüm alanların doldurulması zorunludur.");
+      return;
+    }
+
+    setError("");
 
     // Make sure the selected mesh code and name exist in the features object
     if (meshFeatures[mesh.code] && meshFeatures[mesh.code][mesh.name]) {
@@ -260,7 +280,30 @@ function App() {
           result.totalHeigthWeight + result.totalWidthWeight;
         result.totalWeight = result.unitMeshWeight * mesh.piece;
 
-        setCalculated(result);
+        let localFilamentError = [];
+        if (result.frontFilament < 0) {
+          localFilamentError.push("Ön filiz boyu sıfırdan küçük olamaz.");
+          result.frontFilament = 0;
+        }
+        if (result.backFilament < 0) {
+          localFilamentError.push("Arka filiz boyu sıfırdan küçük olamaz.");
+          result.backFilament = 0;
+        }
+        if (result.leftFilament < 0) {
+          localFilamentError.push("Sol filiz boyu sıfırdan küçük olamaz.");
+          result.leftFilament = 0;
+        }
+        if (result.rightFilament < 0) {
+          localFilamentError.push("Sağ filiz boyu sıfırdan küçük olamaz.");
+          result.rightFilament = 0;
+        }
+
+        if (localFilamentError.length > 0) {
+          setFilamentError(localFilamentError.join(" "));
+        } else {
+          setFilamentError("");
+          setCalculated(result);
+        }
       } else {
         setError("Seçilen hasır için çap bilgisi bulunamadı.");
       }
@@ -273,21 +316,23 @@ function App() {
     setError("");
     setManuelCalculated(initialValues.manuelCalculated);
 
-    if (
-      !manuelMesh.type ||
-      !manuelMesh.height ||
-      !manuelMesh.width ||
-      !manuelMesh.diameter[0] ||
-      !manuelMesh.diameter[1] ||
-      !manuelMesh.apertureSize[0] ||
-      !manuelMesh.apertureSize[1] ||
-      !manuelMesh.frontFilament ||
-      !manuelMesh.backFilament ||
-      !manuelMesh.leftFilament ||
-      !manuelMesh.rightFilament ||
-      !manuelMesh.piece
-    ) {
-      return setError("Tüm alanların doldurulması zorunludur.");
+    const isManuelMeshValid =
+      manuelMesh.type &&
+      manuelMesh.height &&
+      manuelMesh.width &&
+      manuelMesh.diameter[0] &&
+      manuelMesh.diameter[1] &&
+      manuelMesh.apertureSize[0] &&
+      manuelMesh.apertureSize[1] &&
+      manuelMesh.frontFilament &&
+      manuelMesh.backFilament &&
+      manuelMesh.leftFilament &&
+      manuelMesh.rightFilament &&
+      manuelMesh.piece;
+
+    if (!isManuelMeshValid) {
+      setError("Tüm alanların doldurulması zorunludur.");
+      return;
     }
 
     const result = { ...initialValues.manuelCalculated };
@@ -365,6 +410,11 @@ function App() {
   // Function to handle tab change
   const handleTabChange = (index) => setTabIndex(index);
 
+  const deleteRow = (index) => {
+    handleDeleteRow(setCombinedKesmeCalculations, index);
+  };
+  
+
   // Function to check if all fields are filled
   const isButtonDisabled =
     !mesh.type ||
@@ -372,7 +422,8 @@ function App() {
     !mesh.name ||
     !mesh.height ||
     !mesh.width ||
-    !mesh.piece;
+    !mesh.piece ||
+    filamentError;
 
   // Function to open "KESME" tab
   const openKesmeTab = () => {
@@ -390,7 +441,9 @@ function App() {
           piece: mesh.piece,
         },
       ]);
-      setTabIndex(2); // Switch to "KESME" tab
+      setTabIndex(0);
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 2000);
     }
   };
 
@@ -407,8 +460,8 @@ function App() {
   };
 
   const meshTypeOptions = [
-    { label: "Çit Hasırı", value: "Çit Hasırı" },
     { label: "Döşeme Hasırı", value: "Döşeme Hasırı" },
+    { label: "Çit Hasırı", value: "Çit Hasırı" },
     { label: "Perde Hasırı", value: "Perde Hasırı" },
   ];
 
@@ -431,7 +484,9 @@ function App() {
           piece: manuelMesh.piece,
         },
       ]);
-      setTabIndex(2); // Switch to "KESME" tab
+      setTabIndex(1);
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 2000);
     }
   };
 
@@ -657,6 +712,15 @@ function App() {
                 <div className="bg-danger border border-alert-danger-fg-light text-white py-1 px-4 text-center text-sm font-semibold mt-2 rounded">
                   {error}
                 </div>
+              )}
+              {showMessage && (
+                <div className="my-2 text-sm text-green-500 rounded ">
+                  Kesme'ye başarıyla eklendi.
+                </div>
+              )}
+
+              {filamentError && (
+                <div className="my-2 text-sm text-red-600">{filamentError}</div>
               )}
             </div>
             <div className="flex flex-col max-w-full -mt-5 ">
@@ -1122,6 +1186,11 @@ function App() {
                   {error}
                 </div>
               )}
+              {showMessage && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-green-200 text-green-800 p-4 rounded shadow-lg">
+                  Kesme'ye başarıyla eklendi.
+                </div>
+              )}
             </div>
             <div className="flex flex-col md:w-[60%] mt-4 gap-y-4 ">
               <div className="mb-4 w-full">
@@ -1253,7 +1322,7 @@ function App() {
                   <tbody>
                     <tr key="{key}">
                       <td className="border p-2 font-semibold uppercase">
-                        Boy Birim KG
+                        Boy Çubuğu Adet KG
                       </td>
                       <td className="border p-2">
                         {manuelCalculated.unitOfHeigthWeight?.toFixed(3) ||
@@ -1263,7 +1332,7 @@ function App() {
 
                     <tr key="{key}">
                       <td className="border p-2 font-semibold uppercase">
-                        En Birim KG
+                        En Çubuğu Adet KG
                       </td>
                       <td className="border p-2">
                         {manuelCalculated.unitOfWidthWeight?.toFixed(3) ||
@@ -1272,7 +1341,7 @@ function App() {
                     </tr>
                     <tr key="{key}">
                       <td className="border p-2 font-semibold uppercase">
-                        Boy Toplam KG
+                        Boy Çubukları Toplam KG
                       </td>
                       <td className="border p-2">
                         {" "}
@@ -1282,7 +1351,7 @@ function App() {
                     </tr>
                     <tr key="{key}">
                       <td className="border p-2 font-semibold uppercase">
-                        En Toplam KG
+                        En Çubukları Toplam KG
                       </td>
                       <td className="border p-2">
                         {manuelCalculated.totalWidthWeight?.toFixed(2) || "N/A"}
@@ -1434,6 +1503,14 @@ function App() {
                       {(
                         calculation.totalWidthWeight * calculation.piece
                       ).toFixed(2) || "N/A"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        className="bg-red-500 text-white font-bold py-1 px-3 rounded"
+                        onClick={() => deleteRow(index)}
+                      >
+                        X
+                      </button>
                     </td>
                   </tr>
                 ))}
