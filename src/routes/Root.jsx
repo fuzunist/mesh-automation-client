@@ -26,7 +26,7 @@ const Root = () => {
         verifyHandle()
     }, [])
 
-    return <Loader />
+    return <Loader className="fixed top-0 left-0 z-[9999]" />
 }
 
 export default Root
