@@ -19,7 +19,7 @@ const Root = () => {
         const response = await verify(cookies?.access_token)
         if (response?.error) return navigate('/auth/login')
         setUser({ ...response, tokens: { access_token: cookies.access_token, refresh_token: cookies.refresh_token } })
-        navigate('/dashboard')
+        navigate(beforePathname ?? '/dashboard')
     }
 
     useEffect(() => {
