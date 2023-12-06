@@ -10,22 +10,10 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  let content;
-  let load=false;
   const [error, setError] = useState("");
   const [_, setCookies] = useCookies(["access_token", "refresh_token"]);
 
-  useEffect(()=>{
-    const timeout=setTimeout(()=>{
 
-        load=true
-    },1000)
-
-    return ()=>{
-        clearTimeout(timeout)
-        load=false
-    }
-  },[])
   const initialValues = {
     username: {
       tag: "input",
@@ -73,10 +61,10 @@ const Login = () => {
     setUser(response);
     navigate("/dashboard");
   };
-  
 
-  content = (
-    <>
+ 
+  return (
+    <div className="w-full">
       <Helmet>
         <title>Mesh Giriş</title>
       </Helmet>
@@ -112,9 +100,8 @@ const Login = () => {
       </Link>
     </div>
   </div> */}
-    </>
+    </div>
   );
-  return !load ? content : <Loader />;
 };
 
 export default Login;
