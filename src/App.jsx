@@ -45,6 +45,12 @@ const initialValues = {
     totalWidthWeight: 0,
     unitMeshWeight: 0,
     totalWeight: 0,
+    
+    apertureSize: [0, 0],
+    frontFilament: 0,
+    backFilament: 0,
+    leftFilament: 0,
+    rightFilament: 0,
   },
   manuelMesh: {
     type: "Özel Hasır",
@@ -73,11 +79,15 @@ function App() {
   const [showMessage, setShowMessage] = useState(false);
 
   const [filamentError, setFilamentError] = useState("");
+  const [manuelFilamentError, setManuelFilamentError] = useState("");
 
   const [error, setError] = useState("");
   const [manuelError, setManuelError] = useState("");
   const [tabIndex, setTabIndex] = useState(0);
   const tabsRef = useRef(null);
+
+  const [lastModifiedGroup, setLastModifiedGroup] = useState(null);
+  const [isManualChange, setIsManualChange] = useState(false);
 
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' for descending, 'asc' for ascending
 
@@ -317,6 +327,8 @@ function App() {
   let isManuelMeshValid = true;
 
   useEffect(() => {
+    if (!isManualChange) return;
+
     setManuelCalculated(initialValues.manuelCalculated);
 
     isManuelMeshValid =
@@ -380,8 +392,55 @@ function App() {
     result.unitMeshWeight = result.totalHeigthWeight + result.totalWidthWeight;
     result.totalWeight = result.unitMeshWeight * manuelMesh.piece;
 
-    setManuelCalculated(result);
-  }, [manuelMesh]);
+    if (lastModifiedGroup === "A") {
+      result.backFilament =
+        (manuelMesh.height -
+          (result.numberOfSticks[1] - 1) * manuelMesh.apertureSize[1]) /
+        2;
+      result.leftFilament =
+        (manuelMesh.width - (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
+        2;
+      result.rightFilament =
+        (manuelMesh.width - (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
+        2;
+      result.frontFilament =
+        (manuelMesh.height -
+          (result.numberOfSticks[1] - 1) * manuelMesh.apertureSize[1]) /
+        2;
+    } else if (lastModifiedGroup === "B") {
+      manuelMesh.apertureSize[0] =
+        meshFeatures['Q']['106/106'].apertureSize.height / 10;
+      manuelMesh.apertureSize[1] =
+        meshFeatures['Q']['106/106'].apertureSize.width / 10;
+    }
+
+    let localFilamentError = [];
+    if (result.frontFilament < 0) {
+      localFilamentError.push("Ön filiz boyu sıfırdan küçük olamaz.");
+      result.frontFilament = 0;
+    }
+    if (result.backFilament < 0) {
+      localFilamentError.push("Arka filiz boyu sıfırdan küçük olamaz.");
+      result.backFilament = 0;
+    }
+    if (result.leftFilament < 0) {
+      localFilamentError.push("Sol filiz boyu sıfırdan küçük olamaz.");
+      result.leftFilament = 0;
+    }
+    if (result.rightFilament < 0) {
+      localFilamentError.push("Sağ filiz boyu sıfırdan küçük olamaz.");
+      result.rightFilament = 0;
+    }
+
+    if (localFilamentError.length > 0) {
+      setManuelFilamentError(localFilamentError.join(" "));
+    } else {
+      setIsManualChange(false);
+      setLastModifiedGroup(null);
+      setManuelFilamentError("");
+      setManuelCalculated(result);
+    }
+  }, [manuelMesh, lastModifiedGroup, isManualChange]);
 
   // Inside the useEffect that runs when `calculated` changes
   useEffect(() => {
@@ -701,25 +760,22 @@ function App() {
                 >
                   Kesmeye Gönder
                 </button>
-
-                
               </div>
             </div>
-            {(error ||
-              showMessage) && (
-                <div>
-                  {error && (
-                    <div className="my-2 text-md text-red-500 rounded ">
-                      {error}
-                    </div>
-                  )}
-                  {showMessage && (
-                    <div className="my-2 text-md text-green-500 rounded ">
-                      Kesme'ye başarıyla eklendi.
-                    </div>
-                  )}
-                </div>
-              )}
+            {(error || showMessage) && (
+              <div>
+                {error && (
+                  <div className="my-2 text-md text-red-500 rounded ">
+                    {error}
+                  </div>
+                )}
+                {showMessage && (
+                  <div className="my-2 text-md text-green-500 rounded ">
+                    Kesme'ye başarıyla eklendi.
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex flex-row w-full -mt-5 ">
               <div className="flex flex-row w-full justify-between gap-x-4">
                 <div className="mb-4 w-full">
@@ -983,14 +1039,11 @@ function App() {
             </div>
           </div>
           {filamentError && (
-                  <div className="my-2 text-sm text-red-600">
-                    {filamentError}
-                  </div>
-                )}
+            <div className="my-2 text-sm text-red-600">{filamentError}</div>
+          )}
 
           {!!calculated.totalWeight && (
             <div className="flex justify-center items-center max-w-[75%] mx-auto ">
-              
               <div className="flex w-full  overflow-y-scroll mt-8 mb-16">
                 <Mesh
                   calculated={calculated}
@@ -1009,453 +1062,566 @@ function App() {
       </TabPanel>
       <TabPanel>
         <>
-          <div className="flex flex-col md:flex-row justify-start px-4 py-2 gap-10 mt-8">
-            <div className="flex flex-col gap-3 w-1/3">
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Hasır Tipi:
-                </span>
-                <span className="flex-1">Özel Hasır</span>
-              </div>
+          <div className="flex flex-col  items-center justify-center px-4 py-2 gap-10 mt-8">
+            <div className="flex flex-col w-full mb-4 gap-3">
+              <div className="flex flex-row gap-3 w-full justify-between">
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Hasır Tipi:
+                  </span>
+                  <span className="flex-1">Özel Hasır</span>
+                </div>
 
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Hasır Boyu:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.height}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        height: parseInt(value),
-                      }));
-                    }}
-                    type="number"
-                    max={1000}
-                    min={0}
-                  />
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Hasır Boyu:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.height}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          height: parseInt(value),
+                        }));
+                      }}
+                      type="number"
+                      max={1000}
+                      min={0}
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Hasır Eni:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.width}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          width: parseInt(value),
+                        }));
+                      }}
+                      type="number"
+                      max={1000}
+                      min={0}
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Boy Çubuğu +/-:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.numberOfHeightBars}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          numberOfHeightBars: value,
+                        }));
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    En Çubuğu +/-:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.numberOfWidthBars}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          numberOfWidthBars: value,
+                        }));
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Boy Çubuk Çapı:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.diameter[0]}
+                      onChange={(value) => {
+                        setManuelMesh((prevManuelMesh) => {
+                          return {
+                            ...prevManuelMesh,
+                            diameter: [value, prevManuelMesh.diameter[1]],
+                          };
+                        });
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    En Çubuk Çapı:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.diameter[1]}
+                      onChange={(value) => {
+                        setManuelMesh((prevManuelMesh) => {
+                          return {
+                            ...prevManuelMesh,
+                            diameter: [prevManuelMesh.diameter[0], value],
+                          };
+                        });
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Boy Göz Aralığı:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.apertureSize[0]}
+                      onChange={(value) => {
+                        setManuelMesh((prevManuelMesh) => {
+                          return {
+                            ...prevManuelMesh,
+                            apertureSize: [
+                              value,
+                              prevManuelMesh.apertureSize[1],
+                            ],
+                          };
+                        });
+                        setLastModifiedGroup("A");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    En Göz Aralığı:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.apertureSize[1]}
+                      onChange={(value) => {
+                        setManuelMesh((prevManuelMesh) => {
+                          return {
+                            ...prevManuelMesh,
+                            apertureSize: [
+                              prevManuelMesh.apertureSize[0],
+                              value,
+                            ],
+                          };
+                        });
+                        setLastModifiedGroup("A");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">Hasır Eni:</span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.width}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        width: parseInt(value),
-                      }));
-                    }}
-                    type="number"
-                    max={1000}
-                    min={0}
-                  />
+              <div className="flex flex-row gap-3 w-[63%] justify-between ">
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Ön Filiz Boyu:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.frontFilament}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          frontFilament: value,
+                        }));
+                        setLastModifiedGroup("B");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Arka Filiz Boyu:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.backFilament}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          backFilament: value,
+                        }));
+                        setLastModifiedGroup("B");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Sağ Filiz Boyu:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.rightFilament}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          rightFilament: value,
+                        }));
+                        setLastModifiedGroup("B");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Sol Filiz Boyu:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.leftFilament}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          leftFilament: value,
+                        }));
+                        setLastModifiedGroup("B");
+                        setIsManualChange(true);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                  <span className="flex-1 text-sm font-semibold">
+                    Sipariş Adedi:
+                  </span>
+                  <div className="flex-1 w-full md:w-[120px]">
+                    <Input
+                      value={manuelMesh.piece}
+                      onChange={(value) => {
+                        setManuelMesh((manuelMesh) => ({
+                          ...manuelMesh,
+                          piece: value,
+                        }));
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col justify-center md:w-[120px]">
+                  <button
+                    className={`text-white text-sm font-bold py-1 px-4 rounded mt-2 ${
+                      isButtonDisabled
+                        ? "bg-gray-500"
+                        : "bg-blue-500 hover:bg-blue-700"
+                    }`}
+                    disabled={isButtonDisabled}
+                    onClick={openKesmeTabFromManual}
+                  >
+                    Kesmeye Gönder
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Boy Çubuğu +/-:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.numberOfHeightBars}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        numberOfHeightBars: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  En Çubuğu +/-:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.numberOfWidthBars}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        numberOfWidthBars: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Boy Çubuk Çapı:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.diameter[0]}
-                    onChange={(value) => {
-                      setManuelMesh((prevManuelMesh) => {
-                        return {
-                          ...prevManuelMesh,
-                          diameter: [value, prevManuelMesh.diameter[1]],
-                        };
-                      });
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  En Çubuk Çapı:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.diameter[1]}
-                    onChange={(value) => {
-                      setManuelMesh((prevManuelMesh) => {
-                        return {
-                          ...prevManuelMesh,
-                          diameter: [prevManuelMesh.diameter[0], value],
-                        };
-                      });
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Boy Göz Aralığı:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.apertureSize[0]}
-                    onChange={(value) => {
-                      setManuelMesh((prevManuelMesh) => {
-                        return {
-                          ...prevManuelMesh,
-                          apertureSize: [value, prevManuelMesh.apertureSize[1]],
-                        };
-                      });
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  En Göz Aralığı:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.apertureSize[1]}
-                    onChange={(value) => {
-                      setManuelMesh((prevManuelMesh) => {
-                        return {
-                          ...prevManuelMesh,
-                          apertureSize: [prevManuelMesh.apertureSize[0], value],
-                        };
-                      });
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Ön Filiz Boyu:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.frontFilament}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        frontFilament: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Arka Filiz Boyu:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.backFilament}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        backFilament: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Sağ Filiz Boyu:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.rightFilament}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        rightFilament: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Sol Filiz Boyu:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.leftFilament}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        leftFilament: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Sipariş Adedi:
-                </span>
-                <div className="flex-1 flex">
-                  <Input
-                    value={manuelMesh.piece}
-                    onChange={(value) => {
-                      setManuelMesh((manuelMesh) => ({
-                        ...manuelMesh,
-                        piece: value,
-                      }));
-                    }}
-                    type="number"
-                  />
-                </div>
-              </div>
-              <button
-                className={`text-white text-sm font-bold py-1 px-4 rounded ${
-                  isButtonDisabled
-                    ? "bg-gray-500"
-                    : "bg-blue-500 hover:bg-blue-700"
-                }`}
-                disabled={isButtonDisabled}
-                onClick={openKesmeTabFromManual}
-              >
-                Kesmeye Gönder
-              </button>
-              {manuelError && (
-                <div className="bg-danger border border-alert-danger-fg-light text-white py-1 px-4 text-center text-sm font-semibold mt-2 rounded">
-                  {manuelError}
-                </div>
-              )}
-              {showMessage && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-green-200 text-green-800 p-4 rounded shadow-lg">
-                  Kesme'ye başarıyla eklendi.
-                </div>
-              )}
             </div>
-            <div className="flex flex-col md:w-[60%] mt-4 gap-y-4 ">
-              <div className="mb-4 w-full">
-                <h2 className="text-sm font-semibold uppercase text-center">
-                  Çubuk
-                </h2>
-                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2 font-semibold uppercase">
-                        Özellikler
-                      </th>
-                      <th className="border p-2 font-semibold uppercase">
-                        Boy Çubuğu
-                      </th>
-                      <th className="border p-2 font-semibold uppercase">
-                        En Çubuğu
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        ÇAP
-                      </td>
 
-                      <td key="{index}" className="border p-2">
-                        {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
-                      </td>
-                      <td key="{index}" className="border p-2">
-                        {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        GÖZ ARALIĞI
-                      </td>
-                      <td key="{index}" className="border p-2">
-                        {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
-                      </td>
-                      <td key="{index}" className="border p-2">
-                        {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        ÇUBUK SAYISI
-                      </td>
-                      <td key="{index}" className="border p-2">
-                        {manuelCalculated.numberOfSticks[0] ?? "N/A"}
-                      </td>
-                      <td key="{index}" className="border p-2">
-                        {manuelCalculated.numberOfSticks[1] ?? "N/A"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {(manuelError || showMessage) && (
+              <div>
+                {manuelError && (
+                  <div className="my-2 text-md text-red-500 rounded ">
+                    {manuelError}
+                  </div>
+                )}
+                {showMessage && (
+                  <div className="my-2 text-md text-green-500 rounded ">
+                    Kesme'ye başarıyla eklendi.
+                  </div>
+                )}
               </div>
+            )}
 
-              <div className="mb-4 w-full">
-                <h2 className="text-sm font-semibold uppercase text-center">
-                  Filizler
-                </h2>
-                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2 font-semibold uppercase">
-                        Özellikler
-                      </th>
-                      <th className="border p-2 font-semibold uppercase">
-                        Değerler
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Ön Filiz Boyu
-                      </td>
-                      <td className="border p-2">
-                        {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Arka Filiz Boyu
-                      </td>
-                      <td className="border p-2">
-                        {manuelMesh.backFilament?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        {" "}
-                        Sağ Filiz Boyu
-                      </td>
-                      <td className="border p-2">
-                        {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        {" "}
-                        Sol Filiz Boyu
-                      </td>
-                      <td className="border p-2">
-                        {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div className="flex flex-row w-full -mt-5 ">
+              <div className="flex flex-row w-full justify-between gap-x-4">
+                <div className="mb-4 w-full">
+                  <table className="w-full border-collapse border text-xs border-gray-800 text-center">
+                    <thead>
+                      <tr className="bg-slate-50 ">
+                        <th
+                          colSpan="10"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK
+                        </th>
+                        <th
+                          colSpan="5"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          HASIR
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          SİPARİŞ
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-100">
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇAPI
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ARALIĞI
+                        </th>
+                        <th
+                          colSpan="4"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZLERİ
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          BİRİM AĞIRLIĞI
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK AD.
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK AĞ.
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          TOPLAM
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          TOPLAM
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-50">
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZ
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZ
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          AĞIRLIK
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ADET
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          AĞIRLIK
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-100">
+                        <th className="border p-2 font-semibold uppercase">
+                          MM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          MM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          CM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          CM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ARKA
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ÖN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          YAN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          YAN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ADET
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ADET
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          TANE
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                      </tr>
+                    </thead>
 
-              <div className="mb-4">
-                <h2 className="text-sm font-semibold uppercase text-center">
-                  Ağırlık
-                </h2>
-                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2 font-semibold uppercase">
-                        Özellikler
-                      </th>
-                      <th className="border p-2 font-semibold uppercase">
-                        Değerler
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Boy Çubuğu Adet KG
-                      </td>
-                      <td className="border p-2">
-                        {manuelCalculated.unitOfHeigthWeight?.toFixed(3) ||
-                          "N/A"}
-                      </td>
-                    </tr>
+                    <tbody className="bg-white">
+                      <tr key="{key}">
+                        <td key="{index}" className="border p-2">
+                          {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
+                        </td>
+                        <td key="{index}" className="border p-2">
+                          {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
+                        </td>
 
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        En Çubuğu Adet KG
-                      </td>
-                      <td className="border p-2">
-                        {manuelCalculated.unitOfWidthWeight?.toFixed(3) ||
-                          "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Boy Çubukları Toplam KG
-                      </td>
-                      <td className="border p-2">
-                        {" "}
-                        {manuelCalculated.totalHeigthWeight?.toFixed(2) ||
-                          "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        En Çubukları Toplam KG
-                      </td>
-                      <td className="border p-2">
-                        {manuelCalculated.totalWidthWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Hasır Birim KG
-                      </td>
-                      <td className="border p-2">
-                        {" "}
-                        {manuelCalculated.unitMeshWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        {" "}
-                        Toplam Ağırlık
-                      </td>
-                      <td className="border p-2">
-                        {manuelCalculated.totalWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <td key="{index}" className="border p-2">
+                          {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
+                        </td>
+                        <td key="{index}" className="border p-2">
+                          {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelMesh.backFilament?.toFixed(2) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelCalculated.unitOfHeigthWeight?.toFixed(3) ||
+                            "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelCalculated.unitOfWidthWeight?.toFixed(3) ||
+                            "N/A"}
+                        </td>
+
+                        <td key="{index}" className="border p-2">
+                          {manuelCalculated.numberOfSticks[0] ?? "N/A"}
+                        </td>
+                        <td key="{index}" className="border p-2">
+                          {manuelCalculated.numberOfSticks[1] ?? "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelCalculated.totalHeigthWeight?.toFixed(2) ||
+                            "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelCalculated.totalWidthWeight?.toFixed(2) ||
+                            "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {" "}
+                          {manuelCalculated.unitMeshWeight?.toFixed(2) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {" "}
+                          {manuelMesh.piece || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {manuelCalculated.totalWeight?.toFixed(2) || "N/A"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
