@@ -9,7 +9,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import html2canvas from "html2canvas";
 import Header from "./components/Header";
-import { handleDeleteRow } from './utils/tableHelpers';
+import { handleDeleteRow } from "./utils/tableHelpers";
 
 const initialValues = {
   calculated: {
@@ -75,6 +75,7 @@ function App() {
   const [filamentError, setFilamentError] = useState("");
 
   const [error, setError] = useState("");
+  const [manuelError, setManuelError] = useState("");
   const [tabIndex, setTabIndex] = useState(0);
   const tabsRef = useRef(null);
 
@@ -156,6 +157,7 @@ function App() {
     console.log("mesh valid mi 2:", isMeshValid);
 
     if (!isMeshValid) {
+      console.log("mesh valid mi 3:", isMeshValid);
       setError("Tüm alanların doldurulması zorunludur.");
       return;
     }
@@ -312,11 +314,13 @@ function App() {
     }
   }, [mesh]);
 
+  let isManuelMeshValid = true;
+
   useEffect(() => {
-    setError("");
+    
     setManuelCalculated(initialValues.manuelCalculated);
 
-    const isManuelMeshValid =
+    isManuelMeshValid =
       manuelMesh.type &&
       manuelMesh.height &&
       manuelMesh.width &&
@@ -331,9 +335,11 @@ function App() {
       manuelMesh.piece;
 
     if (!isManuelMeshValid) {
-      setError("Tüm alanların doldurulması zorunludur.");
+      setManuelError("Tüm alanların doldurulması zorunludur.");
       return;
     }
+
+    setManuelError("");
 
     const result = { ...initialValues.manuelCalculated };
 
@@ -413,7 +419,6 @@ function App() {
   const deleteRow = (index) => {
     handleDeleteRow(setCombinedKesmeCalculations, index);
   };
-  
 
   // Function to check if all fields are filled
   const isButtonDisabled =
@@ -1181,9 +1186,9 @@ function App() {
               >
                 Kesmeye Gönder
               </button>
-              {error && (
+              {manuelError && (
                 <div className="bg-danger border border-alert-danger-fg-light text-white py-1 px-4 text-center text-sm font-semibold mt-2 rounded">
-                  {error}
+                  {manuelError}
                 </div>
               )}
               {showMessage && (

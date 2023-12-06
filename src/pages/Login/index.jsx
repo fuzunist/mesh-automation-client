@@ -2,7 +2,7 @@
 import FormikForm from "../../components/FormikForm";
 import { login } from "../../services/auth";
 import { setUser } from "../../store/actions/user";
-
+import Loader from "@/components/Loader";
 import { useState, useRef, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Helmet } from "react-helmet";
@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  let content;
   const [error, setError] = useState("");
   const [_, setCookies] = useCookies(["access_token", "refresh_token"]);
 
@@ -62,8 +61,8 @@ const Login = () => {
     navigate("/dashboard");
   };
 
-  content = (
-    <>
+  return (
+    <div className="w-full">
       <Helmet>
         <title>Mesh Giriş</title>
       </Helmet>
@@ -99,9 +98,8 @@ const Login = () => {
       </Link>
     </div>
   </div> */}
-    </>
+    </div>
   );
-  return content;
 };
 
 export default Login;

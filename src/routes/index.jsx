@@ -1,13 +1,14 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-
-
+import { createBrowserRouter } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import AuthLayout from "../layouts/AuthLayout";
 import App from "../App";
-import Login from "../pages/Login";
+const Login = lazy(() => import("../pages/Login"));
+
 import Root from "./Root";
 import NotFound from "@/pages/NotFound";
 import Logout from "@/pages/Logout";
 import ContentLayout from "@/layouts/ContentLayout";
+import Loader from "@/components/Loader";
 
 const routes = createBrowserRouter([
   {
@@ -20,7 +21,11 @@ const routes = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: <Login />,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Login />
+          </Suspense>
+        ),
       },
       {
         path: "logout",
@@ -32,20 +37,17 @@ const routes = createBrowserRouter([
   {
     path: "*",
     element: <ContentLayout />,
-    children:[
-    {
-      path: "dashboard",
-      element: <App />
-    },
-    {
-      path: "*",
-      element: <NotFound />,
-    }
-
-    ]
+    children: [
+      {
+        path: "dashboard",
+        element: <App />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
+    ],
   },
- 
-
 ]);
 
 export default routes;
