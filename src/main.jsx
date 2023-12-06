@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </Provider>
 );
 
-
 window.addEventListener("beforeunload", () => {
     console.log("beforeunload", location.pathname);
   

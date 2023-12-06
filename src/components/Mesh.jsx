@@ -2,6 +2,8 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import InfoTable from "./InfoTable";
+import DownloadButton from "./DownloadButton";
 
 const Mesh = ({
   calculated,
@@ -145,49 +147,6 @@ const Mesh = ({
 
   const lineMargin = 0;
 
-  const renderInfoTable = () => (
-    <div className="overflow-x-auto w-full mt-4 p-4 text-xs">
-      <table className="min-w-full border-collapse border border-gray-800 ">
-        <tbody>
-          <tr>
-            <td className="border p-3 text-center w-36 h-36">
-              <img src="/mongerylogo.png" alt="Logo" className="mx-auto" />
-            </td>
-            <td className="border p-3">
-              <table className="w-full h-full border-collapse">
-                <tbody>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">FIRMA:</td>
-                    <td className="p-1">{firm}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">HASIR TİPİ:</td>
-                    <td className="p-1">{type}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">ÇAP:</td>
-                    <td className="p-1">{diameter[0]}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
-                    <td className="p-1">{unitMeshWeight.toFixed(2)}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">KALİTE:</td>
-                    <td className="p-1">{quality}</td>
-                  </tr>
-                  <tr>
-                    <td className="p-1 font-bold">ÜRETİM ADETİ:</td>
-                    <td className="p-1">{piece}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
 
   return (
     <div className="flex flex-col items-center place-content-center ">
@@ -387,29 +346,10 @@ const Mesh = ({
 
         }}
       >
-        {renderInfoTable()}
+        {<InfoTable type={type} firm={firm} diameter={diameter} unitMeshWeight={unitMeshWeight} quality={quality} piece={piece} />}
       </div>
       </div>
-      <button
-        onClick={downloadAsPng}
-        style={{
-          marginTop: "10px",
-          padding: "12px 18px",
-          border: "none",
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "6px",
-          cursor: "pointer",
-          fontSize: "16px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-          transition: "background-color 0.3s",
-        }}
-        onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
-        onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
-      >
-        Download as PNG
-      </button>
+     <DownloadButton downloadAsPng={downloadAsPng} />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-
+import InfoTable from "./InfoTable";
+import DownloadButton from "./DownloadButton";
 const ManuelMesh = ({
   manuelCalculated,
   height,
@@ -90,7 +91,6 @@ const ManuelMesh = ({
             pattern.setTransform(ctx.getTransform()); // Align pattern with canvas
           }
 
-          
           ctx.globalAlpha = 0.05; // Set transparency for the watermark
           ctx.fillStyle = pattern;
           ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with the watermark pattern
@@ -188,258 +188,205 @@ const ManuelMesh = ({
 
   const lineMargin = 0;
 
-  const renderInfoTable = () => (
-    <div className="overflow-x-auto w-full mt-4 p-4 text-xs">
-      <table className="min-w-full border-collapse border border-gray-800 ">
-        <tbody>
-          <tr>
-            <td className="border p-3 text-center w-36 h-36">
-              <img src="/mongerylogo.png" alt="Logo" className="mx-auto" />
-            </td>
-            <td className="border p-3">
-              <table className="w-full h-full border-collapse">
-                <tbody>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">FIRMA:</td>
-                    <td className="p-1">{firm}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">HASIR TİPİ:</td>
-                    <td className="p-1">{type}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">ÇAP:</td>
-                    <td className="p-1">{diameter[0]}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
-                    <td className="p-1">{unitMeshWeight.toFixed(2)}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="p-1 font-bold">KALİTE:</td>
-                    <td className="p-1">{quality}</td>
-                  </tr>
-                  <tr>
-                    <td className="p-1 font-bold">ÜRETİM ADETİ:</td>
-                    <td className="p-1">{piece}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-
   return (
     <div className="flex flex-col items-center place-content-center">
       <div ref={divRef}>
-      <div
-        
-        className="flex flex-col items-center justify-center p-auto bg-white  "
-        style={{
-          width: `${containerSize.width}px`,
-          height: `${containerSize.height}px`,
-        }}
-      >
         <div
-          className="svg-container  overflow-hidden p-3 bg-light-gray"
+          className="flex flex-col items-center justify-center p-auto bg-white  "
           style={{
             width: `${containerSize.width}px`,
             height: `${containerSize.height}px`,
           }}
         >
-          <svg
-            ref={svgRef}
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
-            preserveAspectRatio="xMidYMid meet"
+          <div
+            className="svg-container  overflow-hidden p-3 bg-light-gray"
+            style={{
+              width: `${containerSize.width}px`,
+              height: `${containerSize.height}px`,
+            }}
           >
-            <g transform={`translate(${offsetX + margin},${offsetY + margin})`}>
-              {heightSticks.map((stick, index) => (
+            <svg
+              ref={svgRef}
+              width="100%"
+              height="100%"
+              viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <g
+                transform={`translate(${offsetX + margin},${offsetY + margin})`}
+              >
+                {heightSticks.map((stick, index) => (
+                  <line
+                    key={`h-${index}`}
+                    x1={0}
+                    y1={stick}
+                    x2={width}
+                    y2={stick}
+                    stroke={stroke}
+                    strokeWidth={1.5}
+                  />
+                ))}
+                {widthSticks.map((stick, index) => (
+                  <line
+                    key={`w-${index}`}
+                    x1={stick}
+                    y1={0}
+                    x2={stick}
+                    y2={height}
+                    stroke={stroke}
+                    strokeWidth={1.5}
+                  />
+                ))}
+                <g>
+                  {heightSticks.map(
+                    (stick, index) =>
+                      index > 0 && (
+                        <text
+                          key={`h-num-${index}`}
+                          x={-20}
+                          y={(stick + heightSticks[index - 1]) / 2}
+                          fill="black"
+                          textAnchor="end"
+                          fontSize="8"
+                        >
+                          {apertureSize[0]}
+                        </text>
+                      )
+                  )}
+                  <text
+                    x={-20}
+                    y={heightSticks[0] - 10}
+                    fill="black"
+                    textAnchor="end"
+                    fontSize="8"
+                  >
+                    {rightFilament}
+                  </text>
+                  <text
+                    x={-20}
+                    y={heightSticks[heightSticks.length - 1] + 10}
+                    fill="black"
+                    textAnchor="end"
+                    fontSize="8"
+                  >
+                    {leftFilament}
+                  </text>
+                </g>
+                <g>
+                  <text
+                    x={widthSticks[0] - 15}
+                    y={-15}
+                    fill="black"
+                    textAnchor="start"
+                    fontSize="8"
+                    alignmentBaseline="after-edge"
+                  >
+                    {backFilament}
+                  </text>
+
+                  {widthSticks.map(
+                    (stick, index) =>
+                      index > 0 && (
+                        <text
+                          key={`w-num-${index}`}
+                          x={(stick + widthSticks[index - 1]) / 2}
+                          y={-15}
+                          fill="black"
+                          textAnchor="middle"
+                          fontSize="8"
+                          alignmentBaseline="after-edge"
+                        >
+                          {apertureSize[1]}
+                        </text>
+                      )
+                  )}
+
+                  <text
+                    x={widthSticks[widthSticks.length - 1] + 15}
+                    y={-15}
+                    fill="black"
+                    textAnchor="end"
+                    fontSize="8"
+                    alignmentBaseline="after-edge"
+                  >
+                    {frontFilament}
+                  </text>
+                </g>
                 <line
-                  key={`h-${index}`}
-                  x1={0}
-                  y1={stick}
-                  x2={width}
-                  y2={stick}
-                  stroke={stroke}
+                  x1={lineMargin}
+                  y1={height - lineMargin + 20}
+                  x2={width - lineMargin}
+                  y2={height - lineMargin + 20}
+                  stroke="black"
                   strokeWidth={1.5}
                 />
-              ))}
-              {widthSticks.map((stick, index) => (
+
+                <text
+                  x={(width - lineMargin) / 2} // Center the text
+                  y={height - lineMargin + 40} // Adjust the y position for spacing
+                  fill="black"
+                  textAnchor="middle"
+                  fontSize="11"
+                >
+                  {width} cm
+                </text>
+
+                <text
+                  x={(width - lineMargin) / 2} // Center the text
+                  y={height - lineMargin + 70} // Adjust the y position to be near the bottom
+                  fill="black"
+                  textAnchor="middle"
+                  fontSize="8"
+                >
+                  ÇİZİM ÜZERİNDEKİ TÜM ÖLÇÜLER CM OLARAK VERİLMİŞTİR.
+                </text>
+
                 <line
-                  key={`w-${index}`}
-                  x1={stick}
-                  y1={0}
-                  x2={stick}
-                  y2={height}
-                  stroke={stroke}
+                  x1={width + lineMargin + 20}
+                  y1={lineMargin}
+                  x2={width + lineMargin + 20}
+                  y2={height - lineMargin}
+                  stroke="black"
                   strokeWidth={1.5}
                 />
-              ))}
-              <g>
-                {heightSticks.map(
-                  (stick, index) =>
-                    index > 0 && (
-                      <text
-                        key={`h-num-${index}`}
-                        x={-20}
-                        y={(stick + heightSticks[index - 1]) / 2}
-                        fill="black"
-                        textAnchor="end"
-                        fontSize="8"
-                      >
-                        {apertureSize[0]}
-                      </text>
-                    )
-                )}
+
+                {/* Text beside the line */}
                 <text
-                  x={-20}
-                  y={heightSticks[0] - 10}
+                  x={width + lineMargin + 30} // Adjust the x position for spacing
+                  y={(height - 14 - lineMargin) / 2} // Center the text vertically
                   fill="black"
-                  textAnchor="end"
-                  fontSize="8"
+                  textAnchor="middle"
+                  fontSize="11"
+                  transform={`rotate(-90, ${width + lineMargin + 40}, ${
+                    (height - 14 - lineMargin) / 2
+                  })`}
                 >
-                  {rightFilament}
-                </text>
-                <text
-                  x={-20}
-                  y={heightSticks[heightSticks.length - 1] + 10}
-                  fill="black"
-                  textAnchor="end"
-                  fontSize="8"
-                >
-                  {leftFilament}
+                  {height} cm
                 </text>
               </g>
-              <g>
-                <text
-                  x={widthSticks[0] - 15}
-                  y={-15}
-                  fill="black"
-                  textAnchor="start"
-                  fontSize="8"
-                  alignmentBaseline="after-edge"
-                >
-                  {backFilament}
-                </text>
-
-                {widthSticks.map(
-                  (stick, index) =>
-                    index > 0 && (
-                      <text
-                        key={`w-num-${index}`}
-                        x={(stick + widthSticks[index - 1]) / 2}
-                        y={-15}
-                        fill="black"
-                        textAnchor="middle"
-                        fontSize="8"
-                        alignmentBaseline="after-edge"
-                      >
-                        {apertureSize[1]}
-                      </text>
-                    )
-                )}
-
-                <text
-                  x={widthSticks[widthSticks.length - 1] + 15}
-                  y={-15}
-                  fill="black"
-                  textAnchor="end"
-                  fontSize="8"
-                  alignmentBaseline="after-edge"
-                >
-                  {frontFilament}
-                </text>
-              </g>
-              <line
-                x1={lineMargin}
-                y1={height - lineMargin + 20}
-                x2={width - lineMargin}
-                y2={height - lineMargin + 20}
-                stroke="black"
-                strokeWidth={1.5}
-              />
-
-              <text
-                x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 40} // Adjust the y position for spacing
-                fill="black"
-                textAnchor="middle"
-                fontSize="11"
-              >
-                {width} cm
-              </text>
-
-              <text
-                x={(width - lineMargin) / 2} // Center the text
-                y={height - lineMargin + 70} // Adjust the y position to be near the bottom
-                fill="black"
-                textAnchor="middle"
-                fontSize="8"
-              >
-                ÇİZİM ÜZERİNDEKİ TÜM ÖLÇÜLER CM OLARAK VERİLMİŞTİR.
-              </text>
-
-              <line
-                x1={width + lineMargin + 20}
-                y1={lineMargin}
-                x2={width + lineMargin + 20}
-                y2={height - lineMargin}
-                stroke="black"
-                strokeWidth={1.5}
-              />
-
-              {/* Text beside the line */}
-              <text
-                x={width + lineMargin + 30} // Adjust the x position for spacing
-                y={(height - 14 - lineMargin) / 2} // Center the text vertically
-                fill="black"
-                textAnchor="middle"
-                fontSize="11"
-                transform={`rotate(-90, ${width + lineMargin + 40}, ${
-                  (height - 14 - lineMargin) / 2
-                })`}
-              >
-                {height} cm
-              </text>
-            </g>
-          </svg>
+            </svg>
+          </div>
+        </div>
+        <div
+          style={{
+            width: `${containerSize.width}px`,
+            backgroundColor: "white",
+            marginTop: "-20px",
+          }}
+        >
+          {
+            <InfoTable
+              type={type}
+              firm={firm}
+              diameter={diameter}
+              unitMeshWeight={unitMeshWeight}
+              quality={quality}
+              piece={piece}
+            />
+          }
         </div>
       </div>
-      <div
-        style={{
-          width: `${containerSize.width}px`,
-          backgroundColor: "white",
-          marginTop: "-20px",
-        }}
-      >
-        {renderInfoTable()}
-      </div>
-      </div>
-      <button
-        onClick={downloadAsPng}
-        style={{
-          marginTop: "20px",
-          padding: "12px 18px",
-          border: "none",
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "6px",
-          cursor: "pointer",
-          fontSize: "16px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-          transition: "background-color 0.3s",
-        }}
-        onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
-        onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
-      >
-        Download as PNG
-      </button>
+      <DownloadButton downloadAsPng={downloadAsPng} />
     </div>
   );
 };
