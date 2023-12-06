@@ -2,7 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import AuthLayout from "../layouts/AuthLayout";
 import App from "../App";
+<<<<<<< HEAD
 const Login= lazy(()=> import("../pages/Login"))
+=======
+const Login = lazy(() => import("../pages/Login"));
+>>>>>>> origin/main
 
 import Root from "./Root";
 import NotFound from "@/pages/NotFound";
@@ -21,9 +25,17 @@ const routes = createBrowserRouter([
     children: [
       {
         path: "login",
+<<<<<<< HEAD
         element: <Suspense fallback={<Loader />}>
            <Login />
         </Suspense>,
+=======
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Login />
+          </Suspense>
+        ),
+>>>>>>> origin/main
       },
       {
         path: "logout",
@@ -35,20 +47,17 @@ const routes = createBrowserRouter([
   {
     path: "*",
     element: <ContentLayout />,
-    children:[
-    {
-      path: "dashboard",
-      element: <App />
-    },
-    {
-      path: "*",
-      element: <NotFound />,
-    }
-
-    ]
+    children: [
+      {
+        path: "dashboard",
+        element: <App />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
+    ],
   },
- 
-
 ]);
 
 export default routes;

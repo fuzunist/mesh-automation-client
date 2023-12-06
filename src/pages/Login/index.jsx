@@ -62,7 +62,10 @@ const Login = () => {
     navigate("/dashboard");
   };
 
+<<<<<<< HEAD
  
+=======
+>>>>>>> origin/main
   return (
     <div className="w-full">
       <Helmet>
