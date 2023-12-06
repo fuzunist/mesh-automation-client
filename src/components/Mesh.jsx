@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import InfoTable from "./InfoTable";
 import DownloadButton from "./DownloadButton";
-import { html2Canvas } from "@/utils/html2canvas";
+import { html2Canvas } from "@/utils/html2Canvas";
 import MeshSVG from "./MeshSVG";
 
 const Mesh = ({
