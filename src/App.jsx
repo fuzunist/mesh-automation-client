@@ -317,7 +317,6 @@ function App() {
   let isManuelMeshValid = true;
 
   useEffect(() => {
-    
     setManuelCalculated(initialValues.manuelCalculated);
 
     isManuelMeshValid =
@@ -504,14 +503,12 @@ function App() {
       </TabList>
 
       <TabPanel>
-        <div className="flex flex-row items-start mr-4">
-          <div className=" flex flex-col md:flex-column md:w-[25%] justify-start px-4 py-2 gap-10 mt-8">
-            <div className="flex flex-col gap-3 flex-1 h-full justify-between ">
-              <div className="flex items-center ">
-                <span className="flex-1 text-sm font-semibold">
-                  Hasır Tipi:
-                </span>
-                <div className="flex-1">
+        <div className="flex flex-col items-center justify-center mr-4">
+          <div className=" flex flex-col items-center justify-center px-4 py-2 gap-10 mt-4 w-full">
+            <div className="flex flex-row gap-3 w-full justify-between ">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Hasır Tipi:</span>
+                <div className="flex-1 flex w-full md:w-[150px]">
                   <Select
                     value={mesh.type}
                     onChange={(value) => handleTypeChange(value)}
@@ -519,11 +516,9 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Hasır Kodu:
-                </span>
-                <div className="flex-1">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Hasır Kodu:</span>
+                <div className="flex-1 w-full md:w-[120px]">
                   <Select
                     value={mesh.code}
                     onChange={(value) =>
@@ -538,9 +533,9 @@ function App() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">Hasır Adı:</span>
-                <div className="flex-1">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Hasır Adı:</span>
+                <div className="flex-1 w-full md:w-[120px]">
                   <Select
                     value={mesh.name}
                     onChange={(value) => {
@@ -555,11 +550,9 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Hasır Boyu:
-                </span>
-                <div className="flex-1">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Hasır Boyu:</span>
+                <div className="flex-1 w-full md:w-[120px]">
                   {mesh.type === "Perde Hasırı" ? (
                     <Select
                       value={mesh.height}
@@ -627,9 +620,9 @@ function App() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">Hasır Eni:</span>
-                <div className="flex-1">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Hasır Eni:</span>
+                <div className="flex-1 w-full md:w-[120px]">
                   <Input
                     value={mesh.width}
                     onChange={(value) => {
@@ -641,11 +634,9 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Boy Çubuğu +/-:
-                </span>
-                <div className="flex-1 flex">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Boy Çubuğu +/-:</span>
+                <div className="flex-1 flex w-full md:w-[120px]">
                   <Input
                     value={mesh.numberOfHeightBars}
                     onChange={(value) => {
@@ -664,11 +655,9 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  En Çubuğu +/-:
-                </span>
-                <div className="flex-1 flex">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">En Çubuğu +/-:</span>
+                <div className="flex-1 flex w-full md:w-[120px]">
                   <Input
                     value={mesh.numberOfWidthBars}
                     onChange={(value) => {
@@ -687,11 +676,9 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="flex-1 text-sm font-semibold">
-                  Sipariş Adedi:
-                </span>
-                <div className="flex-1 flex">
+              <div className="w-full flex-col md:w-auto flex justify-between items-center">
+                <span className="text-sm font-semibold">Sipariş Adedi:</span>
+                <div className="flex-1 flex w-full md:w-[120px]">
                   <Input
                     value={mesh.piece}
                     onChange={(value) => {
@@ -702,221 +689,308 @@ function App() {
                   />
                 </div>
               </div>
-              <button
-                className={`text-white text-sm font-bold py-1 px-4 rounded mt-2 ${
-                  isButtonDisabled
-                    ? "bg-gray-500"
-                    : "bg-blue-500 hover:bg-blue-700"
-                }`}
-                disabled={isButtonDisabled}
-                onClick={openKesmeTab}
-              >
-                Kesmeye Gönder
-              </button>
-              {error && (
-                <div className="bg-danger border border-alert-danger-fg-light text-white py-1 px-4 text-center text-sm font-semibold mt-2 rounded">
-                  {error}
-                </div>
-              )}
-              {showMessage && (
-                <div className="my-2 text-sm text-green-500 rounded ">
-                  Kesme'ye başarıyla eklendi.
-                </div>
-              )}
+              <div className="flex flex-col justify-center">
+                <button
+                  className={`text-white text-sm font-bold py-1 px-4 rounded mt-2 ${
+                    isButtonDisabled
+                      ? "bg-gray-500"
+                      : "bg-blue-500 hover:bg-blue-700"
+                  }`}
+                  disabled={isButtonDisabled}
+                  onClick={openKesmeTab}
+                >
+                  Kesmeye Gönder
+                </button>
 
-              {filamentError && (
-                <div className="my-2 text-sm text-red-600">{filamentError}</div>
-              )}
+                
+              </div>
             </div>
-            <div className="flex flex-col max-w-full -mt-5 ">
-              <div className="flex flex-col justify-between gap-x-4">
+            {(error ||
+              showMessage) && (
+                <div>
+                  {error && (
+                    <div className="my-2 text-md text-red-500 rounded ">
+                      {error}
+                    </div>
+                  )}
+                  {showMessage && (
+                    <div className="my-2 text-md text-green-500 rounded ">
+                      Kesme'ye başarıyla eklendi.
+                    </div>
+                  )}
+                </div>
+              )}
+            <div className="flex flex-row w-full -mt-5 ">
+              <div className="flex flex-row w-full justify-between gap-x-4">
                 <div className="mb-4 w-full">
-                  <h2 className="text-sm font-semibold uppercase text-center">
-                    Çubuk
-                  </h2>
                   <table className="w-full border-collapse border text-xs border-gray-800 text-center">
                     <thead>
-                      <tr className="bg-gray-100">
+                      <tr className="bg-slate-50 ">
+                        <th
+                          colSpan="10"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK
+                        </th>
+                        <th
+                          colSpan="5"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          HASIR
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          SİPARİŞ
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-100">
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇAPI
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ARALIĞI
+                        </th>
+                        <th
+                          colSpan="4"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZLERİ
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          BİRİM AĞIRLIĞI
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK AD.
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ÇUBUK AĞ.
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          TOPLAM
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          TOPLAM
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-50">
                         <th className="border p-2 font-semibold uppercase">
-                          Özellikler
+                          BOY
                         </th>
                         <th className="border p-2 font-semibold uppercase">
-                          Boy Çubuğu
+                          EN
                         </th>
                         <th className="border p-2 font-semibold uppercase">
-                          En Çubuğu
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZ
+                        </th>
+                        <th
+                          colSpan="2"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          FİLİZ
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          BOY
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          EN
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          AĞIRLIK
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          ADET
+                        </th>
+                        <th
+                          colSpan="1"
+                          className="border p-2 font-semibold uppercase"
+                        >
+                          AĞIRLIK
+                        </th>
+                      </tr>
+                      <tr className="bg-slate-100">
+                        <th className="border p-2 font-semibold uppercase">
+                          MM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          MM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          CM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          CM
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ARKA
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ÖN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          YAN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          YAN
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ADET
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          ADET
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          TANE
+                        </th>
+                        <th className="border p-2 font-semibold uppercase">
+                          KG
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          ÇAP
-                        </td>
 
+                    <tbody className="bg-white">
+                      <tr key="{key}">
                         <td key="{index}" className="border p-2">
                           {calculated.diameter[0]?.toFixed(2) || "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
                           {calculated.diameter[1]?.toFixed(2) || "N/A"}
                         </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          GÖZ ARALIĞI
-                        </td>
+
                         <td key="{index}" className="border p-2">
                           {calculated.apertureSize[0]?.toFixed(2) || "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
                           {calculated.apertureSize[1]?.toFixed(2) || "N/A"}
                         </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          ÇUBUK SAYISI
+
+                        <td className="border p-2">
+                          {calculated.backFilament?.toFixed(2) || "N/A"}
                         </td>
+
+                        <td className="border p-2">
+                          {calculated.frontFilament?.toFixed(2) || "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {calculated.leftFilament?.toFixed(2) || "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {calculated.rightFilament?.toFixed(2) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {calculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
+                        </td>
+
+                        <td className="border p-2">
+                          {calculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
+                        </td>
+
                         <td key="{index}" className="border p-2">
                           {calculated.numberOfSticks[0] ?? "N/A"}
                         </td>
                         <td key="{index}" className="border p-2">
                           {calculated.numberOfSticks[1] ?? "N/A"}
                         </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
 
-                <div className="mb-4 w-full">
-                  <h2 className="text-sm font-semibold uppercase text-center">
-                    Filizler
-                  </h2>
-                  <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border p-2 font-semibold uppercase">
-                          Özellikler
-                        </th>
-                        <th className="border p-2 font-semibold uppercase">
-                          Değerler
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          Ön Filiz Boyu
-                        </td>
                         <td className="border p-2">
-                          {calculated.frontFilament?.toFixed(2) || "N/A"}
+                          {calculated.totalHeigthWeight?.toFixed(2) || "N/A"}
                         </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          Arka Filiz Boyu
-                        </td>
+
                         <td className="border p-2">
-                          {calculated.backFilament?.toFixed(2) || "N/A"}
+                          {calculated.totalWidthWeight?.toFixed(2) || "N/A"}
                         </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
+
+                        <td className="border p-2">
                           {" "}
-                          Sağ Filiz Boyu
+                          {calculated.unitMeshWeight?.toFixed(2) || "N/A"}
                         </td>
+
+                        <td className="border p-2"> {mesh.piece || "N/A"}</td>
+
                         <td className="border p-2">
-                          {calculated.rightFilament?.toFixed(2) || "N/A"}
-                        </td>
-                      </tr>
-                      <tr key="{key}">
-                        <td className="border p-2 font-semibold uppercase">
-                          {" "}
-                          Sol Filiz Boyu
-                        </td>
-                        <td className="border p-2">
-                          {calculated.leftFilament?.toFixed(2) || "N/A"}
+                          {calculated.totalWeight?.toFixed(2) || "N/A"}
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-              </div>
-
-              <div className="mb-4">
-                <h2 className="text-sm font-semibold uppercase text-center">
-                  Ağırlık
-                </h2>
-                <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2 font-semibold uppercase">
-                        Özellikler
-                      </th>
-                      <th className="border p-2 font-semibold uppercase">
-                        Değerler
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Boy Birim KG
-                      </td>
-                      <td className="border p-2">
-                        {calculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
-                      </td>
-                    </tr>
-
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        En Birim KG
-                      </td>
-                      <td className="border p-2">
-                        {calculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Boy Toplam KG
-                      </td>
-                      <td className="border p-2">
-                        {" "}
-                        {calculated.totalHeigthWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        En Toplam KG
-                      </td>
-                      <td className="border p-2">
-                        {calculated.totalWidthWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        Hasır Birim KG
-                      </td>
-                      <td className="border p-2">
-                        {" "}
-                        {calculated.unitMeshWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                    <tr key="{key}">
-                      <td className="border p-2 font-semibold uppercase">
-                        {" "}
-                        Toplam Ağırlık
-                      </td>
-                      <td className="border p-2">
-                        {calculated.totalWeight?.toFixed(2) || "N/A"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
             </div>
           </div>
+          {filamentError && (
+                  <div className="my-2 text-sm text-red-600">
+                    {filamentError}
+                  </div>
+                )}
+
           {!!calculated.totalWeight && (
             <div className="flex justify-center items-center max-w-[75%] mx-auto ">
+              
               <div className="flex w-full  overflow-y-scroll mt-8 mb-16">
                 <Mesh
                   calculated={calculated}
