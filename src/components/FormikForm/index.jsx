@@ -45,7 +45,7 @@ const FormikForm = ({ title, initialValues, validate, onSubmit, error, children,
                             const elementValue = values[key] ?? value.value
                             return (
                                 <Element
-                                    key={index}
+                                    key={index+500}
                                     type={value?.type}
                                     placeholder={value?.placeholder}
                                     name={key}

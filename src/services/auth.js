@@ -18,7 +18,6 @@ export const verify = async (access_token) => {
 
 export const login = async (Username, Password) => {
   try {
-    console.log(import.meta.env.VITE_API_ENDPOINT);
     const { data } = await axios.post(
       `${import.meta.env.VITE_API_ENDPOINT}/user/login`,
       { Username, Password }

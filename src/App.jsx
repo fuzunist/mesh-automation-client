@@ -85,10 +85,6 @@ function App() {
     },
   });
 
-  console.log(isError);
-  console.log(isLoading);
-  console.log(kesmeList);
-
   const [deleteKesme, { isLoading: kesmeIsLoading, isError: kesmeIsError }] =
     useDeleteKesmeMutation({
       onError: (error) => {
@@ -218,13 +214,13 @@ function App() {
 
   useEffect(() => {
     setCalculated(initialValues.calculated);
-    console.log("mesh.type:", mesh.type);
-    console.log("mesh.code:", mesh.code);
-    console.log("mesh.name:", mesh.name);
-    console.log("mesh.height:", mesh.height);
-    console.log("mesh.width:", mesh.width);
-    console.log("mesh.piece:", mesh.piece);
-    console.log("mesh valid mi:", isMeshValid);
+    // console.log("mesh.type:", mesh.type);
+    // console.log("mesh.code:", mesh.code);
+    // console.log("mesh.name:", mesh.name);
+    // console.log("mesh.height:", mesh.height);
+    // console.log("mesh.width:", mesh.width);
+    // console.log("mesh.piece:", mesh.piece);
+    // console.log("mesh valid mi:", isMeshValid);
 
     isMeshValid =
       mesh.type &&
@@ -234,10 +230,7 @@ function App() {
       mesh.width &&
       mesh.piece;
 
-    console.log("mesh valid mi 2:", isMeshValid);
-
     if (!isMeshValid) {
-      console.log("mesh valid mi 3:", isMeshValid);
       setError("Tüm alanların doldurulması zorunludur.");
       return;
     }
@@ -577,30 +570,31 @@ function App() {
           total_width_weight: mesh.piece * calculated.totalWidthWeight,
         },
       };
+
       addKesme(kesmeData);
-      setCombinedKesmeCalculations((prevCalculations) => [
-        ...prevCalculations,
-        {
-          source: "Otomatik Hesapla",
-          diameter: calculated.diameter,
-          numberOfSticks: calculated.numberOfSticks,
-          totalHeigthWeight: calculated.totalHeigthWeight,
-          totalWidthWeight: calculated.totalWidthWeight,
-          height: mesh.height,
-          width: mesh.width,
-          piece: mesh.piece,
-        },
-      ]);
+      // setCombinedKesmeCalculations((prevCalculations) => [
+      //   ...prevCalculations,
+      //   {
+      //     source: "Otomatik Hesapla",
+      //     diameter: calculated.diameter,
+      //     numberOfSticks: calculated.numberOfSticks,
+      //     totalHeigthWeight: calculated.totalHeigthWeight,
+      //     totalWidthWeight: calculated.totalWidthWeight,
+      //     height: mesh.height,
+      //     width: mesh.width,
+      //     piece: mesh.piece,
+      //   },
+      // ]);
       setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 1500);
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1500);
     }
   };
 
   const handleTypeChange = (value) => {
-    console.log("Selected mesh type:", value);
     setMesh((prevMesh) => {
       if (value === "P") {
-        console.log("Type set to P, locking code to Q");
         return { ...prevMesh, type: value, code: "Q" };
       } else {
         return { ...prevMesh, type: value };
@@ -620,20 +614,36 @@ function App() {
 
   const openKesmeTabFromManual = () => {
     if (!isButtonDisabled) {
-      setCombinedKesmeCalculations((prevCalculations) => [
-        ...prevCalculations,
-        {
-          source: "Manuel Hesapla",
-          diameter: manuelMesh.diameter,
-          numberOfSticks: manuelCalculated.numberOfSticks,
-          totalHeigthWeight: manuelCalculated.totalHeigthWeight,
-          totalWidthWeight: manuelCalculated.totalWidthWeight,
+      const kesmeData = {
+        height_stick: {
+          diameter: manuelMesh.diameter[0],
           height: manuelMesh.height,
-          width: manuelMesh.width,
-          piece: manuelMesh.piece,
+          number_of_sticks: manuelMesh.piece * manuelCalculated.numberOfSticks[0],
+          total_height_weight: manuelMesh.piece * manuelCalculated.totalHeigthWeight,
         },
-      ]);
-      setTabIndex(1);
+        width_stick: {
+          diameter: manuelMesh.diameter[1],
+          height: manuelMesh.width,
+          number_of_sticks: manuelMesh.piece * manuelCalculated.numberOfSticks[1],
+          total_width_weight: manuelMesh.piece * manuelCalculated.totalWidthWeight,
+        },
+      };
+
+      addKesme(kesmeData);
+      // setCombinedKesmeCalculations((prevCalculations) => [
+      //   ...prevCalculations,
+      //   {
+      //     source: "Manuel Hesapla",
+      //     diameter: manuelMesh.diameter,
+      //     numberOfSticks: manuelCalculated.numberOfSticks,
+      //     totalHeigthWeight: manuelCalculated.totalHeigthWeight,
+      //     totalWidthWeight: manuelCalculated.totalWidthWeight,
+      //     height: manuelMesh.height,
+      //     width: manuelMesh.width,
+      //     piece: manuelMesh.piece,
+      //   },
+      // ]);
+      // setTabIndex(1);
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 2000);
     }
@@ -672,10 +682,6 @@ function App() {
                     options={["", ...Object.keys(meshFeatures)]}
                     disabled={mesh.type === "Perde Hasırı"}
                   />
-                  {console.log(
-                    "Is code select disabled?",
-                    mesh.type === "Perde Hasırı"
-                  )}
                 </div>
               </div>
               <div className="w-full flex-col md:w-auto flex justify-between items-center">
@@ -748,15 +754,10 @@ function App() {
                     <Input
                       value={mesh.height}
                       onChange={(value) => {
-                        console.log("Hasır Boyu before update:", mesh.height);
                         setMesh((mesh) => ({
                           ...mesh,
                           height: parseInt(value),
                         }));
-                        console.log(
-                          "Hasır Boyu after update:",
-                          parseInt(value)
-                        );
                       }}
                       type="number"
                       max={1000}
@@ -785,15 +786,10 @@ function App() {
                   <Input
                     value={mesh.numberOfHeightBars}
                     onChange={(value) => {
-                      console.log(
-                        "Boy Çubuğu current value:",
-                        mesh.numberOfHeightBars
-                      );
                       setMesh((mesh) => ({
                         ...mesh,
                         numberOfHeightBars: value,
                       }));
-                      console.log("Boy Çubuğu updated value:", value);
                     }}
                     type="number"
                     disabled={mesh.type === "Perde Hasırı"}
@@ -806,15 +802,10 @@ function App() {
                   <Input
                     value={mesh.numberOfWidthBars}
                     onChange={(value) => {
-                      console.log(
-                        "En Çubuğu current value:",
-                        mesh.numberOfWidthBars
-                      );
                       setMesh((mesh) => ({
                         ...mesh,
                         numberOfWidthBars: value,
                       }));
-                      console.log("En Çubuğu updated value:", value);
                     }}
                     type="number"
                     disabled={mesh.type === "Perde Hasırı"}
@@ -1055,18 +1046,18 @@ function App() {
                     </thead>
 
                     <tbody className="bg-white">
-                      <tr key="{key}">
-                        <td key="{index}" className="border p-2">
+                      <tr>
+                        <td className="border p-2">
                           {calculated.diameter[0]?.toFixed(2) || "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {calculated.diameter[1]?.toFixed(2) || "N/A"}
                         </td>
 
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {calculated.apertureSize[0]?.toFixed(2) || "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {calculated.apertureSize[1]?.toFixed(2) || "N/A"}
                         </td>
 
@@ -1092,10 +1083,10 @@ function App() {
                           {calculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
                         </td>
 
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {calculated.numberOfSticks[0] ?? "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {calculated.numberOfSticks[1] ?? "N/A"}
                         </td>
 
@@ -1635,18 +1626,18 @@ function App() {
                     </thead>
 
                     <tbody className="bg-white">
-                      <tr key="{key}">
-                        <td key="{index}" className="border p-2">
+                      <tr>
+                        <td className="border p-2">
                           {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
                         </td>
 
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
                         </td>
 
@@ -1674,10 +1665,10 @@ function App() {
                             "N/A"}
                         </td>
 
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {manuelCalculated.numberOfSticks[0] ?? "N/A"}
                         </td>
-                        <td key="{index}" className="border p-2">
+                        <td className="border p-2">
                           {manuelCalculated.numberOfSticks[1] ?? "N/A"}
                         </td>
 
@@ -1814,7 +1805,7 @@ function App() {
                 <tbody className="bg-white">
                   {kesmeList.map(
                     ({ kesme_details: kesme, id: kesme_id }, index) => (
-                      <tr key={index} className="text-center">
+                      <tr key={index + 1000} className="text-center">
                         <td className="border p-2">
                           {parseFloat(kesme.height_stick.diameter).toFixed(2) ||
                             "N/A"}

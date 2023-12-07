@@ -8,7 +8,7 @@ const Select = ({ value, options, onChange, disabled }) => { // Add 'disabled' t
         >
             {options.map((option, index) => (
                 <option
-                    key={index}
+                    key={index+100}
                     value={option}
                 >
                     {option}

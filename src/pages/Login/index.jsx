@@ -13,7 +13,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const [_, setCookies] = useCookies(["access_token", "refresh_token"]);
 
-
   const initialValues = {
     username: {
       tag: "input",
@@ -42,14 +41,6 @@ const Login = () => {
     const response = await login(values.username, values.password);
     if (response?.error) return setError(response.error);
 
-    const cookieOptions = {
-      path: "/",
-      secure: true,
-      httpOnly: true,
-      sameSite: "none",
-    };
-    console.log(response.tokens.access_token, "lifx acess token xd");
-    console.log(response, "responseee ");
     setCookies("access_token", response.tokens.access_token, {
       path: "/",
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),

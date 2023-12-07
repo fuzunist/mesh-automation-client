@@ -1,15 +1,29 @@
 import React from "react";
 import { LogOutIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/store/hooks/user";
+import Logo from "@/assets/img/logo-mg.png";
 
 const Header = () => {
-    const navigate=useNavigate()
+  const navigate = useNavigate();
+  const user = useUser();
+
   return (
-    <header className="w-full text-gray-600 p-2  flex justify-end items-center">
-      {/* <h1 className="text-md">Application Header</h1> */}
-      <div className="flex gap-2 cursor-pointer mr-2" onClick={()=>navigate("/auth/logout")}>
+    <header className="flex w-full h-[48px] bg-white text-gray-400 justify-between items-center">
+      <div className="flex p-0 m-0" onClick={() => navigate("/")}>
+        <img className="flex w-full max-h-[90px]" src={Logo} alt="" />
+      </div>
+      <div className="text-gray-800 mx-auto font-bold ml-auto">
+        Mesh Hasır Hesaplama
+      </div>
+
+      <div
+        className="flex text-sm gap-1 cursor-pointer mr-4 items-center text-gray-500"
+        onClick={() => navigate("/auth/logout")}
+      >
+        <div className="text-sm mr-4">Hoşgeldin, {user.username}!</div>
         Çıkış
-        <LogOutIcon />
+        <LogOutIcon className="w-4 h-4" />
       </div>
     </header>
   );
