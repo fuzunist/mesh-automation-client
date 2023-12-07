@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <header className="flex w-full h-[48px] bg-white text-gray-400 justify-between items-center">
       <div className="flex p-0 m-0" onClick={() => navigate("/")}>
-        <img className="flex w-full max-h-[48px]" src={Logo} alt="" />
+        <img className="flex max-w-[96px] max-h-[48px]" src={Logo} alt="" />
       </div>
       <div className="text-gray-800 mx-auto font-bold ml-auto">
         Mesh Hasır Hesaplama
