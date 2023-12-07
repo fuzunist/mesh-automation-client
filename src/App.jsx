@@ -140,27 +140,12 @@ function App() {
 
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' for descending, 'asc' for ascending
 
-  const [kesmeCalculations, setKesmeCalculations] = useState([]);
-  const [kesmeCalculationsFromManuel, setKesmeCalculationsFromManuel] =
-    useState([]);
+
 
   const [combinedKesmeCalculations, setCombinedKesmeCalculations] = useState(
     []
   );
 
-  const [manualInputs, setManualInputs] = useState({
-    boyCubukCap: "",
-    enCubukCap: "",
-    boyGozAraligi: "",
-    enGozAraligi: "",
-    onFilizBoyu: "",
-    arkaFilizBoyu: "",
-    sagFilizBoyu: "",
-    solFilizBoyu: "",
-    hasirBoyu: "",
-    hasirEni: "",
-    siparisAdedi: "",
-  });
 
   const toggleSort = (sortKey) => {
     setSortOrder((prevOrder) => {
@@ -608,9 +593,7 @@ function App() {
     { label: "Perde Hasırı", value: "Perde Hasırı" },
   ];
 
-  const resetKesmeTab = () => {
-    setCombinedKesmeCalculations([]);
-  };
+
 
   const openKesmeTabFromManual = () => {
     if (!isButtonDisabled) {
