@@ -10,6 +10,12 @@ import "react-tabs/style/react-tabs.css";
 import html2canvas from "html2canvas";
 import Header from "./components/Header";
 import { handleDeleteRow } from "./utils/tableHelpers";
+import {
+  useGetAllKesmeQuery,
+  useDeleteKesmeMutation,
+  useDeleteAllKesmeMutation,
+  useAddKesmeMutation,
+} from "./store/reducers/kesme";
 
 const initialValues = {
   calculated: {
@@ -45,7 +51,7 @@ const initialValues = {
     totalWidthWeight: 0,
     unitMeshWeight: 0,
     totalWeight: 0,
-    
+
     apertureSize: [0, 0],
     frontFilament: 0,
     backFilament: 0,
@@ -69,12 +75,59 @@ const initialValues = {
 };
 
 function App() {
+  const {
+    data: kesmeList,
+    isLoading,
+    isError,
+  } = useGetAllKesmeQuery("Kesme", {
+    onError: (error) => {
+      console.error("An error occurred in myData query:", error);
+    },
+  });
+
+  console.log(isError);
+  console.log(isLoading);
+  console.log(kesmeList);
+
+  const [deleteKesme, { isLoading: kesmeIsLoading, isError: kesmeIsError }] =
+    useDeleteKesmeMutation({
+      onError: (error) => {
+        console.error("An error occurred in myData query:", error);
+      },
+    });
+
+  const handleDeleteKesme = (kesme_id) => {
+    deleteKesme(kesme_id);
+  };
+
+  const [
+    deleteAllKesme,
+    { isLoading: allKesmeIsLoading, isError: allKesmeIsError },
+  ] = useDeleteAllKesmeMutation({
+    onError: (error) => {
+      console.error("An error occurred in myData query:", error);
+    },
+  });
+
+  const handleDeleteAllKesme = () => {
+    deleteAllKesme();
+  };
+
+  const [addKesme, { isLoading: addKesmeIsLoading, isError: addKesmeIsError }] =
+    useAddKesmeMutation({
+      onError: (error) => {
+        console.error("An error occurred in myData query:", error);
+      },
+    });
+
   const [calculated, setCalculated] = useState(initialValues.calculated);
   const [manuelCalculated, setManuelCalculated] = useState(
     initialValues.manuelCalculated
   );
   const [mesh, setMesh] = useState(initialValues.mesh);
   const [manuelMesh, setManuelMesh] = useState(initialValues.manuelMesh);
+
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const [showMessage, setShowMessage] = useState(false);
 
@@ -133,15 +186,32 @@ function App() {
   };
 
   const printTable = () => {
-    const table = document.getElementById("kesmeTable"); // Make sure to give your table an ID
-    html2canvas(table).then((canvas) => {
-      // Create a new window and document to display the image
-      const newWindow = window.open("", "_blank");
-      newWindow.document.body.appendChild(canvas);
-      newWindow.document.title = "Print Table";
-      newWindow.print();
-      newWindow.close();
-    });
+    setIsPrinting(true); // Set printing mode to true
+
+    setTimeout(() => {
+      const table = document.getElementById("kesmeTable");
+      html2canvas(table).then((canvas) => {
+        const newWindow = window.open("", "_blank");
+
+        // Add a style tag with print media query for landscape orientation
+        const style = newWindow.document.createElement("style");
+        style.textContent = `
+          @media print {
+            @page {
+              size: landscape;
+            }
+          }
+        `;
+        newWindow.document.head.appendChild(style);
+
+        newWindow.document.body.appendChild(canvas);
+        newWindow.document.title = "KESME BİLGİLERİ TABLOSU";
+        newWindow.print();
+        newWindow.close();
+
+        setIsPrinting(false); // Set printing mode back to false
+      });
+    }, 100);
   };
 
   let isMeshValid = true;
@@ -398,10 +468,12 @@ function App() {
           (result.numberOfSticks[1] - 1) * manuelMesh.apertureSize[1]) /
         2;
       result.leftFilament =
-        (manuelMesh.width - (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
+        (manuelMesh.width -
+          (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
         2;
       result.rightFilament =
-        (manuelMesh.width - (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
+        (manuelMesh.width -
+          (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
         2;
       result.frontFilament =
         (manuelMesh.height -
@@ -409,9 +481,9 @@ function App() {
         2;
     } else if (lastModifiedGroup === "B") {
       manuelMesh.apertureSize[0] =
-        meshFeatures['Q']['106/106'].apertureSize.height / 10;
+        meshFeatures["Q"]["106/106"].apertureSize.height / 10;
       manuelMesh.apertureSize[1] =
-        meshFeatures['Q']['106/106'].apertureSize.width / 10;
+        meshFeatures["Q"]["106/106"].apertureSize.width / 10;
     }
 
     let localFilamentError = [];
@@ -491,6 +563,21 @@ function App() {
   // Function to open "KESME" tab
   const openKesmeTab = () => {
     if (!isButtonDisabled) {
+      const kesmeData = {
+        height_stick: {
+          diameter: calculated.diameter[0],
+          height: mesh.height,
+          number_of_sticks: mesh.piece * calculated.numberOfSticks[0],
+          total_height_weight: mesh.piece * calculated.totalHeigthWeight,
+        },
+        width_stick: {
+          diameter: calculated.diameter[1],
+          height: mesh.width,
+          number_of_sticks: mesh.piece * calculated.numberOfSticks[1],
+          total_width_weight: mesh.piece * calculated.totalWidthWeight,
+        },
+      };
+      addKesme(kesmeData);
       setCombinedKesmeCalculations((prevCalculations) => [
         ...prevCalculations,
         {
@@ -504,9 +591,8 @@ function App() {
           piece: mesh.piece,
         },
       ]);
-      setTabIndex(0);
       setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 2000);
+      setTimeout(() => setShowMessage(false), 1500);
     }
   };
 
@@ -1653,120 +1739,134 @@ function App() {
             <h2>KESME BİLGİLERİ</h2>
             <hr className="border-border-light dark:border-border-dark border-b-2" />
           </div>
-
-          <div className="overflow-x-auto w-full">
-            <table id="kesmeTable" className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900"
-                    colSpan={4}
-                  >
-                    BOY ÇUBUĞU
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900"
-                    colSpan={4}
-                  >
-                    EN ÇUBUĞU
-                  </th>
-                </tr>
-                <tr>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("diameter0")}
-                  >
-                    ÇAP
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("height")}
-                  >
-                    UZUNLUK
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("numberOfSticks0")}
-                  >
-                    ADET
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("totalHeigthWeight")}
-                  >
-                    AĞIRLIK
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("diameter1")}
-                  >
-                    ÇAP
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("width")}
-                  >
-                    UZUNLUK
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center text-sm font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("numberOfSticks1")}
-                  >
-                    ADET
-                  </th>
-                  <th
-                    className="px-6 py-4 text-center font-semibold text-gray-900 cursor-pointer"
-                    onClick={() => toggleSort("totalWidthWeight")}
-                  >
-                    AĞIRLIK
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {combinedKesmeCalculations.map((calculation, index) => (
-                  <tr key={index} className="text-center">
-                    <td className="px-6 py-4">
-                      {calculation.diameter[0]?.toFixed(2) || "N/A"}
-                    </td>
-                    <td className="px-6 py-4">{calculation.height}</td>
-                    <td className="px-6 py-4">
-                      {calculation.numberOfSticks[0] * calculation.piece}
-                    </td>
-                    <td className="px-6 py-4">
-                      {(
-                        calculation.totalHeigthWeight * calculation.piece
-                      ).toFixed(2) || "N/A"}
-                    </td>
-                    <td className="px-6 py-4">
-                      {calculation.diameter[1]?.toFixed(2) || "N/A"}
-                    </td>
-                    <td className="px-6 py-4">{calculation.width}</td>
-                    <td className="px-6 py-4">
-                      {calculation.numberOfSticks[1] * calculation.piece}
-                    </td>
-                    <td className="px-6 py-4">
-                      {(
-                        calculation.totalWidthWeight * calculation.piece
-                      ).toFixed(2) || "N/A"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        className="bg-red-500 text-white font-bold py-1 px-3 rounded"
-                        onClick={() => deleteRow(index)}
-                      >
-                        X
-                      </button>
-                    </td>
+          {!isLoading && !isError && (
+            <div className="overflow-x-auto w-full">
+              <table
+                id="kesmeTable"
+                className="w-full border-collapse border text-xs border-gray-800 text-center"
+              >
+                <thead>
+                  <tr className="bg-slate-50">
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      colSpan={4}
+                    >
+                      BOY ÇUBUĞU
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      colSpan={4}
+                    >
+                      EN ÇUBUĞU
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  <tr>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("diameter0")}
+                    >
+                      ÇAP
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("height")}
+                    >
+                      UZUNLUK
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("numberOfSticks0")}
+                    >
+                      ADET
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("totalHeigthWeight")}
+                    >
+                      AĞIRLIK
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("diameter1")}
+                    >
+                      ÇAP
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("width")}
+                    >
+                      UZUNLUK
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("numberOfSticks1")}
+                    >
+                      ADET
+                    </th>
+                    <th
+                      className="border p-2 font-semibold uppercase"
+                      onClick={() => toggleSort("totalWidthWeight")}
+                    >
+                      AĞIRLIK
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {kesmeList.map(
+                    ({ kesme_details: kesme, id: kesme_id }, index) => (
+                      <tr key={index} className="text-center">
+                        <td className="border p-2">
+                          {parseFloat(kesme.height_stick.diameter).toFixed(2) ||
+                            "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(kesme.height_stick.height)}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(kesme.height_stick.number_of_sticks)}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(
+                            kesme.height_stick.total_height_weight
+                          ).toFixed(2) || "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(kesme.width_stick.diameter)?.toFixed(2) ||
+                            "N/A"}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(kesme.width_stick.height)}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(kesme.width_stick.number_of_sticks)}
+                        </td>
+                        <td className="border p-2">
+                          {parseFloat(
+                            kesme.width_stick.total_width_weight
+                          ).toFixed(2) || "N/A"}
+                        </td>
+                        {!isPrinting && (
+                          <td className="border p-2 print:hidden">
+                            <button
+                              className="bg-red-500 text-white font-bold py-1 px-3 rounded "
+                              onClick={() => handleDeleteKesme(kesme_id)}
+                            >
+                              X
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div className="mt-4 flex justify-center w-full space-x-4">
             <button
               className="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700"
-              onClick={resetKesmeTab}
+              onClick={handleDeleteAllKesme}
             >
               Sıfırla
             </button>
