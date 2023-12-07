@@ -9,12 +9,12 @@ const Header = () => {
   const user = useUser();
 
   return (
-    <header className="flex w-full h-[48px] bg-white text-gray-400 justify-between items-center">
-      <div className="flex p-0 m-0" onClick={() => navigate("/")}>
-        <img className="flex max-w-[96px] max-h-[48px]" src={Logo} alt="" />
+    <header className="flex w-full h-[76px] bg-white text-gray-400 items-center justify-between">
+      <div className="flex items-center" onClick={() => navigate("/")}>
+        <img className="max-w-[392px] max-h-[196px]" src={Logo} alt="" />
       </div>
-      <div className="text-gray-800 mx-auto font-bold ml-auto">
-        Mesh Hasır Hesaplama
+      <div className="text-gray-800 mx-auto font-bold text-xl ml-auto">
+        Otomatik Hasır Hesaplama Programı
       </div>
 
       <div

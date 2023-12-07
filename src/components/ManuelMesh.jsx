@@ -1,9 +1,10 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import InfoTable from "./InfoTable";
 import DownloadButton from "./DownloadButton";
+import DownloadButton2 from "./DownloadButton2";
 import { html2Canvas } from "@/utils/html2Canvas";
-import { jsPdf } from "@/utils/jsPdf";
 import MeshSVG from "./MeshSVG";
+import { jsPDF } from "jspdf";
 const ManuelMesh = ({
   manuelCalculated,
   height,
@@ -74,21 +75,79 @@ const ManuelMesh = ({
     });
   }, [widthSticks, heightSticks, width, height]);
 
-  const downloadPdf = async () => {
-    console.log("Starting PDF download process...");
-
-    const svgElement = svgRef.current;
-
-    await jsPdf(svgElement);
-  };
-
-  const downloadAsPng = async () => {
+  const generatePngDataUrl = async () => {
     const element = divRef.current;
     if (!element) {
       console.error("Div element is not found!");
-      return;
+      return null;
     }
-    await html2Canvas(element);
+    try {
+      const canvas = await html2Canvas(element);
+      return canvas.toDataURL("image/png");
+    } catch (error) {
+      console.error("Error generating PNG data URL:", error);
+    }
+  };
+  const downloadAsPng = async () => {
+    const pngDataUrl = await generatePngDataUrl();
+    if (pngDataUrl) {
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngDataUrl;
+      downloadLink.download = "mesh.png";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  };
+
+  const downloadAsPdf = async () => {
+    const pngDataUrl = await generatePngDataUrl();
+    if (pngDataUrl) {
+      // Define the page size and margins
+      const pageWidth = 842; // A4 landscape width in pixels
+      const pageHeight = 595; // A4 landscape height in pixels
+      const margin = 20; // Margin around the image
+
+      // Create a new PDF in landscape orientation
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [pageWidth, pageHeight],
+      });
+
+      // Load the image
+      const img = new Image();
+      img.src = pngDataUrl;
+      img.onload = () => {
+        // Calculate the aspect ratio
+        const aspectRatio = img.width / img.height;
+
+        // Calculate the dimensions to fit the image within the PDF page
+        let pdfImageWidth = pageWidth - 2 * margin;
+        let pdfImageHeight = pdfImageWidth / aspectRatio;
+
+        // Check if the calculated height exceeds the page height
+        if (pdfImageHeight > pageHeight - 2 * margin) {
+          pdfImageHeight = pageHeight - 2 * margin;
+          pdfImageWidth = pdfImageHeight * aspectRatio;
+        }
+
+        // Calculate position to center the image
+        const xPosition = (pageWidth - pdfImageWidth) / 2;
+        const yPosition = (pageHeight - pdfImageHeight) / 2;
+
+        // Add the image to the PDF
+        pdf.addImage(
+          pngDataUrl,
+          "PNG",
+          xPosition,
+          yPosition,
+          pdfImageWidth,
+          pdfImageHeight
+        );
+        pdf.save("mesh.pdf");
+      };
+    }
   };
 
   return (
@@ -131,7 +190,12 @@ const ManuelMesh = ({
           }
         </div>
       </div>
-      <DownloadButton downloadAsPng={downloadAsPng} />
+      
+      {
+        <div className="flex flex-row justify-between items-center gap-x-4">
+        <DownloadButton downloadAsPng={downloadAsPng} />
+        <DownloadButton2 downloadAsPdf={downloadAsPdf} />
+        </div>}
     </div>
   );
 };

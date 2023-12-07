@@ -618,14 +618,18 @@ function App() {
         height_stick: {
           diameter: manuelMesh.diameter[0],
           height: manuelMesh.height,
-          number_of_sticks: manuelMesh.piece * manuelCalculated.numberOfSticks[0],
-          total_height_weight: manuelMesh.piece * manuelCalculated.totalHeigthWeight,
+          number_of_sticks:
+            manuelMesh.piece * manuelCalculated.numberOfSticks[0],
+          total_height_weight:
+            manuelMesh.piece * manuelCalculated.totalHeigthWeight,
         },
         width_stick: {
           diameter: manuelMesh.diameter[1],
           height: manuelMesh.width,
-          number_of_sticks: manuelMesh.piece * manuelCalculated.numberOfSticks[1],
-          total_width_weight: manuelMesh.piece * manuelCalculated.totalWidthWeight,
+          number_of_sticks:
+            manuelMesh.piece * manuelCalculated.numberOfSticks[1],
+          total_width_weight:
+            manuelMesh.piece * manuelCalculated.totalWidthWeight,
         },
       };
 
@@ -756,6 +760,8 @@ function App() {
                       onChange={(value) => {
                         setMesh((mesh) => ({
                           ...mesh,
+                          numberOfHeightBars: 0,
+                          numberOfWidthBars: 0,
                           height: parseInt(value),
                         }));
                       }}
@@ -772,7 +778,12 @@ function App() {
                   <Input
                     value={mesh.width}
                     onChange={(value) => {
-                      setMesh((mesh) => ({ ...mesh, width: parseInt(value) }));
+                      setMesh((mesh) => ({
+                        ...mesh,
+                        numberOfHeightBars: 0,
+                        numberOfWidthBars: 0,
+                        width: parseInt(value),
+                      }));
                     }}
                     type="number"
                     max={1000}
@@ -780,38 +791,69 @@ function App() {
                   />
                 </div>
               </div>
+
               <div className="w-full flex-col md:w-auto flex justify-between items-center">
                 <span className="text-sm font-semibold">Boy Çubuğu +/-:</span>
                 <div className="flex-1 flex w-full md:w-[120px]">
                   <Input
                     value={mesh.numberOfHeightBars}
                     onChange={(value) => {
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        numberOfHeightBars: value,
-                      }));
+                      const newValue = parseInt(value);
+
+                      if (calculated.numberOfSticks[0] >= 1) {
+                        if (
+                          calculated.numberOfSticks[0] === 1 &&
+                          mesh.numberOfHeightBars > newValue
+                        ) {
+                          setFilamentError(
+                            "Boy Çubuğu daha fazla azaltılamaz."
+                          );
+
+                          return;
+                        }
+                        setMesh((mesh) => ({
+                          ...mesh,
+                          numberOfHeightBars: newValue,
+                        }));
+                        setFilamentError("");
+                      }
                     }}
                     type="number"
                     disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
               </div>
+
               <div className="w-full flex-col md:w-auto flex justify-between items-center">
                 <span className="text-sm font-semibold">En Çubuğu +/-:</span>
                 <div className="flex-1 flex w-full md:w-[120px]">
                   <Input
                     value={mesh.numberOfWidthBars}
                     onChange={(value) => {
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        numberOfWidthBars: value,
-                      }));
+                      const newValue = parseInt(value);
+
+                      if (calculated.numberOfSticks[1] >= 1) {
+                        if (
+                          calculated.numberOfSticks[1] === 1 &&
+                          mesh.numberOfWidthBars > newValue
+                        ) {
+                          setFilamentError("En Çubuğu daha fazla azaltılamaz.");
+
+                          return;
+                        }
+                        setMesh((mesh) => ({
+                          ...mesh,
+                          numberOfWidthBars: newValue,
+                        }));
+                        setFilamentError("");
+                      }
                     }}
                     type="number"
                     disabled={mesh.type === "Perde Hasırı"}
                   />
                 </div>
               </div>
+
               <div className="w-full flex-col md:w-auto flex justify-between items-center">
                 <span className="text-sm font-semibold">Sipariş Adedi:</span>
                 <div className="flex-1 flex w-full md:w-[120px]">
