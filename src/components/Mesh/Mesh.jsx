@@ -4,6 +4,7 @@ import DownloadButton from "../Buttons/DownloadButton";
 import DownloadButton2 from "../Buttons/DownloadButton2";
 import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 import MeshSVG from "./MeshSVG";
+import MeshLogo from "./MeshLogo";
 
 const Mesh = ({
   calculated,
@@ -70,34 +71,33 @@ const Mesh = ({
 
   return (
     <div className="flex flex-col items-center place-content-center ">
-        <MeshSVG
-          svgRef={svgRef}
-          containerSize={containerSize}
-          offsetX={offsetX}
-          offsetY={offsetY}
-          margin={margin}
-          heightSticks={heightSticks}
-          widthSticks={widthSticks}
-          apertureSize={apertureSize}
-          stroke={stroke}
-          rightFilament={rightFilament}
-          leftFilament={leftFilament}
-          backFilament={backFilament}
-          frontFilament={frontFilament}
-          width={width}
-          height={height}
-        />
-        <MeshInfoTable
-          type={type}
-          firm={firm}
-          diameter={diameter}
-          unitMeshWeight={unitMeshWeight}
-          quality={quality}
-          piece={piece}
-          containerSize={containerSize}
-        />
-
-      
+      <MeshLogo containerSize={containerSize} />
+      <MeshSVG
+        svgRef={svgRef}
+        containerSize={containerSize}
+        offsetX={offsetX}
+        offsetY={offsetY}
+        margin={margin}
+        heightSticks={heightSticks}
+        widthSticks={widthSticks}
+        apertureSize={apertureSize}
+        stroke={stroke}
+        rightFilament={rightFilament}
+        leftFilament={leftFilament}
+        backFilament={backFilament}
+        frontFilament={frontFilament}
+        width={width}
+        height={height}
+      />
+      <MeshInfoTable
+        type={type}
+        firm={firm}
+        diameter={diameter}
+        unitMeshWeight={unitMeshWeight}
+        quality={quality}
+        piece={piece}
+        containerSize={containerSize}
+      />
     </div>
   );
 };

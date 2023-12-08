@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
     html,
     body,
@@ -43,4 +45,8 @@
         align-items: center;
         height: 100%; /* Adjust the height as needed */
       }
+
+      
+
+      
 }

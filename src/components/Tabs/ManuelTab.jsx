@@ -4,6 +4,7 @@ import { useAddKesmeMutation } from "../../store/reducers/kesme";
 import ManualCalculationTable from "../Mesh/ManualCalculationTable";
 import DownloadButton from "../Buttons/DownloadButton";
 import { useRef } from "react";
+import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 const ManuelTab = ({
   manuelMesh,
   manuelCalculated,

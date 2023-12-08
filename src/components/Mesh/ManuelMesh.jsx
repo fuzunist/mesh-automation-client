@@ -3,6 +3,7 @@ import MeshInfoTable from "./MeshInfoTable";
 import DownloadButton from "../Buttons/DownloadButton";
 import MeshSVG from "./MeshSVG";
 import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
+import MeshLogo from "./MeshLogo";
 
 const ManuelMesh = ({
   manuelCalculated,
@@ -75,6 +76,7 @@ const ManuelMesh = ({
 
   return (
     <div className="flex flex-col items-center place-content-center">
+      <MeshLogo containerSize={containerSize} />
       <MeshSVG
         svgRef={svgRef}
         containerSize={containerSize}

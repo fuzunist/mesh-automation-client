@@ -41,7 +41,7 @@ const MeshSVG = ({
       viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
       preserveAspectRatio="xMidYMid meet"
     >
-      <g transform={`translate(${offsetX + margin},${offsetY + margin})`}>
+      <g transform={`translate(${offsetX + margin},${offsetY + margin-30})`}>
         {heightSticks.map((stick, index) => (
           <line
             key={`h-${index}`}
