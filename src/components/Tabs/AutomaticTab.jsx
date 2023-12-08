@@ -1,8 +1,8 @@
 import Select from "../Select";
 import Input from "../Input";
-import Mesh from "../Mesh";
+import Mesh from "../Mesh/Mesh";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
-import AutoCalculationTable from "../AutoCalculationTable";
+import AutoCalculationTable from "../Mesh/AutoCalculationTable";
 
 const AutomaticTab = ({
   mesh,

@@ -60,6 +60,7 @@ const KesmeTab = () => {
                 <th className="border p-2 font-semibold uppercase" colSpan={4}>
                   EN ÇUBUĞU
                 </th>
+                <th className="border p-2 font-semibold uppercase"></th>
               </tr>
               <tr>
                 <th
@@ -110,6 +111,7 @@ const KesmeTab = () => {
                 >
                   AĞIRLIK
                 </th>
+                <th className="border p-2 font-semibold uppercase">Satır Sil</th>
               </tr>
             </thead>
             <tbody className="bg-white">

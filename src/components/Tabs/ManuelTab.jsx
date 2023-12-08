@@ -1,7 +1,7 @@
 import Input from "../Input";
-import ManuelMesh from "../ManuelMesh";
+import ManuelMesh from "../Mesh/ManuelMesh";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
-import ManualCalculationTable from "./ManualCalculationTable";
+import ManualCalculationTable from "../Mesh/ManualCalculationTable";
 
 const ManuelTab = ({
   manuelMesh,
@@ -48,8 +48,8 @@ const ManuelTab = ({
   };
   return (
     <>
-      <div className="flex flex-col  items-center justify-center px-4 py-2 gap-10 mt-8">
-        <div className="flex flex-col w-full mb-4 gap-3">
+      <div className="flex flex-col items-center justify-center px-4 py-2 gap-10 mt-8">
+        <div className="flex md:flex-col w-full mb-4 gap-3">
           <div className="flex flex-row gap-3 w-full justify-between">
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">Hasır Tipi:</span>

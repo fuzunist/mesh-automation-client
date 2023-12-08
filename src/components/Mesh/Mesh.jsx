@@ -1,31 +1,34 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import InfoTable from "./InfoTable";
-import DownloadButton from "./DownloadButton";
-import DownloadButton2 from "./DownloadButton2";
-import MeshSVG from "./MeshSVG";
+import MeshInfoTable from "./MeshInfoTable";
+import DownloadButton from "../Buttons/DownloadButton";
+import DownloadButton2 from "../Buttons/DownloadButton2";
 import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
+import MeshSVG from "./MeshSVG";
 
-const ManuelMesh = ({
-  manuelCalculated,
+const Mesh = ({
+  calculated,
   height,
   width,
-  backFilament,
-  leftFilament,
-  frontFilament,
-  rightFilament,
-  apertureSize,
-  diameter,
+  stroke = "red",
   firm,
   type,
   piece,
   quality,
 }) => {
-  const { numberOfSticks, unitMeshWeight } = manuelCalculated;
+  const {
+    backFilament,
+    leftFilament,
+    frontFilament,
+    rightFilament,
+    apertureSize,
+    numberOfSticks,
+    diameter,
+    unitMeshWeight,
+  } = calculated;
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const margin = 10;
-  const stroke = "black";
-  const divRef = useRef();
+  const divRef = useRef(); // Reference to the div you want to capture
   const svgRef = useRef();
+  const margin = 10;
   const offsetX = (containerSize.width - width) / 2;
   const offsetY = (containerSize.height - height) / 2;
 
@@ -37,15 +40,7 @@ const ManuelMesh = ({
         height: bbox.height + 120, // Add padding to the height
       });
     }
-  }, [
-    manuelCalculated,
-    backFilament,
-    leftFilament,
-    frontFilament,
-    rightFilament,
-    apertureSize,
-    numberOfSticks,
-  ]);
+  }, [calculated, apertureSize, numberOfSticks]);
 
   const heightSticks = useMemo(() => {
     const sticks = [leftFilament];
@@ -53,7 +48,7 @@ const ManuelMesh = ({
       sticks.push(leftFilament + apertureSize[0] * i);
     }
     return sticks;
-  }, [manuelCalculated]);
+  }, [calculated]);
 
   const widthSticks = useMemo(() => {
     const sticks = [backFilament];
@@ -61,10 +56,10 @@ const ManuelMesh = ({
       sticks.push(backFilament + apertureSize[1] * i);
     }
     return sticks;
-  }, [manuelCalculated]);
+  }, [calculated]);
 
   useEffect(() => {
-    const extraPadding = 180; // Adjust this value as needed
+    const extraPadding = 180;
     const maxWidth = Math.max(...widthSticks, width) + extraPadding;
     const maxHeight = Math.max(...heightSticks, height) + extraPadding;
 
@@ -75,7 +70,7 @@ const ManuelMesh = ({
   }, [widthSticks, heightSticks, width, height]);
 
   return (
-    <div className="flex flex-col items-center place-content-center">
+    <div className="flex flex-col items-center place-content-center ">
       <div ref={divRef}>
         <MeshSVG
           svgRef={svgRef}
@@ -94,7 +89,7 @@ const ManuelMesh = ({
           width={width}
           height={height}
         />
-        <InfoTable
+        <MeshInfoTable
           type={type}
           firm={firm}
           diameter={diameter}
@@ -105,11 +100,11 @@ const ManuelMesh = ({
         />
       </div>
       <div className="flex flex-row justify-between items-center gap-x-4">
-        <DownloadButton downloadAsPng={() => downloadAsPng(divRef)} />
-        <DownloadButton2 downloadAsPdf={() => downloadAsPdf(divRef)} />
+        {<DownloadButton downloadAsPng={() => downloadAsPng(divRef)} />}
+        {<DownloadButton2 downloadAsPdf={() => downloadAsPdf(divRef)} />}
       </div>
     </div>
   );
 };
 
-export default ManuelMesh;
+export default Mesh;
