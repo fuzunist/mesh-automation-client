@@ -30,7 +30,7 @@ const FormikForm = ({ title, initialValues, validate, onSubmit, error, children,
             onSubmit={onSubmit}
         >
             {({ values, errors, isSubmitting, handleSubmit, handleChange, handleBlur, touched }) => (
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 w-full'>
                     {title && <h2 className='text-center w-full text-2xl font-semibold uppercase'>{title}</h2>}
                     <FormError
                         error={message?.message ?? message}
