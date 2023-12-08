@@ -7,8 +7,16 @@ const InfoTable = ({
   unitMeshWeight,
   quality,
   piece,
+  containerSize
 }) => {
   return (
+    <div
+    style={{
+      width: `${containerSize.width}px`,
+      backgroundColor: "white",
+      marginTop: "-20px",
+    }}
+  >
     <div className="overflow-x-auto w-full mt-4 p-4 text-xs">
       <table className="min-w-full border-collapse border border-gray-800 ">
         <tbody>
@@ -49,6 +57,7 @@ const InfoTable = ({
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
   );
 };

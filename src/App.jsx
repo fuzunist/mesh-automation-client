@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import meshFeatures from "./contants/meshFeatures";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
 import { handleDeleteRow } from "./utils/tableHelpers";
 import AutomaticTab from "./components/Tabs/AutomaticTab";
 import ManuelTab from "./components/Tabs/ManuelTab";
 import KesmeTab from "./components/Tabs/KesmeTab";
 import { initialValues, meshTypeOptions } from "./contants/meshValues";
-
 import {
   variable_1,
   variable_2,
@@ -61,7 +59,6 @@ function App() {
   });
 
   let isMeshValid = true;
-
   useEffect(() => {
     setCalculated(initialValues.calculated);
     // console.log("mesh.type:", mesh.type);
@@ -84,7 +81,6 @@ function App() {
       setError("Tüm alanların doldurulması zorunludur.");
       return;
     }
-
     setError("");
 
     // Make sure the selected mesh code and name exist in the features object
@@ -226,7 +222,6 @@ function App() {
   }, [mesh]);
 
   let isManuelMeshValid = true;
-
   useEffect(() => {
     if (!isManualChange) return;
 
