@@ -2,9 +2,9 @@ import React from 'react'
 
 const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
   return (
-    <div className="flex flex-row w-full -mt-5 ">
-          <div className="flex flex-row w-full justify-between gap-x-4">
-            <div className="mb-4 w-full">
+    <div className="flex w-full -mt-5 ">
+          <div className="flex  w-full justify-between gap-x-4">
+            <div className="mb-4 w-full overflow-x-scroll">
               <table className="w-full border-collapse border text-xs border-gray-800 text-center">
                 <thead>
                   <tr className="bg-slate-50 ">

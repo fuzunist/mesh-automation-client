@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import MeshInfoTable from "./MeshInfoTable";
 import DownloadButton from "../Buttons/DownloadButton";
-import DownloadButton2 from "../Buttons/DownloadButton2";
 import MeshSVG from "./MeshSVG";
 import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 
@@ -76,38 +75,32 @@ const ManuelMesh = ({
 
   return (
     <div className="flex flex-col items-center place-content-center">
-      <div ref={divRef}>
-        <MeshSVG
-          svgRef={svgRef}
-          containerSize={containerSize}
-          offsetX={offsetX}
-          offsetY={offsetY}
-          margin={margin}
-          heightSticks={heightSticks}
-          widthSticks={widthSticks}
-          apertureSize={apertureSize}
-          stroke={stroke}
-          rightFilament={rightFilament}
-          leftFilament={leftFilament}
-          backFilament={backFilament}
-          frontFilament={frontFilament}
-          width={width}
-          height={height}
-        />
-        <MeshInfoTable
-          type={type}
-          firm={firm}
-          diameter={diameter}
-          unitMeshWeight={unitMeshWeight}
-          quality={quality}
-          piece={piece}
-          containerSize={containerSize}
-        />
-      </div>
-      <div className="flex flex-row justify-between items-center gap-x-4">
-        <DownloadButton downloadAsPng={() => downloadAsPng(divRef)} />
-        <DownloadButton2 downloadAsPdf={() => downloadAsPdf(divRef)} />
-      </div>
+      <MeshSVG
+        svgRef={svgRef}
+        containerSize={containerSize}
+        offsetX={offsetX}
+        offsetY={offsetY}
+        margin={margin}
+        heightSticks={heightSticks}
+        widthSticks={widthSticks}
+        apertureSize={apertureSize}
+        stroke={stroke}
+        rightFilament={rightFilament}
+        leftFilament={leftFilament}
+        backFilament={backFilament}
+        frontFilament={frontFilament}
+        width={width}
+        height={height}
+      />
+      <MeshInfoTable
+        type={type}
+        firm={firm}
+        diameter={diameter}
+        unitMeshWeight={unitMeshWeight}
+        quality={quality}
+        piece={piece}
+        containerSize={containerSize}
+      />
     </div>
   );
 };

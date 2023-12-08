@@ -2,10 +2,10 @@ import React from 'react'
 
 const AutoCalculationTable = ({calculated, mesh}) => {
   return (
-    <div className="flex flex-row w-full -mt-5 ">
-    <div className="flex flex-row w-full justify-between gap-x-4">
-      <div className="mb-4 w-full">
-        <table className="w-full border-collapse border text-xs border-gray-800 text-center">
+    <div className="flex w-full -mt-5 ">
+    <div className="flex w-full justify-between gap-x-4">
+      <div className="mb-4 w-full overflow-x-scroll">
+        <table className="w-full border-collapse border text-xs  border-gray-800 text-center">
           <thead>
             <tr className="bg-slate-50 ">
               <th

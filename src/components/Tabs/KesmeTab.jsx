@@ -41,7 +41,7 @@ const KesmeTab = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="flex flex-col w-full items-center">
       <div className="text-lg font-semibold uppercase text-center mb-4">
         <h2>KESME BİLGİLERİ</h2>
         <hr className="border-border-light dark:border-border-dark border-b-2" />

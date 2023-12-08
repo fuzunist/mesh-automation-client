@@ -26,7 +26,6 @@ const Mesh = ({
     unitMeshWeight,
   } = calculated;
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const divRef = useRef(); // Reference to the div you want to capture
   const svgRef = useRef();
   const margin = 10;
   const offsetX = (containerSize.width - width) / 2;
@@ -71,7 +70,6 @@ const Mesh = ({
 
   return (
     <div className="flex flex-col items-center place-content-center ">
-      <div ref={divRef}>
         <MeshSVG
           svgRef={svgRef}
           containerSize={containerSize}
@@ -98,11 +96,8 @@ const Mesh = ({
           piece={piece}
           containerSize={containerSize}
         />
-      </div>
-      <div className="flex flex-row justify-between items-center gap-x-4">
-        {<DownloadButton downloadAsPng={() => downloadAsPng(divRef)} />}
-        {<DownloadButton2 downloadAsPdf={() => downloadAsPdf(divRef)} />}
-      </div>
+
+      
     </div>
   );
 };

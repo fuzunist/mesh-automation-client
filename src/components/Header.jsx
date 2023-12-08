@@ -9,21 +9,23 @@ const Header = () => {
   const user = useUser();
 
   return (
-    <header className="flex w-full h-[76px] bg-white text-gray-400 items-center justify-between">
-      <div className="flex items-center" onClick={() => navigate("/")}>
-        <img className="max-w-[392px] max-h-[196px]" src={Logo} alt="" />
-      </div>
-      <div className="text-gray-800 mx-auto font-bold text-xl ml-auto">
-        Otomatik Hasır Hesaplama Programı
-      </div>
+    <header className="top-0 bg-white z-10 overflow-hidden mb-2">
+      <div className=" max-h-16 flex p-4 justify-between items-center ">
+        <div className="flex h-15 items-center" onClick={() => navigate("/")}>
+          <img className="w-56" src={Logo} alt="" />
+        </div>
+        <div className="text-gray-800 mx-auto font-bold  text-sm md:text-md lg:text-lg xl:text-xl  text-center ml-auto">
+          Oto Hasır Hesaplama Programı
+        </div>
 
-      <div
-        className="flex text-sm gap-1 cursor-pointer mr-4 items-center text-gray-500"
-        onClick={() => navigate("/auth/logout")}
-      >
-        <div className="text-sm mr-4">Hoşgeldin, {user.username}!</div>
-        Çıkış
-        <LogOutIcon className="w-4 h-4" />
+        <div
+          className="flex text-sm gap-1 cursor-pointer mr-4 items-center text-gray-500"
+          onClick={() => navigate("/auth/logout")}
+        >
+          <div className="text-sm mr-4">Hoşgeldin, {user.username}!</div>
+          Çıkış
+          <LogOutIcon className="w-4 h-4" />
+        </div>
       </div>
     </header>
   );

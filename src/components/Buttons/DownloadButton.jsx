@@ -1,9 +1,9 @@
 import React from "react";
 
-const DownloadButton = ({ downloadAsPng }) => {
+const DownloadButton = ({ clickFunction, title }) => {
   return (
     <button
-      onClick={downloadAsPng}
+      onClick={clickFunction}
       style={{
         marginTop: "10px",
         padding: "12px 18px",
@@ -20,7 +20,7 @@ const DownloadButton = ({ downloadAsPng }) => {
       onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
       onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
     >
-      Resim olarak kaydet
+      {title}
     </button>
   );
 };

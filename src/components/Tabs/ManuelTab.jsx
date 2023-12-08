@@ -2,7 +2,8 @@ import Input from "../Input";
 import ManuelMesh from "../Mesh/ManuelMesh";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
 import ManualCalculationTable from "../Mesh/ManualCalculationTable";
-
+import DownloadButton from "../Buttons/DownloadButton";
+import { useRef } from "react";
 const ManuelTab = ({
   manuelMesh,
   manuelCalculated,
@@ -14,6 +15,8 @@ const ManuelTab = ({
   showMessage,
   setShowMessage,
 }) => {
+  const divRef = useRef();
+
   const [addKesme, { isLoading: addKesmeIsLoading, isError: addKesmeIsError }] =
     useAddKesmeMutation({
       onError: (error) => {
@@ -47,10 +50,10 @@ const ManuelTab = ({
     }
   };
   return (
-    <>
-      <div className="flex flex-col items-center justify-center px-4 py-2 gap-10 mt-8">
-        <div className="flex md:flex-col w-full mb-4 gap-3">
-          <div className="flex flex-row gap-3 w-full justify-between">
+    <div className="flex flex-col items-center justify-center gap-y-2">
+      <div className="flex flex-col items-center justify-center px-4 py-2  mt-4 w-full">
+        <div className="flex flex-col items-center gap-y-3 justify-center mb-4">
+          <div className="w-full grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-11 gap-4 xl:gap-2">
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">Hasır Tipi:</span>
               <span className="flex-1">Özel Hasır</span>
@@ -204,8 +207,7 @@ const ManuelTab = ({
                 />
               </div>
             </div>
-          </div>
-          <div className="flex flex-row gap-3 w-[63%] justify-between ">
+
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">
                 Ön Filiz Boyu:
@@ -299,63 +301,83 @@ const ManuelTab = ({
                 />
               </div>
             </div>
-            <div className="flex flex-col justify-center md:w-[120px]">
-              <button
-                className={`text-white text-sm font-bold py-1 px-4 rounded mt-2 ${
-                  isButtonDisabled
-                    ? "bg-gray-500"
-                    : "bg-blue-500 hover:bg-blue-700"
-                }`}
-                disabled={isButtonDisabled}
-                onClick={openKesmeTabFromManual}
-              >
-                Kesmeye Gönder
-              </button>
-            </div>
+          </div>
+          <div className="flex  xl:-mt-2">
+            <button
+              className={`text-white w-45 h-full text-sm font-semibold truncate px-2 py-1 mb-0.5 rounded mt-2 ${
+                isButtonDisabled
+                  ? "bg-gray-500"
+                  : "bg-blue-500 hover:bg-blue-700"
+              }`}
+              disabled={isButtonDisabled}
+              onClick={openKesmeTabFromManual}
+            >
+              Kesmeye Gönder
+            </button>
           </div>
         </div>
-
-        {(manuelError || showMessage) && (
-          <div>
-            {manuelError && (
-              <div className="my-2 text-md text-red-500 rounded ">
-                {manuelError}
-              </div>
-            )}
-            {showMessage && (
-              <div className="my-2 text-md text-green-500 rounded ">
-                Kesme'ye başarıyla eklendi.
-              </div>
-            )}
-          </div>
-        )}
-
-        <ManualCalculationTable
-          manuelCalculated={manuelCalculated}
-          manuelMesh={manuelMesh}
-        />
       </div>
-      {!!manuelCalculated.totalWeight && (
-        <div className="flex justify-center items-center mt-8 mb-16">
-          <ManuelMesh
-            manuelCalculated={manuelCalculated}
-            height={manuelMesh.width}
-            width={manuelMesh.height}
-            frontFilament={manuelMesh.frontFilament}
-            backFilament={manuelMesh.backFilament}
-            leftFilament={manuelMesh.leftFilament}
-            rightFilament={manuelMesh.rightFilament}
-            apertureSize={manuelMesh.apertureSize}
-            firm="Mongery Yazılım"
-            diameter={manuelMesh.diameter}
-            type={manuelMesh.type}
-            piece={manuelMesh.piece}
-            quality="TS 4559 EKİM 1985"
-            stroke="black"
-          />
+
+      {(manuelError || showMessage) && (
+        <div>
+          {manuelError && (
+            <div className="my-2 text-md text-red-500 rounded ">
+              {manuelError}
+            </div>
+          )}
+          {showMessage && (
+            <div className="my-2 text-md text-green-500 rounded ">
+              Kesme'ye başarıyla eklendi.
+            </div>
+          )}
         </div>
       )}
-    </>
+
+      <ManualCalculationTable
+        manuelCalculated={manuelCalculated}
+        manuelMesh={manuelMesh}
+      />
+
+      {!!manuelCalculated.totalWeight && (
+        <div className="flex flex-col justify-center items-center max-w-[95%] mx-auto">
+          <div
+            ref={divRef}
+            className="flex  w-full overflow-x-scroll mt-8 mb-2"
+          >
+            <ManuelMesh
+              manuelCalculated={manuelCalculated}
+              height={manuelMesh.width}
+              width={manuelMesh.height}
+              frontFilament={manuelMesh.frontFilament}
+              backFilament={manuelMesh.backFilament}
+              leftFilament={manuelMesh.leftFilament}
+              rightFilament={manuelMesh.rightFilament}
+              apertureSize={manuelMesh.apertureSize}
+              firm="Mongery Yazılım"
+              diameter={manuelMesh.diameter}
+              type={manuelMesh.type}
+              piece={manuelMesh.piece}
+              quality="TS 4559 EKİM 1985"
+              stroke="black"
+            />
+          </div>
+          <div className="flex flex-row justify-between items-center gap-x-4">
+            {
+              <DownloadButton
+                clickFunction={() => downloadAsPng(divRef)}
+                title=" Resim olarak kaydet"
+              />
+            }
+            {
+              <DownloadButton
+                clickFunction={() => downloadAsPdf(divRef)}
+                title="PDF İndir"
+              />
+            }
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
