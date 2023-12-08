@@ -10,7 +10,7 @@
     html,
     body,
     #root {
-        @apply bg-body-bg-light dark:bg-body-bg-dark text-body-fg-light dark:text-body-fg-dark min-h-screen;
+        @apply bg-body-bg-light  text-body-fg-light  min-h-screen;
         font-family: 'Poppins', sans-serif;
     }
 
@@ -28,15 +28,15 @@
     }
 
     .scroller::-webkit-scrollbar {
-        @apply w-2 h-2 bg-body-bg-light dark:bg-body-bg-dark;
+        @apply w-2 h-2 bg-body-bg-light ;
     }
 
     .scroller::-webkit-scrollbar-thumb {
-        @apply bg-[rgb(200,200,200)] dark:bg-border-dark;
+        @apply bg-[rgb(200,200,200)] ;
     }
 
     .scroller::-webkit-scrollbar-thumb:hover {
-        @apply bg-[rgb(200,200,200)]/[0.5] dark:bg-border-dark/[0.5];
+        @apply bg-[rgb(200,200,200)]/[0.5] ;
     }
 
     .svg-container {
