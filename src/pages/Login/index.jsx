@@ -56,7 +56,7 @@ const Login = () => {
   return (
     <div className="w-full">
       <Helmet>
-        <title>Mesh Giriş</title>
+        <title>Otomatik Hasır Hesap</title>
       </Helmet>
       <div className="flex flex-col p-9 bg-card-bg-light dark:bg-card-bg-dark w-full rounded-md">
         <div className="text-center font-semibold uppercase mb-9 text-lg text-text-dark-light dark:text-text-dark-dark">
