@@ -54,10 +54,7 @@ const ManuelTab = ({
       <div className="flex flex-col items-center justify-center px-4 py-2  mt-4 w-full">
         <div className="flex flex-col items-center gap-y-3 justify-center mb-4">
           <div className="w-full grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-11 gap-4 xl:gap-2">
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="flex-1 text-sm font-semibold">Hasır Tipi:</span>
-              <span className="flex-1">Özel Hasır</span>
-            </div>
+          
 
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">Hasır Boyu:</span>
@@ -93,40 +90,8 @@ const ManuelTab = ({
                 />
               </div>
             </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="flex-1 text-sm font-semibold">
-                Boy Çubuğu +/-:
-              </span>
-              <div className="flex-1 w-full md:w-[120px]">
-                <Input
-                  value={manuelMesh.numberOfHeightBars}
-                  onChange={(value) => {
-                    setManuelMesh((manuelMesh) => ({
-                      ...manuelMesh,
-                      numberOfHeightBars: value,
-                    }));
-                  }}
-                  type="number"
-                />
-              </div>
-            </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="flex-1 text-sm font-semibold">
-                En Çubuğu +/-:
-              </span>
-              <div className="flex-1 w-full md:w-[120px]">
-                <Input
-                  value={manuelMesh.numberOfWidthBars}
-                  onChange={(value) => {
-                    setManuelMesh((manuelMesh) => ({
-                      ...manuelMesh,
-                      numberOfWidthBars: value,
-                    }));
-                  }}
-                  type="number"
-                />
-              </div>
-            </div>
+            
+            
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">
                 Boy Çubuk Çapı:
@@ -167,16 +132,16 @@ const ManuelTab = ({
             </div>
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">
-                Boy Göz Aralığı:
+                Boy Çubuk Sayısı
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
-                  value={manuelMesh.apertureSize[0]}
+                  value={manuelMesh.numberOfSticks[0]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
                       return {
                         ...prevManuelMesh,
-                        apertureSize: [value, prevManuelMesh.apertureSize[1]],
+                        numberOfSticks: [value, prevManuelMesh.numberOfSticks[1]],
                       };
                     });
                     setLastModifiedGroup("A");
@@ -188,16 +153,16 @@ const ManuelTab = ({
             </div>
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">
-                En Göz Aralığı:
+                En Çubuk Sayısı:
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
-                  value={manuelMesh.apertureSize[1]}
+                  value={manuelMesh.numberOfSticks[1]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
                       return {
                         ...prevManuelMesh,
-                        apertureSize: [prevManuelMesh.apertureSize[0], value],
+                        numberOfSticks: [prevManuelMesh.numberOfSticks[0], value],
                       };
                     });
                     setLastModifiedGroup("A");
@@ -352,7 +317,7 @@ const ManuelTab = ({
               backFilament={manuelMesh.backFilament}
               leftFilament={manuelMesh.leftFilament}
               rightFilament={manuelMesh.rightFilament}
-              apertureSize={manuelMesh.apertureSize}
+              numberOfSticks={manuelMesh.numberOfSticks}
               firm="Mongery Yazılım"
               diameter={manuelMesh.diameter}
               type={manuelMesh.type}

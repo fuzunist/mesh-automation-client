@@ -150,10 +150,10 @@ const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
                     </td>
 
                     <td className="border p-2">
-                      {manuelMesh.apertureSize[0]?.toFixed(2) || "N/A"}
+                      {manuelCalculated.apertureSize[0]?.toFixed(2) || "N/A"}
                     </td>
                     <td className="border p-2">
-                      {manuelMesh.apertureSize[1]?.toFixed(2) || "N/A"}
+                      {manuelCalculated.apertureSize[1]?.toFixed(2) || "N/A"}
                     </td>
 
                     <td className="border p-2">
@@ -179,10 +179,10 @@ const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
                     </td>
 
                     <td className="border p-2">
-                      {manuelCalculated.numberOfSticks[0] ?? "N/A"}
+                      {manuelMesh.numberOfSticks[0] ?? "N/A"}
                     </td>
                     <td className="border p-2">
-                      {manuelCalculated.numberOfSticks[1] ?? "N/A"}
+                      {manuelMesh.numberOfSticks[1] ?? "N/A"}
                     </td>
 
                     <td className="border p-2">

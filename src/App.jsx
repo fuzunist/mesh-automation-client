@@ -233,8 +233,8 @@ function App() {
       manuelMesh.width &&
       manuelMesh.diameter[0] &&
       manuelMesh.diameter[1] &&
-      manuelMesh.apertureSize[0] &&
-      manuelMesh.apertureSize[1] &&
+      manuelMesh.numberOfSticks[0] &&
+      manuelMesh.numberOfSticks[1] &&
       manuelMesh.frontFilament &&
       manuelMesh.backFilament &&
       manuelMesh.leftFilament &&
@@ -250,24 +250,13 @@ function App() {
     const result = { ...initialValues.manuelCalculated };
 
     // Calculate the number of sticks for width and height
-    result.numberOfSticks[0] =
-      Math.ceil(
-        (manuelMesh.width -
-          manuelMesh.leftFilament -
-          manuelMesh.rightFilament) /
-          manuelMesh.apertureSize[0]
-      ) +
-      1 +
-      manuelMesh.numberOfHeightBars;
-    result.numberOfSticks[1] =
-      Math.ceil(
-        (manuelMesh.height -
-          manuelMesh.frontFilament -
-          manuelMesh.backFilament) /
-          manuelMesh.apertureSize[1]
-      ) +
-      1 +
-      manuelMesh.numberOfWidthBars;
+    result.apertureSize[0] =
+      (manuelMesh.width - manuelMesh.leftFilament - manuelMesh.rightFilament) /
+      (manuelMesh.numberOfSticks[0] - 1);
+
+    result.apertureSize[1] =
+      (manuelMesh.height - manuelMesh.backFilament - manuelMesh.frontFilament) /
+      (manuelMesh.numberOfSticks[1] - 1);
 
     // Calculate unit and total weights
     result.unitOfHeigthWeight =
@@ -281,35 +270,11 @@ function App() {
         manuelMesh.width) /
       100;
     result.totalHeigthWeight =
-      result.unitOfHeigthWeight * result.numberOfSticks[0];
+      result.unitOfHeigthWeight * manuelMesh.numberOfSticks[0];
     result.totalWidthWeight =
-      result.unitOfWidthWeight * result.numberOfSticks[1];
+      result.unitOfWidthWeight * manuelMesh.numberOfSticks[1];
     result.unitMeshWeight = result.totalHeigthWeight + result.totalWidthWeight;
     result.totalWeight = result.unitMeshWeight * manuelMesh.piece;
-
-    if (lastModifiedGroup === "A") {
-      result.backFilament =
-        (manuelMesh.height -
-          (result.numberOfSticks[1] - 1) * manuelMesh.apertureSize[1]) /
-        2;
-      result.leftFilament =
-        (manuelMesh.width -
-          (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
-        2;
-      result.rightFilament =
-        (manuelMesh.width -
-          (result.numberOfSticks[0] - 1) * manuelMesh.apertureSize[0]) /
-        2;
-      result.frontFilament =
-        (manuelMesh.height -
-          (result.numberOfSticks[1] - 1) * manuelMesh.apertureSize[1]) /
-        2;
-    } else if (lastModifiedGroup === "B") {
-      manuelMesh.apertureSize[0] =
-        meshFeatures["Q"]["106/106"].apertureSize.height / 10;
-      manuelMesh.apertureSize[1] =
-        meshFeatures["Q"]["106/106"].apertureSize.width / 10;
-    }
 
     let localFilamentError = [];
     if (result.frontFilament < 0) {
@@ -358,7 +323,7 @@ function App() {
     setKesmeCalculationsFromManuel((prevState) => ({
       ...prevState,
       diameter: manuelMesh.diameter,
-      numberOfSticks: manuelCalculated.numberOfSticks,
+      numberOfSticks: manuelMesh.numberOfSticks,
       totalHeigthWeight: manuelCalculated.totalHeigthWeight,
       totalWidthWeight: manuelCalculated.totalWidthWeight,
       // Add this if you want to always reflect the current dimensions from mesh
@@ -366,7 +331,7 @@ function App() {
       width: manuelMesh.width,
       // Update other fields here
     }));
-  }, [manuelCalculated, manuelMesh.height, manuelMesh.width]); // Add mesh.height and mesh.width as dependencies
+  }, [manuelCalculated, manuelMesh.height, manuelMesh.width, manuelMesh.numberOfSticks,]); // Add mesh.height and mesh.width as dependencies
 
   // Function to handle tab change
   const handleTabChange = (index) => setTabIndex(index);

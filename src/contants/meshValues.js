@@ -17,7 +17,7 @@ export const initialValues = {
     totalWeight: 0,
   },
   mesh: {
-    type: "Döşeme Hasırı",
+    type: "Standart Hasır",
     code: Object.keys(meshFeatures)[0], // First key in meshFeatures
     name: Object.keys(meshFeatures[Object.keys(meshFeatures)[0]])[0], // First name in the selected code
     height: 500,
@@ -27,7 +27,7 @@ export const initialValues = {
     piece: 1,
   },
   manuelCalculated: {
-    numberOfSticks: [0, 0],
+    
     unitOfHeigthWeight: 0,
     unitOfWidthWeight: 0,
     totalHeigthWeight: 0,
@@ -48,7 +48,7 @@ export const initialValues = {
     numberOfHeightBars: 0,
     numberOfWidthBars: 0,
     diameter: [0, 0],
-    apertureSize: [0, 0],
+    numberOfSticks: [0, 0],
     frontFilament: 0,
     backFilament: 0,
     leftFilament: 0,
@@ -58,7 +58,7 @@ export const initialValues = {
 };
 
 export const meshTypeOptions = [
-  { label: "Döşeme Hasırı", value: "Döşeme Hasırı" },
+  { label: "Standart Hasır", value: "Standart Hasır" },
   { label: "Çit Hasırı", value: "Çit Hasırı" },
   { label: "Perde Hasırı", value: "Perde Hasırı" },
 ];

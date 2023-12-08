@@ -12,14 +12,14 @@ const ManuelMesh = ({
   leftFilament,
   frontFilament,
   rightFilament,
-  apertureSize,
+  numberOfSticks,
   diameter,
   firm,
   type,
   piece,
   quality,
 }) => {
-  const { numberOfSticks, unitMeshWeight } = manuelCalculated;
+  const { apertureSize, unitMeshWeight } = manuelCalculated;
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const margin = 10;
   const stroke = "black";

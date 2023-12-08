@@ -77,7 +77,7 @@ const MeshSVG = ({
                   textAnchor="end"
                   fontSize="8"
                 >
-                  {apertureSize[0]}
+                  {apertureSize[0].toFixed('0')}
                 </text>
               )
           )}
@@ -90,7 +90,7 @@ const MeshSVG = ({
             textAnchor="end"
             fontSize="8"
           >
-            {rightFilament}
+            {leftFilament}
           </text>
 
           {/* Position the leftFilament text at the bottom */}
@@ -101,7 +101,7 @@ const MeshSVG = ({
             textAnchor="end"
             fontSize="8"
           >
-            {leftFilament}
+            {rightFilament}
           </text>
         </g>
 
@@ -131,7 +131,7 @@ const MeshSVG = ({
                   fontSize="8"
                   alignmentBaseline="after-edge"
                 >
-                  {apertureSize[1]}
+                  {apertureSize[1].toFixed('0')}
                 </text>
               )
           )}
