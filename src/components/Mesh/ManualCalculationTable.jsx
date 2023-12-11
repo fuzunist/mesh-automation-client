@@ -6,201 +6,267 @@ const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
           <div className="flex  w-full justify-between gap-x-4">
             <div className="mb-4 w-full overflow-x-scroll">
               <table className="w-full border-collapse border text-xs border-gray-800 text-center">
-                <thead>
-                  <tr className="bg-slate-50 ">
-                    <th
-                      colSpan="10"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ÇUBUK
-                    </th>
-                    <th
-                      colSpan="5"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      HASIR
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      SİPARİŞ
-                    </th>
-                  </tr>
-                  <tr className="bg-slate-100">
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ÇAPI
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ARALIĞI
-                    </th>
-                    <th
-                      colSpan="4"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      FİLİZLERİ
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      BİRİM AĞIRLIĞI
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ÇUBUK AD.
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ÇUBUK AĞ.
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      TOPLAM
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      TOPLAM
-                    </th>
-                  </tr>
-                  <tr className="bg-slate-50">
-                    <th className="border p-2 font-semibold uppercase">BOY</th>
-                    <th className="border p-2 font-semibold uppercase">EN</th>
-                    <th className="border p-2 font-semibold uppercase">BOY</th>
-                    <th className="border p-2 font-semibold uppercase">EN</th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      FİLİZ
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      FİLİZ
-                    </th>
-                    <th className="border p-2 font-semibold uppercase">BOY</th>
-                    <th className="border p-2 font-semibold uppercase">EN</th>
-                    <th className="border p-2 font-semibold uppercase">BOY</th>
-                    <th className="border p-2 font-semibold uppercase">EN</th>
-                    <th className="border p-2 font-semibold uppercase">BOY</th>
-                    <th className="border p-2 font-semibold uppercase">EN</th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      AĞIRLIK
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      ADET
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-semibold uppercase"
-                    >
-                      AĞIRLIK
-                    </th>
-                  </tr>
-                  <tr className="bg-slate-100">
-                    <th className="border p-2 font-semibold uppercase">MM</th>
-                    <th className="border p-2 font-semibold uppercase">MM</th>
-                    <th className="border p-2 font-semibold uppercase">CM</th>
-                    <th className="border p-2 font-semibold uppercase">CM</th>
-                    <th className="border p-2 font-semibold uppercase">ARKA</th>
-                    <th className="border p-2 font-semibold uppercase">ÖN</th>
-                    <th className="border p-2 font-semibold uppercase">YAN</th>
-                    <th className="border p-2 font-semibold uppercase">YAN</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                    <th className="border p-2 font-semibold uppercase">ADET</th>
-                    <th className="border p-2 font-semibold uppercase">ADET</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                    <th className="border p-2 font-semibold uppercase">TANE</th>
-                    <th className="border p-2 font-semibold uppercase">KG</th>
-                  </tr>
-                </thead>
+              <thead>
+              <tr>
+                <th
+                  colSpan="10"
+                  className="border p-2 font-medium uppercase text-black bg-table-blue-first-line"
+                >
+                  ÇUBUK
+                </th>
+                <th
+                  colSpan="5"
+                  className="border p-2  font-medium uppercase text-black bg-table-green-first-line"
+                >
+                  HASIR
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium uppercase text-black bg-table-yellow-first-line"
+                >
+                  SİPARİŞ
+                </th>
+              </tr>
+              <tr>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-second-line"
+                >
+                  ÇAPI
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-third-line"
+                >
+                  ARALIĞI
+                </th>
+                <th
+                  colSpan="4"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-second-line"
+                >
+                  FİLİZLERİ
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-third-line"
+                >
+                  BİRİM AĞIRLIĞI
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-green-second-line"
+                >
+                  ÇUBUK SAYISI
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-green-third-line"
+                >
+                  ÇUBUK AĞIRLIĞI
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-green-second-line"
+                >
+                  TOPLAM
+                </th>
+                <th
+                  colSpan="2"
+                  className="border p-2 font-medium text-black uppercase bg-table-yellow-second-line"
+                >
+                  TOPLAM
+                </th>
+              </tr>
+              <tr className="bg-slate-50">
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-second-line">
+                  BOY
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-second-line">
+                  EN
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-third-line">
+                  BOY
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-third-line">
+                  EN
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-second-line"
+                >
+                  ARKA
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-second-line"
+                >
+                  ÖN
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-blue-second-line"
+                >
+                  SAĞ
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium  text-black uppercase bg-table-blue-second-line"
+                >
+                  SOL
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-third-line">
+                  BOY
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-blue-third-line">
+                  EN
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-green-second-line">
+                  BOY
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-green-second-line">
+                  EN
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-green-third-line">
+                  BOY
+                </th>
+                <th className="border p-2 font-medium text-black uppercase bg-table-green-third-line">
+                  EN
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-green-second-line"
+                >
+                  AĞIRLIK
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-yellow-second-line"
+                >
+                  ADET
+                </th>
+                <th
+                  colSpan="1"
+                  className="border p-2 font-medium text-black uppercase bg-table-yellow-second-line"
+                >
+                  AĞIRLIK
+                </th>
+              </tr>
+              <tr className="bg-slate-100">
+                <th className="border p-2 font-medium text-black  bg-table-blue-second-line">
+                  mm
+                </th>
+                <th className="border p-2 font-medium  text-black  bg-table-blue-second-line">
+                  mm
+                </th>
+                <th className="border p-2 font-medium  text-black  bg-table-blue-third-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-third-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-second-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-second-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-second-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-second-line">
+                  cm
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-third-line">
+                  kg
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-blue-third-line">
+                  kg
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-green-second-line">
+                  adet
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-green-second-line">
+                  adet
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-green-third-line">
+                  kg
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-green-third-line">
+                  kg
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-green-second-line">
+                  kg
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-yellow-second-line">
+                  tane
+                </th>
+                <th className="border p-2 font-medium text-black  bg-table-yellow-second-line">
+                  kg
+                </th>
+              </tr>
+            </thead>
 
                 <tbody className="bg-white">
                   <tr>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
                     </td>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-third-line">
                       {manuelCalculated.apertureSize[0]?.toFixed(2) || "N/A"}
                     </td>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-third-line">
                       {manuelCalculated.apertureSize[1]?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.backFilament?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.frontFilament?.toFixed(2) || "N/A"}
                     </td>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.leftFilament?.toFixed(2) || "N/A"}
                     </td>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-second-line">
                       {manuelMesh.rightFilament?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-third-line">
                       {manuelCalculated.unitOfHeigthWeight?.toFixed(3) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-blue-third-line">
                       {manuelCalculated.unitOfWidthWeight?.toFixed(3) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-green-second-line">
                       {manuelMesh.numberOfSticks[0] ?? "N/A"}
                     </td>
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-green-second-line">
                       {manuelMesh.numberOfSticks[1] ?? "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-green-third-line">
                       {manuelCalculated.totalHeigthWeight?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-green-third-line">
                       {manuelCalculated.totalWidthWeight?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-green-second-line">
                       {" "}
                       {manuelCalculated.unitMeshWeight?.toFixed(2) || "N/A"}
                     </td>
 
-                    <td className="border p-2"> {manuelMesh.piece || "N/A"}</td>
+                    <td className="border p-2 font-bold text-black bg-table-yellow-second-line"> {manuelMesh.piece || "N/A"}</td>
 
-                    <td className="border p-2">
+                    <td className="border p-2 font-bold text-black bg-table-yellow-second-line">
                       {manuelCalculated.totalWeight?.toFixed(2) || "N/A"}
                     </td>
                   </tr>
@@ -213,3 +279,10 @@ const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
 }
 
 export default ManualCalculationTable
+
+
+
+
+
+
+
