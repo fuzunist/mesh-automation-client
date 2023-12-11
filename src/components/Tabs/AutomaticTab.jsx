@@ -104,12 +104,15 @@ const AutomaticTab = ({
               <span className="text-sm font-semibold">Hasır Boyu:</span>
               <div className="flex-1 w-full md:w-[120px]">
                 {mesh.type === "Perde Hasırı" ? (
-                  <Select
+                  <Input
+                    id="noArrow"
+                    type="number"
+                    inputMode="decimal"
                     value={mesh.height}
                     onChange={(value) => {
                       setMesh((mesh) => ({
                         ...mesh,
-                        height: parseInt(value),
+                        height: parseFloat(value),
                       }));
                       if (value === "330") {
                         setCalculated({
@@ -151,16 +154,18 @@ const AutomaticTab = ({
                   />
                 ) : (
                   <Input
+                    id="noArrow"
                     value={mesh.height}
                     onChange={(value) => {
                       setMesh((mesh) => ({
                         ...mesh,
                         numberOfHeightBars: 0,
                         numberOfWidthBars: 0,
-                        height: parseInt(value),
+                        height: parseFloat(value),
                       }));
                     }}
                     type="number"
+                    inputMode="decimal"
                     max={1000}
                     min={0}
                   />
@@ -171,16 +176,18 @@ const AutomaticTab = ({
               <span className="text-sm font-semibold">Hasır Eni:</span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
                   value={mesh.width}
                   onChange={(value) => {
                     setMesh((mesh) => ({
                       ...mesh,
                       numberOfHeightBars: 0,
                       numberOfWidthBars: 0,
-                      width: parseInt(value),
+                      width: parseFloat(value),
                     }));
                   }}
                   type="number"
+                  inputMode="decimal"
                   max={1000}
                   min={0}
                 />
@@ -251,9 +258,10 @@ const AutomaticTab = ({
               <span className="text-sm font-semibold">Sipariş Adedi:</span>
               <div className="flex-1 flex w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
                   value={mesh.piece}
                   onChange={(value) => {
-                    setMesh((mesh) => ({ ...mesh, piece: value }));
+                    setMesh((mesh) => ({ ...mesh, piece: parseInt(value) }));
                   }}
                   type="number"
                   min={0}

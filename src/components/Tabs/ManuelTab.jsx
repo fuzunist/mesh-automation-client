@@ -31,7 +31,7 @@ const ManuelTab = ({
           diameter: manuelMesh.diameter[0],
           height: manuelMesh.height,
           number_of_sticks:
-            manuelMesh.piece * manuelCalculated.numberOfSticks[0],
+            manuelMesh.piece * manuelMesh.numberOfSticks[0],
           total_height_weight:
             manuelMesh.piece * manuelCalculated.totalHeigthWeight,
         },
@@ -39,7 +39,7 @@ const ManuelTab = ({
           diameter: manuelMesh.diameter[1],
           height: manuelMesh.width,
           number_of_sticks:
-            manuelMesh.piece * manuelCalculated.numberOfSticks[1],
+            manuelMesh.piece * manuelMesh.numberOfSticks[1],
           total_width_weight:
             manuelMesh.piece * manuelCalculated.totalWidthWeight,
         },
@@ -55,20 +55,20 @@ const ManuelTab = ({
       <div className="flex flex-col items-center justify-center px-4 py-2  mt-4 w-full">
         <div className="flex flex-col items-center gap-y-3 justify-center mb-4">
           <div className="w-full grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-11 gap-4 xl:gap-2">
-          
-
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">Hasır Boyu:</span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.height}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      height: parseInt(value),
+                      height: parseFloat(value),
                     }));
                   }}
-                  type="number"
                   max={1000}
                   min={0}
                 />
@@ -78,27 +78,31 @@ const ManuelTab = ({
               <span className="flex-1 text-sm font-semibold">Hasır Eni:</span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.width}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      width: parseInt(value),
+                      width: parseFloat(value),
                     }));
                   }}
-                  type="number"
                   max={1000}
                   min={0}
                 />
               </div>
             </div>
-            
-            
+
             <div className="w-full flex-col md:w-auto flex justify-between items-center">
               <span className="flex-1 text-sm font-semibold">
                 Boy Çubuk Çapı:
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.diameter[0]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
@@ -108,7 +112,6 @@ const ManuelTab = ({
                       };
                     });
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -118,6 +121,9 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.diameter[1]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
@@ -127,7 +133,6 @@ const ManuelTab = ({
                       };
                     });
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -137,18 +142,22 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                id="noArrow"
+                type="number"
                   value={manuelMesh.numberOfSticks[0]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
                       return {
                         ...prevManuelMesh,
-                        numberOfSticks: [value, prevManuelMesh.numberOfSticks[1]],
+                        numberOfSticks: [
+                          parseInt(value),
+                          prevManuelMesh.numberOfSticks[1],
+                        ],
                       };
                     });
                     setLastModifiedGroup("A");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -158,18 +167,22 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                id="noArrow"
+                type="number"
                   value={manuelMesh.numberOfSticks[1]}
                   onChange={(value) => {
                     setManuelMesh((prevManuelMesh) => {
                       return {
                         ...prevManuelMesh,
-                        numberOfSticks: [prevManuelMesh.numberOfSticks[0], value],
+                        numberOfSticks: [
+                          prevManuelMesh.numberOfSticks[0],
+                          parseInt(value),
+                        ],
                       };
                     });
                     setLastModifiedGroup("A");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -180,16 +193,18 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.frontFilament}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      frontFilament: value,
+                      frontFilament: parseFloat(value),
                     }));
                     setLastModifiedGroup("B");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -199,16 +214,18 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.backFilament}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      backFilament: value,
+                      backFilament: parseFloat(value),
                     }));
                     setLastModifiedGroup("B");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -218,16 +235,18 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.rightFilament}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      rightFilament: value,
+                      rightFilament: parseFloat(value),
                     }));
                     setLastModifiedGroup("B");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -237,16 +256,18 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
+                  inputMode="decimal"
                   value={manuelMesh.leftFilament}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      leftFilament: value,
+                      leftFilament: parseFloat(value),
                     }));
                     setLastModifiedGroup("B");
                     setIsManualChange(true);
                   }}
-                  type="number"
                 />
               </div>
             </div>
@@ -256,14 +277,15 @@ const ManuelTab = ({
               </span>
               <div className="flex-1 w-full md:w-[120px]">
                 <Input
+                  id="noArrow"
+                  type="number"
                   value={manuelMesh.piece}
                   onChange={(value) => {
                     setManuelMesh((manuelMesh) => ({
                       ...manuelMesh,
-                      piece: value,
+                      piece: parseInt(value),
                     }));
                   }}
-                  type="number"
                 />
               </div>
             </div>
