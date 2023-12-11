@@ -1,288 +1,212 @@
-import Select from "../Select";
-import Input from "../Input";
-import Mesh from "../Mesh/Mesh";
-import { useAddKesmeMutation } from "../../store/reducers/kesme";
+import AutoMesh from "../Mesh/AutoMesh";
 import AutoCalculationTable from "../Mesh/AutoCalculationTable";
-import { useRef } from "react";
 import DownloadButton from "../Buttons/DownloadButton";
 import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
+import { initialValues, meshTypeOptions } from "../../contants/meshValues";
+import meshFeatures from "../../contants/meshFeatures";
+import {
+  variable_1,
+  variable_2,
+  variable_3,
+  variable_4,
+} from "../../contants/meshVariables";
 
-const AutomaticTab = ({
-  mesh,
-  setMesh,
-  meshTypeOptions,
-  handleTypeChange,
-  meshFeatures,
-  setCalculated,
-  initialValues,
-  calculated,
-  setFilamentError,
-  isButtonDisabled,
-  showMessage,
-  error,
-  filamentError,
-  setShowMessage,
-}) => {
+import { useRef, useState, useEffect } from "react";
+import AutoMeshForm from "../Mesh/AutoMeshForm";
+
+const AutomaticTab = ({}) => {
+  const [calculated, setCalculated] = useState(initialValues.calculated);
+  const [mesh, setMesh] = useState(initialValues.mesh);
+  const [showMessage, setShowMessage] = useState(false);
+  const [filamentError, setFilamentError] = useState("");
+  const [error, setError] = useState("");
+  const [tabIndex, setTabIndex] = useState(0);
+  const [kesmeCalculations, setKesmeCalculations] = useState([]);
+
   const divRef = useRef();
 
-  const [addKesme, { isLoading: addKesmeIsLoading, isError: addKesmeIsError }] =
-    useAddKesmeMutation({
-      onError: (error) => {
-        console.error("An error occurred in myData query:", error);
-      },
-    });
-  // Function to opnen "KESME" tab
-  const openKesmeTab = () => {
-    if (!isButtonDisabled) {
-      const kesmeData = {
-        height_stick: {
-          diameter: calculated.diameter[0],
-          height: mesh.height,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[0],
-          total_height_weight: mesh.piece * calculated.totalHeigthWeight,
-        },
-        width_stick: {
-          diameter: calculated.diameter[1],
-          height: mesh.width,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[1],
-          total_width_weight: mesh.piece * calculated.totalWidthWeight,
-        },
-      };
+  let isMeshValid = true;
+  useEffect(() => {
+    setCalculated(initialValues.calculated);
 
-      addKesme(kesmeData);
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 1500);
+    isMeshValid =
+      mesh.type &&
+      mesh.code &&
+      mesh.name &&
+      mesh.height &&
+      mesh.width &&
+      mesh.piece;
+
+    if (!isMeshValid) {
+      setError("Tüm alanların doldurulması zorunludur.");
+      return;
     }
-  };
+    setError("");
 
+    // Make sure the selected mesh code and name exist in the features object
+    if (meshFeatures[mesh.code] && meshFeatures[mesh.code][mesh.name]) {
+      const selectedMeshFeature = meshFeatures[mesh.code][mesh.name];
+      if (selectedMeshFeature.diameter) {
+        const result = { ...initialValues.calculated };
+
+        result.diameter[0] = meshFeatures[mesh.code][mesh.name].diameter.height;
+        result.diameter[1] = meshFeatures[mesh.code][mesh.name].diameter.width;
+
+        result.apertureSize[0] =
+          meshFeatures[mesh.code][mesh.name].apertureSize.height / 10;
+        result.apertureSize[1] =
+          meshFeatures[mesh.code][mesh.name].apertureSize.width / 10;
+
+        if (mesh.type === "Çit Hasırı") {
+          result.apertureSize[0] = 15;
+          result.apertureSize[1] = 5;
+        }
+
+        if (variable_1(mesh)) {
+          result.numberOfSticks[0] = 0;
+          result.numberOfSticks[1] = 0;
+          result.backFilament = 10;
+          result.leftFilament = 2.5;
+          result.rightFilament = 2.5;
+        } else {
+          if (mesh.height === 500 && mesh.width === 215) {
+            if (mesh.height % result.apertureSize[1] === 0)
+              result.numberOfSticks[1] =
+                mesh.height / result.apertureSize[1] + mesh.numberOfWidthBars;
+            if (mesh.height % result.apertureSize[1] !== 0)
+              result.numberOfSticks[1] =
+                Math.floor(mesh.height / result.apertureSize[1] - 1) +
+                mesh.numberOfWidthBars;
+            if (mesh.width % result.apertureSize[0] === 0)
+              result.numberOfSticks[0] =
+                mesh.width / result.apertureSize[0] +
+                1 +
+                mesh.numberOfHeightBars;
+            if (mesh.width % result.apertureSize[0] !== 0)
+              result.numberOfSticks[0] =
+                Math.floor(mesh.width / result.apertureSize[0] + 1) +
+                mesh.numberOfHeightBars;
+          } else {
+            result.numberOfSticks[0] =
+              Math.ceil(mesh.width / result.apertureSize[0]) +
+              mesh.numberOfHeightBars;
+            result.numberOfSticks[1] =
+              Math.ceil(mesh.height / result.apertureSize[1]) +
+              mesh.numberOfWidthBars;
+          }
+
+          result.backFilament =
+            (mesh.height -
+              (result.numberOfSticks[1] - 1) * result.apertureSize[1]) /
+            2;
+          result.leftFilament =
+            (mesh.width -
+              (result.numberOfSticks[0] - 1) * result.apertureSize[0]) /
+            2;
+          result.rightFilament =
+            (mesh.width -
+              (result.numberOfSticks[0] - 1) * result.apertureSize[0]) /
+            2;
+        }
+
+        if (variable_2(mesh)) result.frontFilament = 70;
+        else if (variable_3(mesh)) result.frontFilament = 71;
+        else if (variable_4(mesh)) result.frontFilament = 65;
+        else
+          result.frontFilament =
+            (mesh.height -
+              (result.numberOfSticks[1] - 1) * result.apertureSize[1]) /
+            2;
+
+        if (variable_1(mesh)) {
+          result.numberOfSticks[0] = Math.floor(
+            (mesh.width - result.leftFilament - result.rightFilament) /
+              result.apertureSize[0] +
+              1
+          );
+          result.numberOfSticks[1] = Math.floor(
+            (mesh.height - result.backFilament - result.frontFilament) /
+              result.apertureSize[1] +
+              1
+          );
+        }
+
+        result.unitOfHeigthWeight =
+          (((Math.PI * result.diameter[0] * result.diameter[0]) / 4) *
+            0.007847 *
+            mesh.height) /
+          100;
+        result.unitOfWidthWeight =
+          (((Math.PI * result.diameter[1] * result.diameter[1]) / 4) *
+            0.007847 *
+            mesh.width) /
+          100;
+        result.totalHeigthWeight =
+          result.unitOfHeigthWeight * result.numberOfSticks[0];
+        result.totalWidthWeight =
+          result.unitOfWidthWeight * result.numberOfSticks[1];
+        result.unitMeshWeight =
+          result.totalHeigthWeight + result.totalWidthWeight;
+        result.totalWeight = result.unitMeshWeight * mesh.piece;
+
+        let localFilamentError = [];
+        if (result.frontFilament < 0) {
+          localFilamentError.push("Ön filiz boyu sıfırdan küçük olamaz.");
+          result.frontFilament = 0;
+        }
+        if (result.backFilament < 0) {
+          localFilamentError.push("Arka filiz boyu sıfırdan küçük olamaz.");
+          result.backFilament = 0;
+        }
+        if (result.leftFilament < 0) {
+          localFilamentError.push("Sol filiz boyu sıfırdan küçük olamaz.");
+          result.leftFilament = 0;
+        }
+        if (result.rightFilament < 0) {
+          localFilamentError.push("Sağ filiz boyu sıfırdan küçük olamaz.");
+          result.rightFilament = 0;
+        }
+
+        if (localFilamentError.length > 0) {
+          setFilamentError(localFilamentError.join(" "));
+        } else {
+          setFilamentError("");
+          setCalculated(result);
+        }
+      } else {
+        setError("Seçilen hasır için çap bilgisi bulunamadı.");
+      }
+    } else {
+      setError("Lütfen Hasır Adını seçin.");
+    }
+  }, [mesh]);
+
+  // Inside the useEffect that runs when `calculated` changes
+  useEffect(() => {
+    setKesmeCalculations((prevState) => ({
+      ...prevState,
+      diameter: calculated.diameter,
+      numberOfSticks: calculated.numberOfSticks,
+      totalHeigthWeight: calculated.totalHeigthWeight,
+      totalWidthWeight: calculated.totalWidthWeight,
+      // Add this if you want to always reflect the current dimensions from mesh
+      height: mesh.height,
+      width: mesh.width,
+      // Update other fields here
+    }));
+  }, [calculated, mesh.height, mesh.width]);
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center px-4 py-2 gap-y-10 mt-4 w-full">
-        <div className="flex flex-col xl:flex-row xl:items-end items-center gap-y-2  justify-center">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-y-2 gap-x-1 w-full justify-center items-center ">
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Hasır Tipi:</span>
-              <div className="flex-1 flex w-full md:w-[150px]">
-                <Select
-                  value={mesh.type}
-                  onChange={(value) => handleTypeChange(value)}
-                  options={meshTypeOptions.map((option) => option.label)}
-                />
-              </div>
-            </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Hasır Kodu:</span>
-              <div className="flex-1 w-full md:w-[120px]">
-                <Select
-                  value={mesh.code}
-                  onChange={(value) =>
-                    setMesh((prevMesh) => ({ ...prevMesh, code: value }))
-                  }
-                  options={["", ...Object.keys(meshFeatures)]}
-                  disabled={mesh.type === "Perde Hasırı"}
-                />
-              </div>
-            </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Hasır Adı:</span>
-              <div className="flex-1 w-full md:w-[120px]">
-                <Select
-                  value={mesh.name}
-                  onChange={(value) => {
-                    setMesh((mesh) => ({ ...mesh, name: value }));
-                  }}
-                  options={[
-                    "",
-                    ...(mesh.code ? Object.keys(meshFeatures[mesh.code]) : []),
-                  ]}
-                />
-              </div>
-            </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Hasır Boyu:</span>
-              <div className="flex-1 w-full md:w-[120px]">
-                {mesh.type === "Perde Hasırı" ? (
-                  <Input
-                    id="noArrow"
-                    type="number"
-                    inputMode="decimal"
-                    value={mesh.height}
-                    onChange={(value) => {
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        height: parseFloat(value),
-                      }));
-                      if (value === "330") {
-                        setCalculated({
-                          ...initialValues.calculated,
-                          frontFilament: 65,
-                          backFilament: 10,
-                          leftFilament: 2.5,
-                          rightFilament: 2.5,
-                        });
-                      } else if (value === "335") {
-                        setCalculated({
-                          ...initialValues.calculated,
-                          frontFilament: 70,
-                          backFilament: 10,
-                          leftFilament: 2.5,
-                          rightFilament: 2.5,
-                        });
-                      } else if (value === "336") {
-                        setCalculated({
-                          ...initialValues.calculated,
-                          frontFilament: 79,
-                          backFilament: 10,
-                          leftFilament: 2.5,
-                          rightFilament: 2.5,
-                        });
-                      } else if (value === "345") {
-                        setCalculated({
-                          ...initialValues.calculated,
-                          frontFilament: 65,
-                          backFilament: 10,
-                          leftFilament: 2.5,
-                          rightFilament: 2.5,
-                        });
-                      } else {
-                        setCalculated(initialValues.calculated);
-                      }
-                    }}
-                    options={["", 330, 335, 336, 345]}
-                  />
-                ) : (
-                  <Input
-                    id="noArrow"
-                    value={mesh.height}
-                    onChange={(value) => {
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        numberOfHeightBars: 0,
-                        numberOfWidthBars: 0,
-                        height: parseFloat(value),
-                      }));
-                    }}
-                    type="number"
-                    inputMode="decimal"
-                    max={1000}
-                    min={0}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Hasır Eni:</span>
-              <div className="flex-1 w-full md:w-[120px]">
-                <Input
-                  id="noArrow"
-                  value={mesh.width}
-                  onChange={(value) => {
-                    setMesh((mesh) => ({
-                      ...mesh,
-                      numberOfHeightBars: 0,
-                      numberOfWidthBars: 0,
-                      width: parseFloat(value),
-                    }));
-                  }}
-                  type="number"
-                  inputMode="decimal"
-                  max={1000}
-                  min={0}
-                />
-              </div>
-            </div>
-
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Boy Çubuğu +/-:</span>
-              <div className="flex-1 flex w-full md:w-[120px]">
-                <Input
-                  value={mesh.numberOfHeightBars}
-                  onChange={(value) => {
-                    const newValue = parseInt(value);
-
-                    if (calculated.numberOfSticks[0] >= 1) {
-                      if (
-                        calculated.numberOfSticks[0] === 1 &&
-                        mesh.numberOfHeightBars > newValue
-                      ) {
-                        setFilamentError("Boy Çubuğu daha fazla azaltılamaz.");
-
-                        return;
-                      }
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        numberOfHeightBars: newValue,
-                      }));
-                      setFilamentError("");
-                    }
-                  }}
-                  type="number"
-                  disabled={mesh.type === "Perde Hasırı"}
-                />
-              </div>
-            </div>
-
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">En Çubuğu +/-:</span>
-              <div className="flex-1 flex w-full md:w-[120px]">
-                <Input
-                  value={mesh.numberOfWidthBars}
-                  onChange={(value) => {
-                    const newValue = parseInt(value);
-
-                    if (calculated.numberOfSticks[1] >= 1) {
-                      if (
-                        calculated.numberOfSticks[1] === 1 &&
-                        mesh.numberOfWidthBars > newValue
-                      ) {
-                        setFilamentError("En Çubuğu daha fazla azaltılamaz.");
-
-                        return;
-                      }
-                      setMesh((mesh) => ({
-                        ...mesh,
-                        numberOfWidthBars: newValue,
-                      }));
-                      setFilamentError("");
-                    }
-                  }}
-                  type="number"
-                  disabled={mesh.type === "Perde Hasırı"}
-                />
-              </div>
-            </div>
-
-            <div className="w-full flex-col md:w-auto flex justify-between items-center">
-              <span className="text-sm font-semibold">Sipariş Adedi:</span>
-              <div className="flex-1 flex w-full md:w-[120px]">
-                <Input
-                  id="noArrow"
-                  value={mesh.piece}
-                  onChange={(value) => {
-                    setMesh((mesh) => ({ ...mesh, piece: parseInt(value) }));
-                  }}
-                  type="number"
-                  min={0}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex  xl:-mt-2">
-            <button
-              className={`text-white w-45 h-full text-sm font-semibold truncate px-2 py-1 mb-0.5 rounded mt-2 ${
-                isButtonDisabled
-                  ? "bg-gray-500"
-                  : "bg-blue-500 hover:bg-blue-700"
-              }`}
-              disabled={isButtonDisabled}
-              onClick={openKesmeTab}
-            >
-              Kesmeye Gönder
-            </button>
-          </div>
-        </div>
+        <AutoMeshForm 
+         mesh={mesh}
+         setCalculated={setCalculated}
+         setMesh={setMesh}
+         calculated={calculated}
+         setShowMessage={setShowMessage}
+         filamentError={filamentError}
+         setFilamentError={setFilamentError}
+        />
         {(error || showMessage) && (
           <div>
             {error && (
@@ -307,7 +231,7 @@ const AutomaticTab = ({
             ref={divRef}
             className="flex  w-full overflow-x-scroll mt-8 mb-2"
           >
-            <Mesh
+            <AutoMesh
               calculated={calculated}
               height={mesh.width}
               width={mesh.height}

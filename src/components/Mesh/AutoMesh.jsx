@@ -6,7 +6,7 @@ import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 import MeshSVG from "./MeshSVG";
 import MeshLogo from "./MeshLogo";
 
-const Mesh = ({
+const AutoMesh = ({
   calculated,
   height,
   width,
@@ -88,6 +88,7 @@ const Mesh = ({
         frontFilament={frontFilament}
         width={width}
         height={height}
+        type="auto"
       />
       <MeshInfoTable
         type={type}
@@ -102,4 +103,4 @@ const Mesh = ({
   );
 };
 
-export default Mesh;
+export default AutoMesh;

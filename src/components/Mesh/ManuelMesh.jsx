@@ -93,6 +93,7 @@ const ManuelMesh = ({
         frontFilament={frontFilament}
         width={width}
         height={height}
+        type="manuel"
       />
       <MeshInfoTable
         type={type}

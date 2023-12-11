@@ -5,82 +5,87 @@ export default {
     extend: {
       colors: {
         "body-bg-light": "#ebeff2",
-        
+
         "card-bg-light": "#fff",
-        
+
         "body-fg-light": "#6c757d",
-       
+
         "footer-bg-light": "#e3e9ed",
-       
+
         "footer-fg-light": "#6c757d",
-      
+
         "footer-hover-light": "#636b72",
-        
+
         "link-fg-light": "#71b6f9",
-       
+
         "link-hover-light": "#609bd4",
-        
+
         "border-light": "#f7f7f7",
-       
+
         "disabled-light": "#98a6ad",
-      
+
         "input-bg-light": "#fff",
-       
+
         "input-fg-light": "#98a6ad",
-       
+
         "input-border-light": "#ced4da",
-    
+
         "input-focusborder-light": "#b9bfc4",
-     
+
         "input-disabled-light": "#353d4a",
-      
+
         "rightbar-light": "#323a46",
-       
+
         "topbar-light": "#ebeff2",
-       
+
         "topsearch-light": "#e2e6ea",
-       
+
         "navlink-light": "#6c757d",
-       
+
         "pagetitle-light": "#343a40",
-       
 
         "text-dark-light": "#343a40",
-       
 
         "popover-light": "#f8f9fa",
-        
-        "popover-item-hover-light": "#71b6f9",
-    
 
-        
+        "popover-item-hover-light": "#71b6f9",
+
         "dropdown-bg-light": "#fff",
         "dropdown-link-hover-bg-light": "#f8f9fa",
-       
+
         "dropdown-link-hover-fg-light": "#2d343f",
-       
+
         "dropdown-hr-light": "#f1f2f3",
-      
+
         "dropdown-title-light": "#343a40",
-       
+
         "dropdown-link-fg-light": "#323a46",
-        
 
         "leftbar-light": "#fff",
         "leftbar-username-fg-light": "#6c757d",
-      
+
         "leftbar-text-muted-light": "#98a6ad",
-      
+
         "leftbar-text-muted-hover-light": "#609bd4",
-      
+
         "leftbar-navbar-item-fg-light": "#6e768e",
-      
+
         "leftbar-navbar-item-active-fg-light": "#71b6f9",
-      
+
         "leftbar-navbar-item-fg-hover-light": "#71b6f9",
-       
 
         "userbox-border-light": "#f5f5f5",
+        "table-blue-first-line": "#69a1c4",
+        "table-blue-second-line": "#Bfd0e0",
+        "table-blue-third-line": "#D3DBE5",
+        "table-gray-first-line": "#B2B2B2",
+        "table-gray-second-line": "#dadada",
+        "table-gray-third-line": "#ededed",
+        "table-green-first-line": "#80C56E",
+        "table-green-second-line": "#C2E5B7",
+        "table-green-third-line": "#D7E5D3",
+        "table-yellow-first-line": "#E2AC5D",
+        "table-yellow-second-line": "#E5DAC3",
 
         success: "#10c469",
         pink: "#ff8acc",
