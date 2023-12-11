@@ -34,7 +34,7 @@ const MeshInfoTable = ({
                         <table className="w-full h-full border-collapse">
                           <tbody>
                             <tr >
-                              <td className="p-1 font-bold">FIRMA:</td>
+                              <td className="p-1 font-bold">FİRMA:</td>
                               <td className="p-1">{firm}</td>
                             </tr>
                             <tr >
