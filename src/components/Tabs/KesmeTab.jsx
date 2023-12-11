@@ -44,7 +44,6 @@ const KesmeTab = () => {
     <div className="flex flex-col w-full items-center">
       <div className="text-black font-medium text-xl uppercase text-center mb-4">
         <h2>KESME BİLGİLERİ</h2>
-      
       </div>
       {!isLoading && !isError && (
         <div className="overflow-x-auto w-full">
@@ -54,75 +53,89 @@ const KesmeTab = () => {
           >
             <thead>
               <tr className="bg-slate-50">
-                <th className="border p-2 font-medium uppercase text-black bg-table-blue-first-line" colSpan={4} style={{ textDecoration: 'underline' }}>
+                <th
+                  className="border p-2 font-medium uppercase text-black bg-table-blue-first-line"
+                  colSpan={4}
+                  style={{ textDecoration: "underline" }}
+                >
                   BOY ÇUBUĞU
                 </th>
-                <th className="border p-2 font-medium uppercase text-black bg-table-green-first-line" colSpan={4} style={{ textDecoration: 'underline' }}>
+                <th
+                  className="border p-2 font-medium uppercase text-black bg-table-green-first-line"
+                  colSpan={4}
+                  style={{ textDecoration: "underline" }}
+                >
                   EN ÇUBUĞU
                 </th>
                 {!isPrinting && (
-                <th className="border p-2 font-medium uppercase text-black bg-red-500"></th>)}
+                  <th className="border p-2 font-medium uppercase text-black bg-red-500"></th>
+                )}
               </tr>
               <tr>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-blue-second-line"
                   onClick={() => toggleSort("diameter0")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   ÇAP
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-blue-third-line"
                   onClick={() => toggleSort("height")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   UZUNLUK
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-blue-second-line"
                   onClick={() => toggleSort("numberOfSticks0")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   ADET
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-blue-third-line"
                   onClick={() => toggleSort("totalHeigthWeight")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   AĞIRLIK
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-green-second-line"
                   onClick={() => toggleSort("diameter1")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   ÇAP
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-green-third-line"
                   onClick={() => toggleSort("width")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   UZUNLUK
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-green-second-line"
                   onClick={() => toggleSort("numberOfSticks1")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   ADET
                 </th>
                 <th
                   className="border p-2 font-medium uppercase text-black bg-table-green-third-line"
                   onClick={() => toggleSort("totalWidthWeight")}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   AĞIRLIK
                 </th>
                 {!isPrinting && (
-                <th className="border p-2 font-medium uppercase text-black bg-red-200"
-                style={{ textDecoration: 'underline' }}>SATIR SİL</th>)}
+                  <th
+                    className="border p-2 font-medium uppercase text-black bg-red-100"
+                    style={{ textDecoration: "underline" }}
+                  >
+                    SATIR SİL
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -160,7 +173,7 @@ const KesmeTab = () => {
                       ) || "N/A"}
                     </td>
                     {!isPrinting && (
-                      <td className="border p-2 font-medium uppercase text-black bg-red-200">
+                      <td className="border p-2 font-medium uppercase text-black bg-red-100">
                         <button
                           className="bg-red-500 text-white font-bold py-1 px-3 rounded "
                           onClick={() => handleDeleteKesme(kesme_id)}
