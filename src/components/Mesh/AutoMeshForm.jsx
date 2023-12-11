@@ -65,7 +65,7 @@ const AutoMeshForm = ({
   };
 
   return (
-    <div className="flex flex-col xl:flex-row xl:items-end items-center gap-y-2  justify-center">
+    <div className="flex flex-col xl:flex-row xl:items-end items-center gap-2  justify-center">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-y-2 gap-x-1 w-full justify-center items-center ">
         <div className="w-full flex-col md:w-auto flex justify-between items-center">
           <span className="text-sm font-semibold">Hasır Tipi:</span>
@@ -109,7 +109,7 @@ const AutoMeshForm = ({
           <span className="text-sm font-semibold">Hasır Boyu:</span>
           <div className="flex-1 w-full md:w-[120px]">
             {mesh.type === "Perde Hasırı" ? (
-              <Input
+              <Select
                 id="noArrow"
                 type="number"
                 inputMode="decimal"
@@ -276,8 +276,8 @@ const AutoMeshForm = ({
       </div>
       <div className="flex  xl:-mt-2">
         <button
-          className={`text-white w-45 h-full text-sm font-semibold truncate px-2 py-1 mb-0.5 rounded mt-2 ${
-            isButtonDisabled ? "bg-gray-500" : "bg-blue-500 hover:bg-blue-700"
+          className={`text-white w-45 h-full text-sm font-semibold truncate px-2 py-[4.5px] mb-0.2 rounded mt-2 ${
+            isButtonDisabled ? "bg-gray-400" : "bg-black hover:bg-blue-500"
           }`}
           disabled={isButtonDisabled}
           onClick={openKesmeTab}

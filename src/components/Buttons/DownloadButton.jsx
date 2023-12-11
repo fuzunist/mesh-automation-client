@@ -8,7 +8,7 @@ const DownloadButton = ({ clickFunction, title }) => {
         marginTop: "10px",
         padding: "12px 18px",
         border: "none",
-        backgroundColor: "black",
+       
         color: "white",
         borderRadius: "6px",
         cursor: "pointer",
@@ -17,8 +17,9 @@ const DownloadButton = ({ clickFunction, title }) => {
         boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
         transition: "background-color 0.3s",
       }}
-      onMouseOver={(e) => (e.target.style.backgroundColor = "#003875")}
-      onMouseOut={(e) => (e.target.style.backgroundColor = "#0056b3")}
+      className="bg-black hover:bg-blue-500"
+      
+      
     >
       {title}
     </button>

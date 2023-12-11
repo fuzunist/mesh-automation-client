@@ -197,7 +197,7 @@ const AutomaticTab = ({}) => {
   }, [calculated, mesh.height, mesh.width]);
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center px-4 py-2 gap-y-10 mt-4 w-full">
+      <div className="flex flex-col text-black items-center justify-center px-4 py-2 gap-y-10 mt-4 w-full">
         <AutoMeshForm 
          mesh={mesh}
          setCalculated={setCalculated}
@@ -242,11 +242,12 @@ const AutomaticTab = ({}) => {
               stroke="black"
             />
           </div>
-          <div className="flex flex-row justify-between items-center gap-x-4 mb-6">
+          <div className="flex flex-row justify-between items-center gap-x-4 mb-16">
             {
               <DownloadButton
                 clickFunction={() => downloadAsPng(divRef)}
                 title=" Resim olarak kaydet"
+                
               />
             }
             {

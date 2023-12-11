@@ -128,8 +128,8 @@ const ManuelTab = ({}) => {
   ]); // Add mesh.height and mesh.width as dependencies
 
   return (
-    <div className="flex flex-col items-center justify-center gap-y-2">
-      <div className="flex flex-col items-center justify-center px-4 py-2  mt-4 w-full">
+    <div className="flex flex-col  items-center justify-center ">
+      <div className="flex flex-col text-black items-center justify-center px-4 py-2 gap-y-10 mt-4 w-full">
         <ManuelMeshForm
           manuelCalculated={manuelCalculated}
           manuelMesh={manuelMesh}
@@ -138,28 +138,27 @@ const ManuelTab = ({}) => {
           setIsManualChange={setIsManualChange}
           setManuelMesh={setManuelMesh}
         />
+
+        {(manuelError || showMessage) && (
+          <div>
+            {manuelError && (
+              <div className="my-2 text-md text-red-500 rounded ">
+                {manuelError}
+              </div>
+            )}
+            {showMessage && (
+              <div className="my-2 text-md text-green-500 rounded ">
+                Kesme'ye başarıyla eklendi.
+              </div>
+            )}
+          </div>
+        )}
+
+        <ManualCalculationTable
+          manuelCalculated={manuelCalculated}
+          manuelMesh={manuelMesh}
+        />
       </div>
-
-      {(manuelError || showMessage) && (
-        <div>
-          {manuelError && (
-            <div className="my-2 text-md text-red-500 rounded ">
-              {manuelError}
-            </div>
-          )}
-          {showMessage && (
-            <div className="my-2 text-md text-green-500 rounded ">
-              Kesme'ye başarıyla eklendi.
-            </div>
-          )}
-        </div>
-      )}
-
-      <ManualCalculationTable
-        manuelCalculated={manuelCalculated}
-        manuelMesh={manuelMesh}
-      />
-
       {!!manuelCalculated.totalWeight && (
         <div className="flex flex-col justify-center items-center max-w-[95%] mx-auto">
           <div
@@ -183,7 +182,7 @@ const ManuelTab = ({}) => {
               stroke="black"
             />
           </div>
-          <div className="flex flex-row justify-between items-center gap-x-4">
+          <div className="flex flex-row justify-between items-center gap-x-4 mb-16">
             {
               <DownloadButton
                 clickFunction={() => downloadAsPng(divRef)}
