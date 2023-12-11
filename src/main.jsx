@@ -6,12 +6,15 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import kesme from "./store/reducers/kesme";
+import { ThemeProvider } from "@material-tailwind/react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ApiProvider api={kesme}>
-    <Provider store={store}>
-      <RouterProvider router={routes}></RouterProvider>
-    </Provider>
+    <ThemeProvider>
+      <Provider store={store}>
+        <RouterProvider router={routes}></RouterProvider>
+      </Provider>
+    </ThemeProvider>
   </ApiProvider>
 );
 

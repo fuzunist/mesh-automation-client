@@ -11,10 +11,7 @@ const ContentLayout = () => {
 
   return (
     <div className="min-h-screen w-screen scroll-smooth overflow-hidden">
-      <Header />
-     <div className="mx-2">
       <Outlet />
-      </div>
     </div>
   );
 };

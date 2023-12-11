@@ -25,9 +25,9 @@ const AuthLayout = () => {
                 <img
                   // src={mode === 'dark' ? LogoLight : LogoDark}
                   src={NewLogo}
-                  // height={22}
-                  // width={134.75}
-                  width="60%"
+                  height={45}
+                  width={270}
+                  //  width="20%"
                   alt=""
                 />
               </Link>

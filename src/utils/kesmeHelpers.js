@@ -22,22 +22,35 @@ export const toggleSort = (sortKey) => {
 import "react-tabs/style/react-tabs.css";
 
 export const printTable = (setIsPrinting) => {
-  setIsPrinting(true); // Set printing mode to true
+  setIsPrinting(true);
+
+  // Function to change background color
+  const changeBackgroundColor = (color) => {
+    document
+      .querySelectorAll(
+        "#kesmeTable tr, .bg-table-blue-first-line, .bg-table-blue-second-line, .bg-table-blue-third-line, .bg-table-green-first-line, .bg-table-green-second-line, .bg-table-green-third-line, .bg-red-500, .bg-red-200"
+      )
+      .forEach((el) => (el.style.backgroundColor = color));
+  };
+
+  // Remove background color before capturing
+  changeBackgroundColor("transparent");
 
   setTimeout(() => {
     const table = document.getElementById("kesmeTable");
     html2canvas(table).then((canvas) => {
+      // Revert background color after capturing
+      changeBackgroundColor("");
+
       const newWindow = window.open("", "_blank");
 
-      // Add a style tag with print media query for landscape orientation
+      // Add a style tag for landscape orientation
       const style = newWindow.document.createElement("style");
       style.textContent = `
-          @media print {
-            @page {
-              size: landscape;
-            }
-          }
-        `;
+        @media print {
+          @page { size: landscape; }
+        }
+      `;
       newWindow.document.head.appendChild(style);
 
       newWindow.document.body.appendChild(canvas);
@@ -45,9 +58,7 @@ export const printTable = (setIsPrinting) => {
       newWindow.print();
       newWindow.close();
 
-      setIsPrinting(false); // Set printing mode back to false
+      setIsPrinting(false);
     });
   }, 100);
 };
-
-

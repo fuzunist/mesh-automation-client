@@ -1,30 +1,52 @@
 import { useState } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+// import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import AutomaticTab from "./components/Tabs/AutomaticTab";
 import ManuelTab from "./components/Tabs/ManuelTab";
 import KesmeTab from "./components/Tabs/KesmeTab";
-
+import Header from "./components/Header";
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
 function App() {
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(1);
   const handleTabChange = (index) => setTabIndex(index);
-
+  console.log(tabIndex, "tabb");
   return (
-    <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
-      <TabList>
-        <Tab>Otomatik Hesapla</Tab>
-        <Tab>Manuel Hesapla</Tab>
-        <Tab>Kesme</Tab>
-      </TabList>
+    <Tabs value="1">
+      <Header>
+        <TabsHeader
+          className="bg-transparent"
+          indicatorProps={{
+            className: "bg-gray-900/10 shadow-none !text-gray-900",
+          }}
+        >
+          <Tab key={"auto"} value={"1"}>
+            Otomatik Hesapla
+          </Tab>
+          <Tab key={"manuel"} value={"2"}>
+            Manuel Hesapla
+          </Tab>
+          <Tab key={"kesme"} value={"3"}>
+            Kesme
+          </Tab>
+        </TabsHeader>
+      </Header>
 
-      <TabPanel>
-        <AutomaticTab />
-      </TabPanel>
-      <TabPanel>
-        <ManuelTab />
-      </TabPanel>
-      <TabPanel>
-        <KesmeTab />
-      </TabPanel>
+      <TabsBody>
+        <TabPanel key={"auto"} value={"1"}>
+          <AutomaticTab />
+        </TabPanel>
+        <TabPanel key={"manuel"} value={"2"}>
+          <ManuelTab />
+        </TabPanel>
+        <TabPanel key={"kesme"} value={"3"}>
+          <KesmeTab />
+        </TabPanel>
+      </TabsBody>
     </Tabs>
   );
 }

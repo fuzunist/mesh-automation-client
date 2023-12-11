@@ -54,7 +54,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="">
       <Helmet>
         <title>Otomatik Hasır Hesap</title>
       </Helmet>
