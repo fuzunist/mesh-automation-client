@@ -7,7 +7,7 @@ const Input = ({ type, value, onChange, ...props }) => {
 
         // If inputValue is NaN, set it to an empty string or a default numeric value
         if (type === 'number' && isNaN(inputValue)) {
-            inputValue = 0; // or use 0 or any other default number if you prefer
+            inputValue = ""; // or use 0 or any other default number if you prefer
         }
 
         onChange(inputValue);
