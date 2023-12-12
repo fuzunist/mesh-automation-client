@@ -1,8 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import MeshInfoTable from "./MeshInfoTable";
-import DownloadButton from "../Buttons/DownloadButton";
 import MeshSVG from "./MeshSVG";
-import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 import MeshLogo from "./MeshLogo";
 
 const ManuelMesh = ({

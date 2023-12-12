@@ -17,7 +17,7 @@ const DownloadButton = ({ clickFunction, title }) => {
         boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
         transition: "background-color 0.3s",
       }}
-      className="bg-black hover:bg-blue-500"
+      className="bg-black hover:bg-button-new-hover"
       
       
     >

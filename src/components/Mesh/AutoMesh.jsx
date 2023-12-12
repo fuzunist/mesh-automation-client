@@ -1,8 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import MeshInfoTable from "./MeshInfoTable";
-import DownloadButton from "../Buttons/DownloadButton";
-import DownloadButton2 from "../Buttons/DownloadButton2";
-import { downloadAsPdf, downloadAsPng } from "@/utils/downloads";
 import MeshSVG from "./MeshSVG";
 import MeshLogo from "./MeshLogo";
 

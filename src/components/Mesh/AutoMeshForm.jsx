@@ -3,6 +3,7 @@ import Input from "../Input";
 import { initialValues, meshTypeOptions } from "../../contants/meshValues";
 import meshFeatures from "../../contants/meshFeatures";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
+import KesmeButton from "../Buttons/KesmeButton";
 
 const AutoMeshForm = ({
   mesh,
@@ -11,7 +12,7 @@ const AutoMeshForm = ({
   calculated,
   setShowMessage,
   filamentError,
-  setFilamentError
+  setFilamentError,
 }) => {
   const isButtonDisabled =
     !mesh.type ||
@@ -275,15 +276,10 @@ const AutoMeshForm = ({
         </div>
       </div>
       <div className="flex  xl:-mt-2">
-        <button
-          className={`text-white w-45 h-full text-sm font-semibold truncate px-2 py-[4.5px] mb-0.2 rounded mt-2 ${
-            isButtonDisabled ? "bg-gray-400" : "bg-black hover:bg-blue-500"
-          }`}
-          disabled={isButtonDisabled}
-          onClick={openKesmeTab}
-        >
-          Kesmeye Gönder
-        </button>
+        <KesmeButton
+          isButtonDisabled={isButtonDisabled}
+          openKesmeTab={openKesmeTab}
+        />
       </div>
     </div>
   );

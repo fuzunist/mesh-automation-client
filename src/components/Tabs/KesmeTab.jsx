@@ -192,13 +192,13 @@ const KesmeTab = () => {
 
       <div className="mt-16 flex justify-center w-full space-x-5">
         <button
-          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-blue-500"
+          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
           onClick={handleDeleteAllKesme}
         >
           Sıfırla
         </button>
         <button
-          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-blue-500"
+          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
           onClick={() => printTable(setIsPrinting)}
         >
           Yazdır

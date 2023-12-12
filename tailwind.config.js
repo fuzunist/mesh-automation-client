@@ -88,6 +88,7 @@ export default withMT({
         "table-green-third-line": "#D7E5D3",
         "table-yellow-first-line": "#E2AC5D",
         "table-yellow-second-line": "#E5DAC3",
+        "button-new-hover": "#c90e0c",
 
         success: "#10c469",
         pink: "#ff8acc",
@@ -112,4 +113,4 @@ export default withMT({
     },
   },
   plugins: [],
-})
+});
