@@ -11,6 +11,7 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
+
 function App() {
   const [tabIndex, setTabIndex] = useState(1);
   const handleTabChange = (index) => setTabIndex(index);
@@ -19,18 +20,18 @@ function App() {
     <Tabs value="1">
       <Header>
         <TabsHeader
-          className="bg-transparent"
+          className="bg-transparent justify-center items-center w-full "
           indicatorProps={{
             className: "bg-gray-900/10 shadow-none !text-gray-900",
           }}
         >
-          <Tab key={"auto"} value={"1"}>
+          <Tab className="text-sm lg:text-base" key={"auto"} value={"1"}>
             Otomatik Hesapla
           </Tab>
-          <Tab key={"manuel"} value={"2"}>
+          <Tab className="text-sm lg:text-base" key={"manuel"} value={"2"}>
             Manuel Hesapla
           </Tab>
-          <Tab key={"kesme"} value={"3"}>
+          <Tab className="text-sm lg:text-base" key={"kesme"} value={"3"}>
             Kesme
           </Tab>
         </TabsHeader>

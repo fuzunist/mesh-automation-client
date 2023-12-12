@@ -11,8 +11,8 @@ const MeshInfoTable = ({
 }) => {
   const diameterText =
     diameter[0] === diameter[1]
-      ? `Tamamı ${diameter[0]} cm nervürlüdür.`
-      : `Boy ${diameter[0]} cm nervürlüdür. En ${diameter[1]} cm nervürlüdür.`;
+      ? `Tamamı Ø ${diameter[0]} mm nervürlüdür.`
+      : `Boy ${diameter[0]} mm nervürlüdür. En ${diameter[1]} mm nervürlüdür.`;
 
   return (
     <div
@@ -54,7 +54,7 @@ const MeshInfoTable = ({
                             <tr >
                               <td className="p-1 font-bold">1 ADET AĞIRLIK:</td>
                               <td className="p-1">
-                                {unitMeshWeight.toFixed(2)}
+                                {unitMeshWeight.toFixed(2)} +/- 0,5 KG
                               </td>
                             </tr>
                             <tr >

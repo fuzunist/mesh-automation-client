@@ -118,12 +118,13 @@ const MeshSVG = ({
             <g>
               {/* Position the backFilament text at the left */}
               <text
-                x={widthSticks[0] - 15} // Use the first element's x position for the left
-                y={-15}
+                x={widthSticks[0] - 6}
+                y={-14}
                 fill="black"
                 textAnchor="start"
                 fontSize="8"
                 alignmentBaseline="after-edge"
+                transform={`rotate(-90 ${widthSticks[0] - 6} -15)`}
               >
                 {backFilament}
               </text>
@@ -135,19 +136,15 @@ const MeshSVG = ({
                     <text
                       className="break-all"
                       key={`w-num-${index}`}
-                      x={(stick + widthSticks[index - 1]) / 2}
-                      y={-18} // Adjusted for better alignment
+                      x={(stick + widthSticks[index - 1]) / 2 + 4}
+                      y={-12} // Adjusted for better alignment
                       fill="black"
                       textAnchor="middle"
                       fontSize="8"
                       // alignmentBaseline="after-edge"
-                      transform={
-                        widthSticks.length >= 25 && type == "manuel"
-                          ? `rotate(-90, ${
-                              (stick + widthSticks[index - 1]) / 2
-                            }, -15)`
-                          : ""
-                      }
+                      transform={`rotate(-90, ${
+                        (stick + widthSticks[index - 1]) / 2
+                      }, -15)`}
                     >
                       {apertureSize[1].toFixed(type === "auto" ? 0 : 2)}
                     </text>
@@ -156,12 +153,15 @@ const MeshSVG = ({
 
               {/* Position the frontFilament text at the right */}
               <text
-                x={widthSticks[widthSticks.length - 1] + 15} // Use the last element's x position for the right
-                y={-15}
+                x={widthSticks[widthSticks.length - 1] + 18}
+                y={-19}
                 fill="black"
-                textAnchor="end"
+                textAnchor="start"
                 fontSize="8"
                 alignmentBaseline="after-edge"
+                transform={`rotate(-90 ${
+                  widthSticks[widthSticks.length - 1] + 18
+                } -15)`}
               >
                 {frontFilament}
               </text>

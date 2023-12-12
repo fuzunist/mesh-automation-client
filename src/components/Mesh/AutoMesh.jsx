@@ -70,7 +70,7 @@ const AutoMesh = ({
   }, [widthSticks, heightSticks, width, height]);
 
   return (
-    <div className="flex flex-col items-center place-content-center ">
+    <div className="flex flex-col items-center justify-center  place-content-center ">
       <MeshLogo containerSize={containerSize} />
       <MeshSVG
         svgRef={svgRef}

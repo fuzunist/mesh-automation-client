@@ -108,7 +108,7 @@ export default withMT({
       sm: "580px",
       md: "720px",
       lg: "960px",
-      xl: "1280px",
+      xl: "1400px",
     },
   },
   plugins: [],
