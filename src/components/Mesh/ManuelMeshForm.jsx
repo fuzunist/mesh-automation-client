@@ -220,7 +220,7 @@ const ManuelMeshForm = ({
           </div>
         </div>
         <div className="w-full flex-col md:w-auto flex justify-between items-center">
-          <span className="flex-1 text-sm font-semibold">Sağ Filiz Boyu:</span>
+          <span className="flex-1 text-sm font-semibold">Sol Filiz Boyu:</span>
           <div className="flex-1 w-full md:w-[120px]">
             <Input
               id="noArrow"
@@ -238,7 +238,7 @@ const ManuelMeshForm = ({
           </div>
         </div>
         <div className="w-full flex-col md:w-auto flex justify-between items-center">
-          <span className="flex-1 text-sm font-semibold">Sol Filiz Boyu:</span>
+          <span className="flex-1 text-sm font-semibold">Sağ Filiz Boyu:</span>
           <div className="flex-1 w-full md:w-[120px]">
             <Input
               id="noArrow"
