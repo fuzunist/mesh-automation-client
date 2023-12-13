@@ -1,6 +1,12 @@
 import React from 'react'
+import { parseToFloat } from '@/utils/tableHelpers';
 
 const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
+
+  const diameterValue0 = parseToFloat(manuelMesh.diameter[0]);
+  const diameterValue1 = parseToFloat(manuelMesh.diameter[1]);
+
+
   return (
     <div className="flex w-full -mt-5 ">
           <div className="flex  w-full justify-between gap-x-4">
@@ -209,10 +215,10 @@ const ManualCalculationTable = ({manuelCalculated, manuelMesh}) => {
                 <tbody className="bg-white">
                   <tr>
                     <td className="border p-2 font-bold text-black bg-table-blue-second-line">
-                      {manuelMesh.diameter[0]?.toFixed(2) || "N/A"}
+                    {diameterValue0 !== null ? diameterValue0.toFixed(2) : "N/A"}
                     </td>
                     <td className="border p-2 font-bold text-black bg-table-blue-second-line">
-                      {manuelMesh.diameter[1]?.toFixed(2) || "N/A"}
+                    {diameterValue1 !== null ? diameterValue1.toFixed(2) : "N/A"}
                     </td>
 
                     <td className="border p-2 font-bold text-black bg-table-blue-third-line">
