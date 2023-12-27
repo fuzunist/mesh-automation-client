@@ -98,7 +98,7 @@ const KesmeTabSeparateSum = () => {
       {!isLoading && !isError && (
         <div className="overflow-x-auto w-[80%]">
           <table
-            id="kesmeTable"
+            id="kesmeSeparateSumTable"
             className="w-full border-collapse border text-xs border-gray-800 text-center"
           >
             <thead>
@@ -282,7 +282,7 @@ const KesmeTabSeparateSum = () => {
         </button>
         <button
           className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-          onClick={() => printTable(setIsPrinting, "kesmeTable")}
+          onClick={() => printTable(setIsPrinting, "kesmeSeparateSumTable")}
         >
           Yazdır
         </button>

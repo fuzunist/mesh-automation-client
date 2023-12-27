@@ -27,7 +27,7 @@ export const printTable = (setIsPrinting, tableId) => {
   // Function to change background color based on tableId
   const changeBackgroundColor = (color, tableId) => {
     let selector = "";
-    if (tableId === "kesmeTable") {
+    if (tableId === "kesmeTable" || tableId === "kesmeSeparateSumTable" || tableId === "kesmeApplicationTable") {
       selector =
         "#kesmeTable tr, .bg-table-blue-first-line, .bg-table-blue-second-line, .bg-table-blue-third-line, .bg-table-green-first-line, .bg-table-green-second-line, .bg-table-green-third-line, .bg-red-500, .bg-red-200, .bg-red-100";
     } else if (tableId === "orderTable") {
