@@ -1,6 +1,7 @@
 import Input from "../Input";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
-import KesmeButton from "../Buttons/KesmeButton";
+import { useAddOrderMutation } from "../../store/reducers/kesme";
+import SiparisButton from "../Buttons/SiparisButton";
 
 const ManuelMeshForm = ({
   manuelCalculated,
@@ -30,6 +31,14 @@ const ManuelMeshForm = ({
         console.error("An error occurred in myData query:", error);
       },
     });
+
+    const [addOrder, { isLoading: addOrderIsLoading, isError: addOrderIsError }] =
+    useAddOrderMutation({
+      onError: (error) => {
+        console.error("An error occurred in myData query:", error);
+      },
+    });
+
   const openKesmeTabFromManual = () => {
     if (!isButtonDisabled) {
       const kesmeData = {
@@ -53,6 +62,48 @@ const ManuelMeshForm = ({
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 2000);
     }
+  };
+
+  const openOrdersTabFromManual = () => {
+    if (!isButtonDisabled) {
+      const orderData = {
+        information: {
+          mesh_type: manuelMesh.type,
+          mesh_code: "-",
+          mesh_name: "-",
+        },
+        stick: {
+          height_diameter: parseFloat(manuelMesh.diameter[0].toFixed(2)),
+          width_diameter: parseFloat(manuelMesh.diameter[1].toFixed(2)),
+          height_apertureSize: parseFloat(manuelCalculated.apertureSize[0].toFixed(2)),
+          width_apertureSize: parseFloat(manuelCalculated.apertureSize[1].toFixed(2)),
+          back_filament: parseFloat(manuelMesh.backFilament.toFixed(2)),
+          front_filament: parseFloat(manuelMesh.frontFilament.toFixed(2)),
+          left_filament: parseFloat(manuelMesh.leftFilament.toFixed(2)),
+          right_filament: parseFloat(manuelMesh.rightFilament.toFixed(2)),
+        },
+        mesh: {
+          height_number_of_sticks: parseFloat(manuelMesh.numberOfSticks[0].toFixed(2)),
+          width_number_of_sticks: parseFloat(manuelMesh.numberOfSticks[1].toFixed(2)),
+          unit_mesh_weight: parseFloat(manuelCalculated.unitMeshWeight.toFixed(2)),
+        },
+        order: {
+          piece: parseInt(manuelMesh.piece, 10),
+          total_weight: parseFloat(manuelCalculated.totalWeight.toFixed(2)),
+        },
+      };
+  
+      addOrder(orderData);
+      setShowMessage(true);
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1500);
+    }
+  };
+
+  const handleKesmeButtonClick = () => {
+    openKesmeTabFromManual();
+    openOrdersTabFromManual();
   };
 
   return (
@@ -274,7 +325,7 @@ const ManuelMeshForm = ({
         </div>
       </div>
       <div className="flex  xl:-mt-2">
-       <KesmeButton isButtonDisabled={isButtonDisabled} openKesmeTab={openKesmeTabFromManual} />
+       <SiparisButton isButtonDisabled={isButtonDisabled} openKesmeTab={handleKesmeButtonClick} />
       </div>
     </div>
   );

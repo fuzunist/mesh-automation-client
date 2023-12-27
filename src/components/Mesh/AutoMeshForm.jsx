@@ -2,8 +2,8 @@ import Select from "../Select";
 import Input from "../Input";
 import { initialValues, meshTypeOptions } from "../../contants/meshValues";
 import meshFeatures from "../../contants/meshFeatures";
-import { useAddKesmeMutation } from "../../store/reducers/kesme";
-import KesmeButton from "../Buttons/KesmeButton";
+import { useAddOrderMutation } from "../../store/reducers/kesme";
+import SiparisButton from "../Buttons/SiparisButton";
 
 const AutoMeshForm = ({
   mesh,
@@ -23,37 +23,58 @@ const AutoMeshForm = ({
     !mesh.piece ||
     filamentError;
 
-  const [addKesme, { isLoading: addKesmeIsLoading, isError: addKesmeIsError }] =
-    useAddKesmeMutation({
+ 
+
+  const [addOrder, { isLoading: addOrderIsLoading, isError: addOrderIsError }] =
+    useAddOrderMutation({
       onError: (error) => {
         console.error("An error occurred in myData query:", error);
       },
     });
+
   // Function to opnen "KESME" tab
-  const openKesmeTab = () => {
+
+
+  const openOrdersTab = () => {
     if (!isButtonDisabled) {
-      const kesmeData = {
-        height_stick: {
-          diameter: calculated.diameter[0],
-          height: mesh.height,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[0],
-          total_height_weight: mesh.piece * calculated.totalHeigthWeight,
+      const orderData = {
+        information: {
+          mesh_type: mesh.type,
+          mesh_code: mesh.code,
+          mesh_name: mesh.name,
         },
-        width_stick: {
-          diameter: calculated.diameter[1],
-          height: mesh.width,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[1],
-          total_width_weight: mesh.piece * calculated.totalWidthWeight,
+        stick: {
+          height_diameter: parseFloat(calculated.diameter[0].toFixed(2)),
+          width_diameter: parseFloat(calculated.diameter[1].toFixed(2)),
+          height_apertureSize: parseFloat(calculated.apertureSize[0].toFixed(2)),
+          width_apertureSize: parseFloat(calculated.apertureSize[1].toFixed(2)),
+          back_filament: parseFloat(calculated.backFilament.toFixed(2)),
+          front_filament: parseFloat(calculated.frontFilament.toFixed(2)),
+          left_filament: parseFloat(calculated.leftFilament.toFixed(2)),
+          right_filament: parseFloat(calculated.rightFilament.toFixed(2)),
+        },
+        mesh: {
+          height_number_of_sticks: parseFloat(calculated.numberOfSticks[0].toFixed(2)),
+          width_number_of_sticks: parseFloat(calculated.numberOfSticks[1].toFixed(2)),
+          unit_mesh_weight: parseFloat(calculated.unitMeshWeight.toFixed(2)),
+          length_of_height_stick: parseFloat(mesh.height.toFixed(2)),
+          length_of_width_stick: parseFloat(mesh.width.toFixed(2)),
+        },
+        order: {
+          piece: parseInt(mesh.piece, 10),
+          total_weight: parseFloat(calculated.totalWeight.toFixed(2)),
         },
       };
-
-      addKesme(kesmeData);
+  
+      addOrder(orderData);
       setShowMessage(true);
       setTimeout(() => {
         setShowMessage(false);
       }, 1500);
     }
   };
+  
+  
 
   const handleTypeChange = (value) => {
     setMesh((prevMesh) => {
@@ -64,6 +85,11 @@ const AutoMeshForm = ({
       }
     });
   };
+
+  const handleKesmeButtonClick = () => {
+    openOrdersTab();
+  };
+  
 
   return (
     <div className="flex flex-col xl:flex-row xl:items-end items-center gap-2  justify-center">
@@ -275,10 +301,10 @@ const AutoMeshForm = ({
           </div>
         </div>
       </div>
-      <div className="flex  xl:-mt-2">
-        <KesmeButton
+      <div className="flex xl:-mt-2">
+        <SiparisButton
           isButtonDisabled={isButtonDisabled}
-          openKesmeTab={openKesmeTab}
+          openKesmeTab={handleKesmeButtonClick}
         />
       </div>
     </div>

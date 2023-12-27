@@ -30,6 +30,7 @@ const kesme = createApi({
       },
       providesTags: ["Kesme"],
     }),
+
     addKesme: builder.mutation({
       query: (kesme) => ({
         url: `/kesme`,
@@ -54,6 +55,45 @@ const kesme = createApi({
       }),
       invalidatesTags: ["Kesme"],
     }),
+
+    getAllOrder: builder.query({
+      query: () => "/order",
+      keepUnusedDataFor: 300,
+      transformResponse: (res) => {
+        let transformedArray = [];
+        res.forEach((order) => {
+          return transformedArray.push(order);
+        });
+
+        return transformedArray;
+      },
+      providesTags: ["orders"],
+    }),
+    
+    addOrder: builder.mutation({
+      query: (order) => ({
+        url: `/order`,
+        method: "POST",
+        body: { order_details: order },
+      }),
+      invalidatesTags: ["orders"],
+    }),
+
+    deleteOrder: builder.mutation({
+      query: (order_id) => ({
+        url: `/order/${order_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["orders"],
+    }),
+
+    deleteAllOrder: builder.mutation({
+      query: () => ({
+        url: `/order/delete/all`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["orders"],
+    }),
   }),
 });
 export const {
@@ -61,5 +101,9 @@ export const {
   useAddKesmeMutation,
   useDeleteKesmeMutation,
   useDeleteAllKesmeMutation,
+  useGetAllOrderQuery,
+  useAddOrderMutation,
+  useDeleteOrderMutation,
+  useDeleteAllOrderMutation,
 } = kesme;
 export default kesme;

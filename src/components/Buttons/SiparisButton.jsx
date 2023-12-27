@@ -1,4 +1,4 @@
-const KesmeButton = ({isButtonDisabled, openKesmeTab}) => {
+const SiparisButton = ({isButtonDisabled, openKesmeTab}) => {
   return (
     <button
       className={`text-white h-full font-bold truncate px-2 py-[4.5px] rounded ${
@@ -7,9 +7,9 @@ const KesmeButton = ({isButtonDisabled, openKesmeTab}) => {
       disabled={isButtonDisabled}
       onClick={openKesmeTab}
     >
-      Kesmeye Gönder
+      Siparişe Gönder
     </button>
   );
 };
 
-export default KesmeButton;
+export default SiparisButton;

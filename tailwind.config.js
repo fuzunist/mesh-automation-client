@@ -88,6 +88,16 @@ export default withMT({
         "table-green-third-line": "#D7E5D3",
         "table-yellow-first-line": "#E2AC5D",
         "table-yellow-second-line": "#E5DAC3",
+        "table-purple-first-line": "#9370DB",
+        "table-purple-second-line": "#BDA0CB",
+        "table-purple-third-line": "#E6E6FA",
+        "table-teal-first-line": "#20B2AA",
+        "table-teal-second-line": "#b6e3e3",
+        "table-teal-third-line": "#9fcfcf",
+        "table-brown-first-line": "#BC8F8F",
+        "table-brown-second-line": "#D2B48C",
+        "table-brown-third-line": "#DEB887",
+
         "button-new-hover": "#c90e0c",
 
         success: "#10c469",

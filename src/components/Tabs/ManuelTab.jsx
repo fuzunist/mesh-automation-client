@@ -148,7 +148,7 @@ const ManuelTab = ({}) => {
             )}
             {showMessage && (
               <div className="my-2 text-md text-green-500 rounded ">
-                Kesme'ye başarıyla eklendi.
+                Siparişlere başarıyla eklendi.
               </div>
             )}
           </div>
