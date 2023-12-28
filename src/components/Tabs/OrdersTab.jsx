@@ -35,7 +35,7 @@ const OrdersTab = ( { enableKesmeTab } ) => {
           }}>
         <Tab value={"7"}>Orijinal Sipariş Tablosu</Tab>
           <Tab value={"8"}>Yarı Otomatik Hesap</Tab>
-          <Tab value={"9"}>Tam Otomatik Hesap</Tab>
+          <Tab value={"9"}>Tam Otomatik Hesap (Beta)</Tab>
         </TabsHeader>
      
       
