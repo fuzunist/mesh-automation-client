@@ -528,7 +528,7 @@ const OrdersTabOriginalTable = () => {
           <div className="overflow-x-auto min-w-min">
             <table
               id="orderTable"
-              className="w-full border-collapse border text-xs border-gray-800 text-center"
+              className="w-full border-collapse border text-xs border-gray-800 text-center items-center justify-center align-middle"
             >
               <thead>
                 {/* Conditional rendering based on isTableSmall */}
@@ -970,17 +970,21 @@ const OrdersTabOriginalTable = () => {
                   );
                 })()}
               </tbody>
+              <tfoot className="border-0" >
+                <tr className=" w-full border-0">
+                  <td
+                    colSpan="100%"
+                    className="p-2 text-base font-medium text-black text-center border-0 "
+                  >
+                    Bu siparişin toplam ağırlığı: {totalWeight.toFixed(2)} kg
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         )}
 
         <div className="mt-6 flex flex-col">
-          <div className="mb-4 bg-table-yellow-second-line w-full p-4 shadow-md rounded-lg flex justify-center items-center">
-            <span className="font-medium text-lg text-black">
-              Bu siparişin toplam ağırlığı: {totalWeight.toFixed(2)} kg
-            </span>
-          </div>
-
           <div className="mt-6 flex justify-center w-full space-x-5">
             <button
               className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
