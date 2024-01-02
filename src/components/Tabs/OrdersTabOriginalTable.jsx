@@ -31,7 +31,8 @@ const OrdersTabOriginalTable = () => {
   const [historyStack, setHistoryStack] = useState([]);
   const [applyColorChange, setApplyColorChange] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-const [idToDelete, setIdToDelete] = useState(null);
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [totalWeight, setTotalWeight] = useState(0);
 
   const {
     data: orderList,
@@ -71,12 +72,36 @@ const [idToDelete, setIdToDelete] = useState(null);
     setIsTableSmall(!isTableSmall);
   };
 
-  console.log("oderListi set lemeden önce, original tab",orderList );
+  console.log("oderListi set lemeden önce, original tab", orderList);
 
   useEffect(() => {
-    
     setSortedOrderList(orderList); // Initialize sortedOrderList with orderList
   }, [orderList]);
+
+  useEffect(() => {
+    if (
+      (isTableSmall ? sortedOrderList : orderList) &&
+      (isTableSmall ? sortedOrderList.length : orderList.length)
+    ) {
+      const sum = (isTableSmall ? sortedOrderList : orderList).reduce(
+        (acc, order) => {
+          // Check if the nested properties exist
+          if (
+            order.order_details &&
+            order.order_details.order &&
+            order.order_details.order.total_weight
+          ) {
+            return (
+              acc + (parseFloat(order.order_details.order.total_weight) || 0)
+            );
+          }
+          return acc;
+        },
+        0
+      );
+      setTotalWeight(sum);
+    }
+  }, [orderList, sortedOrderList, isTableSmall]);
 
   const handleSortByHeightStick = (orderListParam) => {
     setApplyColorChange(true);
@@ -498,484 +523,493 @@ const [idToDelete, setIdToDelete] = useState(null);
 
   return (
     <>
-    <div className="flex flex-col w-full items-center">
-      {!isLoading && !isError && (
-        <div className="overflow-x-auto min-w-min">
-          <table
-            id="orderTable"
-            className="w-full border-collapse border text-xs border-gray-800 text-center"
-          >
-            <thead>
-              {/* Conditional rendering based on isTableSmall */}
-              {isTableSmall ? (
-                // Headers for the smaller version of the table
-                <tr>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    HASIR KODU
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    HASIR TİPİ
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    HASIR İSMİ
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    BOY ÇUBUK UZUNLUĞU
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    EN ÇUBUK UZUNLUĞU
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    ÖN FİLİZ BOYU
-                  </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                    SİPARİŞ SAYISI
-                  </th>
-                  {showCheckboxes && (
+      <div className="flex flex-col w-full items-center">
+        {!isLoading && !isError && (
+          <div className="overflow-x-auto min-w-min">
+            <table
+              id="orderTable"
+              className="w-full border-collapse border text-xs border-gray-800 text-center"
+            >
+              <thead>
+                {/* Conditional rendering based on isTableSmall */}
+                {isTableSmall ? (
+                  // Headers for the smaller version of the table
+                  <tr>
                     <th className="border p-2 font-bold text-black bg-table-blue-first-line">
-                      SEÇ
-                    </th>
-                  )}{" "}
-                  {/* Conditional rendering */}
-                </tr>
-              ) : (
-                // Headers for the full version of the table
-                <>
-                  <tr>
-                    <th
-                      colSpan="3"
-                      className="border p-2 font-bold uppercase text-black bg-table-teal-first-line"
-                    >
-                      BİLGİLER
-                    </th>
-                    <th
-                      colSpan="8"
-                      className="border p-2 font-bold uppercase text-black bg-table-blue-first-line"
-                    >
-                      ÇUBUK
-                    </th>
-                    <th
-                      colSpan="5"
-                      className="border p-2 font-bold uppercase text-black bg-table-green-first-line"
-                    >
-                      HASIR
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold uppercase text-black bg-table-yellow-first-line"
-                    >
-                      SİPARİŞ
-                    </th>
-                    {!isPrinting && (
-                      <th className="border p-2 font-bold uppercase text-black bg-red-500"></th>
-                    )}
-                  </tr>
-                  <tr>
-                    <th className="border p-2 font-bold text-black bg-table-teal-second-line">
                       HASIR KODU
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-teal-third-line">
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
                       HASIR TİPİ
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-teal-second-line">
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
                       HASIR İSMİ
                     </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      ÇAPI
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                      BOY ÇUBUK UZUNLUĞU
                     </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-third-line"
-                    >
-                      ARALIĞI
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                      EN ÇUBUK UZUNLUĞU
                     </th>
-                    <th
-                      colSpan="4"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      FİLİZLERİ
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                      ÖN FİLİZ BOYU
                     </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
-                    >
-                      ÇUBUK SAYISI
+                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                      SİPARİŞ SAYISI
                     </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold text-black uppercase bg-table-green-second-line"
-                    >
-                      ÇUBUK UZUNLUĞU
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
-                    >
-                      TOPLAM
-                    </th>
-                    <th
-                      colSpan="2"
-                      className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
-                    >
-                      TOPLAM
-                    </th>
-                    {!isPrinting && (
-                      <th className="border p-2 font-bold uppercase text-black bg-red-100"></th>
-                    )}
-                  </tr>
-                  <tr className="bg-slate-50">
-                    <th className="border p-2 font-bold text-black bg-table-teal-second-line">
-                      Kodu
-                    </th>
-                    <th className="border p-2 font-bold text-black bg-table-teal-third-line">
-                      Tipi
-                    </th>
-                    <th className="border p-2 font-bold text-black bg-table-teal-second-line">
-                      İsmi
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-blue-second-line">
-                      BOY
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-blue-second-line">
-                      EN
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-blue-third-line">
-                      BOY
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-blue-third-line">
-                      EN
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      ARKA
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      ÖN
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      SAĞ
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
-                    >
-                      SOL
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-green-third-line">
-                      BOY
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-green-third-line">
-                      EN
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-green-second-line">
-                      BOY
-                    </th>
-                    <th className="border p-2 font-bold text-black uppercase bg-table-green-second-line">
-                      EN
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
-                    >
-                      AĞIRLIK
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
-                    >
-                      ADET
-                    </th>
-                    <th
-                      colSpan="1"
-                      className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
-                    >
-                      AĞIRLIK
-                    </th>
-                    {!isPrinting && (
-                      <th className="border p-2 font-bold uppercase text-black bg-red-100">
-                        SATIR SİL
+                    {showCheckboxes && (
+                      <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                        SEÇ
                       </th>
-                    )}
+                    )}{" "}
+                    {/* Conditional rendering */}
                   </tr>
-                </>
-              )}
-            </thead>
+                ) : (
+                  // Headers for the full version of the table
+                  <>
+                    <tr>
+                      <th
+                        colSpan="3"
+                        className="border p-2 font-bold uppercase text-black bg-table-teal-first-line"
+                      >
+                        BİLGİLER
+                      </th>
+                      <th
+                        colSpan="8"
+                        className="border p-2 font-bold uppercase text-black bg-table-blue-first-line"
+                      >
+                        ÇUBUK
+                      </th>
+                      <th
+                        colSpan="5"
+                        className="border p-2 font-bold uppercase text-black bg-table-green-first-line"
+                      >
+                        HASIR
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold uppercase text-black bg-table-yellow-first-line"
+                      >
+                        SİPARİŞ
+                      </th>
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-500"></th>
+                      )}
+                    </tr>
+                    <tr>
+                      <th className="border p-2 font-bold text-black bg-table-teal-second-line">
+                        HASIR KODU
+                      </th>
+                      <th className="border p-2 font-bold text-black bg-table-teal-third-line">
+                        HASIR TİPİ
+                      </th>
+                      <th className="border p-2 font-bold text-black bg-table-teal-second-line">
+                        HASIR İSMİ
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        ÇAPI
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-third-line"
+                      >
+                        ARALIĞI
+                      </th>
+                      <th
+                        colSpan="4"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        FİLİZLERİ
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
+                      >
+                        ÇUBUK SAYISI
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold text-black uppercase bg-table-green-second-line"
+                      >
+                        ÇUBUK UZUNLUĞU
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
+                      >
+                        TOPLAM
+                      </th>
+                      <th
+                        colSpan="2"
+                        className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
+                      >
+                        TOPLAM
+                      </th>
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-100"></th>
+                      )}
+                    </tr>
+                    <tr className="bg-slate-50">
+                      <th className="border p-2 font-bold text-black bg-table-teal-second-line">
+                        Kodu
+                      </th>
+                      <th className="border p-2 font-bold text-black bg-table-teal-third-line">
+                        Tipi
+                      </th>
+                      <th className="border p-2 font-bold text-black bg-table-teal-second-line">
+                        İsmi
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-blue-second-line">
+                        BOY
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-blue-second-line">
+                        EN
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-blue-third-line">
+                        BOY
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-blue-third-line">
+                        EN
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        ARKA
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        ÖN
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        SAĞ
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-blue-second-line"
+                      >
+                        SOL
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-green-third-line">
+                        BOY
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-green-third-line">
+                        EN
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-green-second-line">
+                        BOY
+                      </th>
+                      <th className="border p-2 font-bold text-black uppercase bg-table-green-second-line">
+                        EN
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-green-third-line"
+                      >
+                        AĞIRLIK
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
+                      >
+                        ADET
+                      </th>
+                      <th
+                        colSpan="1"
+                        className="border p-2 font-bold text-black uppercase bg-table-yellow-second-line"
+                      >
+                        AĞIRLIK
+                      </th>
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-100">
+                          SATIR SİL
+                        </th>
+                      )}
+                    </tr>
+                  </>
+                )}
+              </thead>
 
-            <tbody className="bg-white">
-              {(() => {
-                let previousLengthOfHeightStick = null;
-                let useBlueBackground = true;
-                let bgClassMeshCode,
-                  bgClassMeshType,
-                  bgClassMeshName,
-                  bgClassBlueSecond,
-                  bgClassBlueThird,
-                  bgClassYellowSecond,
-                  bgClassGreenSecond,
-                  bgClassGreenThird;
+              <tbody className="bg-white">
+                {(() => {
+                  let previousLengthOfHeightStick = null;
+                  let useBlueBackground = true;
+                  let bgClassMeshCode,
+                    bgClassMeshType,
+                    bgClassMeshName,
+                    bgClassBlueSecond,
+                    bgClassBlueThird,
+                    bgClassYellowSecond,
+                    bgClassGreenSecond,
+                    bgClassGreenThird;
 
-                return (isTableSmall ? sortedOrderList : orderList).map(
-                  ({ order_details: order, id: order_id }, index) => {
-                    if (applyColorChange) {
-                      if (
-                        previousLengthOfHeightStick !== null &&
-                        previousLengthOfHeightStick !==
-                          order.mesh.length_of_height_stick
-                      ) {
-                        useBlueBackground = !useBlueBackground;
+                  return (isTableSmall ? sortedOrderList : orderList).map(
+                    ({ order_details: order, id: order_id }, index) => {
+                      if (applyColorChange) {
+                        if (
+                          previousLengthOfHeightStick !== null &&
+                          previousLengthOfHeightStick !==
+                            order.mesh.length_of_height_stick
+                        ) {
+                          useBlueBackground = !useBlueBackground;
+                        }
+                        previousLengthOfHeightStick =
+                          order.mesh.length_of_height_stick;
+
+                        let dynamicBgClass = useBlueBackground
+                          ? "bg-table-blue-second-line"
+                          : "bg-table-yellow-second-line";
+                        bgClassMeshCode = dynamicBgClass;
+                        bgClassMeshType = dynamicBgClass;
+                        bgClassMeshName = dynamicBgClass;
+                        bgClassBlueSecond = dynamicBgClass;
+                        bgClassBlueThird = dynamicBgClass;
+                        bgClassYellowSecond = dynamicBgClass;
+                        bgClassGreenSecond = dynamicBgClass;
+                        bgClassGreenThird = dynamicBgClass;
+                      } else {
+                        bgClassMeshCode = "bg-table-teal-second-line";
+                        bgClassMeshType = "bg-table-teal-third-line";
+                        bgClassMeshName = "bg-table-teal-second-line";
+                        bgClassBlueSecond = "bg-table-blue-second-line";
+                        bgClassBlueThird = "bg-table-blue-third-line";
+                        bgClassYellowSecond = "bg-table-yellow-second-line";
+                        bgClassGreenSecond = "bg-table-green-second-line";
+                        bgClassGreenThird = "bg-table-green-third-line";
                       }
-                      previousLengthOfHeightStick =
-                        order.mesh.length_of_height_stick;
 
-                      let dynamicBgClass = useBlueBackground
-                        ? "bg-table-blue-second-line"
-                        : "bg-table-yellow-second-line";
-                      bgClassMeshCode = dynamicBgClass;
-                      bgClassMeshType = dynamicBgClass;
-                      bgClassMeshName = dynamicBgClass;
-                      bgClassBlueSecond = dynamicBgClass;
-                      bgClassBlueThird = dynamicBgClass;
-                      bgClassYellowSecond = dynamicBgClass;
-                      bgClassGreenSecond = dynamicBgClass;
-                      bgClassGreenThird = dynamicBgClass;
-                    } else {
-                      bgClassMeshCode = "bg-table-teal-second-line";
-                      bgClassMeshType = "bg-table-teal-third-line";
-                      bgClassMeshName = "bg-table-teal-second-line";
-                      bgClassBlueSecond = "bg-table-blue-second-line";
-                      bgClassBlueThird = "bg-table-blue-third-line";
-                      bgClassYellowSecond = "bg-table-yellow-second-line";
-                      bgClassGreenSecond = "bg-table-green-second-line";
-                      bgClassGreenThird = "bg-table-green-third-line";
-                    }
+                      return (
+                        <tr key={index + 1000} className="text-center">
+                          <td
+                            className={`border p-2 font-normal text-black ${bgClassMeshCode}`}
+                          >
+                            {order.information.mesh_code || "N/A"}
+                          </td>
+                          <td
+                            className={`border p-2 font-normal text-black ${bgClassMeshType}`}
+                          >
+                            {order.information.mesh_type || "N/A"}
+                          </td>
+                          <td
+                            className={`border p-2 font-normal text-black ${bgClassMeshName}`}
+                          >
+                            {order.information.mesh_name || "N/A"}
+                          </td>
 
-                    return (
-                      <tr key={index + 1000} className="text-center">
-                        <td
-                          className={`border p-2 font-normal text-black ${bgClassMeshCode}`}
-                        >
-                          {order.information.mesh_code || "N/A"}
-                        </td>
-                        <td
-                          className={`border p-2 font-normal text-black ${bgClassMeshType}`}
-                        >
-                          {order.information.mesh_type || "N/A"}
-                        </td>
-                        <td
-                          className={`border p-2 font-normal text-black ${bgClassMeshName}`}
-                        >
-                          {order.information.mesh_name || "N/A"}
-                        </td>
-
-                        {/* Additional columns for small-size table */}
-                        {isTableSmall && (
-                          <>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.mesh.length_of_height_stick + " cm" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.mesh.length_of_width_stick + " cm" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.front_filament + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
-                            >
-                              {order.order.piece + " adet" || "N/A"}
-                            </td>
-                            {showCheckboxes && (
+                          {/* Additional columns for small-size table */}
+                          {isTableSmall && (
+                            <>
                               <td
-                                className={`border p-2 text-black ${bgClassYellowSecond}`}
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
                               >
-                                <input
-                                  type="checkbox"
-                                  checked={!!checkedOrders[order_id]}
-                                  onChange={() =>
-                                    handleCheckboxChange(order, order_id)
-                                  }
-                                  disabled={
-                                    order_id !==
-                                      selectedMeshName?.firstClickedId &&
-                                    selectedMeshName &&
-                                    (selectedMeshName.meshName !==
-                                      order.information.mesh_name ||
-                                      selectedMeshName.heightStick !==
-                                        order.mesh.length_of_height_stick ||
-                                      selectedMeshName.frontFilament !==
-                                        order.stick.front_filament ||
-                                      (selectedMeshName.baseWidthStick !==
-                                        undefined &&
-                                        order.mesh.length_of_width_stick >
-                                          selectedMeshName.baseWidthStick))
-                                  }
-                                />
-                                {checkedCount > 1 &&
-                                  lastCheckedOrderId === order_id && (
-                                    <button
-                                      className="ml-2 text-white font-bold py-1 px-3 rounded bg-table-green-first-line"
-                                      onClick={() => handleBirlestir()}
-                                    >
-                                      Birleştir
-                                    </button>
-                                  )}
+                                {order.mesh.length_of_height_stick + " cm" ||
+                                  "N/A"}
                               </td>
-                            )}
-                          </>
-                        )}
-
-                        {/* Additional columns for full-size table */}
-                        {!isTableSmall && (
-                          <>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.height_diameter + " mm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.width_diameter + " mm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueThird}`}
-                            >
-                              {order.stick.height_apertureSize + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueThird}`}
-                            >
-                              {order.stick.width_apertureSize + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.back_filament + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.front_filament + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.left_filament + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
-                            >
-                              {order.stick.right_filament + " cm" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
-                            >
-                              {order.mesh.height_number_of_sticks + " adet" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
-                            >
-                              {order.mesh.width_number_of_sticks + " adet" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassGreenSecond}`}
-                            >
-                              {order.mesh.length_of_height_stick + " cm" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassGreenSecond}`}
-                            >
-                              {order.mesh.length_of_width_stick + " cm" ||
-                                "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
-                            >
-                              {order.mesh.unit_mesh_weight + " kg" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
-                            >
-                              {order.order.piece + " adet" || "N/A"}
-                            </td>
-                            <td
-                              className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
-                            >
-                              {order.order.total_weight + " kg" || "N/A"}
-                            </td>
-                            {!isPrinting && (
-                              <td className="border p-2 font-medium uppercase text-black bg-red-100">
-                                <button
-                                  className="bg-red-500 text-white font-bold py-1 px-3 rounded"
-                                  onClick={() => confirmDelete(order_id)}
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.mesh.length_of_width_stick + " cm" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.front_filament + " cm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
+                              >
+                                {order.order.piece + " adet" || "N/A"}
+                              </td>
+                              {showCheckboxes && (
+                                <td
+                                  className={`border p-2 text-black ${bgClassYellowSecond}`}
                                 >
-                                  X
-                                </button>
-                              </td>
-                            )}
-                          </>
-                        )}
-                      </tr>
-                    );
-                  }
-                );
-              })()}
-            </tbody>
-          </table>
-        </div>
-      )}
+                                  <input
+                                    type="checkbox"
+                                    checked={!!checkedOrders[order_id]}
+                                    onChange={() =>
+                                      handleCheckboxChange(order, order_id)
+                                    }
+                                    disabled={
+                                      order_id !==
+                                        selectedMeshName?.firstClickedId &&
+                                      selectedMeshName &&
+                                      (selectedMeshName.meshName !==
+                                        order.information.mesh_name ||
+                                        selectedMeshName.heightStick !==
+                                          order.mesh.length_of_height_stick ||
+                                        selectedMeshName.frontFilament !==
+                                          order.stick.front_filament ||
+                                        (selectedMeshName.baseWidthStick !==
+                                          undefined &&
+                                          order.mesh.length_of_width_stick >
+                                            selectedMeshName.baseWidthStick))
+                                    }
+                                  />
+                                  {checkedCount > 1 &&
+                                    lastCheckedOrderId === order_id && (
+                                      <button
+                                        className="ml-2 text-white font-bold py-1 px-3 rounded bg-table-green-first-line"
+                                        onClick={() => handleBirlestir()}
+                                      >
+                                        Birleştir
+                                      </button>
+                                    )}
+                                </td>
+                              )}
+                            </>
+                          )}
 
-      <div className="mt-16 flex justify-center w-full space-x-5">
-        <button
-          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-          onClick={handleDeleteAllOrder}
-        >
-          Sıfırla
-        </button>
-        <button
-          className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-          onClick={() => printTable(setIsPrinting, "orderTable")}
-        >
-          Yazdır
-        </button>
-        
+                          {/* Additional columns for full-size table */}
+                          {!isTableSmall && (
+                            <>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.height_diameter + " mm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.width_diameter + " mm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueThird}`}
+                              >
+                                {order.stick.height_apertureSize + " cm" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueThird}`}
+                              >
+                                {order.stick.width_apertureSize + " cm" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.back_filament + " cm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.front_filament + " cm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.left_filament + " cm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassBlueSecond}`}
+                              >
+                                {order.stick.right_filament + " cm" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
+                              >
+                                {order.mesh.height_number_of_sticks + " adet" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
+                              >
+                                {order.mesh.width_number_of_sticks + " adet" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassGreenSecond}`}
+                              >
+                                {order.mesh.length_of_height_stick + " cm" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassGreenSecond}`}
+                              >
+                                {order.mesh.length_of_width_stick + " cm" ||
+                                  "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassGreenThird}`}
+                              >
+                                {order.mesh.unit_mesh_weight + " kg" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
+                              >
+                                {order.order.piece + " adet" || "N/A"}
+                              </td>
+                              <td
+                                className={`border p-2 font-normal text-black ${bgClassYellowSecond}`}
+                              >
+                                {order.order.total_weight + " kg" || "N/A"}
+                              </td>
+                              {!isPrinting && (
+                                <td className="border p-2 font-medium uppercase text-black bg-red-100">
+                                  <button
+                                    className="bg-red-500 text-white font-bold py-1 px-3 rounded"
+                                    onClick={() => confirmDelete(order_id)}
+                                  >
+                                    X
+                                  </button>
+                                </td>
+                              )}
+                            </>
+                          )}
+                        </tr>
+                      );
+                    }
+                  );
+                })()}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="mt-6 flex flex-col">
+          <div className="mb-4 bg-table-yellow-second-line w-full p-4 shadow-md rounded-lg flex justify-center items-center">
+            <span className="font-medium text-lg text-black">
+              Bu siparişin toplam ağırlığı: {totalWeight.toFixed(2)} kg
+            </span>
+          </div>
+
+          <div className="mt-6 flex justify-center w-full space-x-5">
+            <button
+              className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+              onClick={handleDeleteAllOrder}
+            >
+              Sıfırla
+            </button>
+            <button
+              className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+              onClick={() => printTable(setIsPrinting, "orderTable")}
+            >
+              Yazdır
+            </button>
+          </div>
+        </div>
+        <Modal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          optimizedValues={optimizedWidthSticks}
+          extraWidthLengthUsed={extraWidthLengthUsed}
+          initialValues={initialValues}
+          onConfirm={handleConfirmation}
+        />
       </div>
-      <Modal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        optimizedValues={optimizedWidthSticks}
-        extraWidthLengthUsed={extraWidthLengthUsed}
-        initialValues={initialValues}
-        onConfirm={handleConfirmation}
+      <ModalRowDeletion
+        showModal={showDeleteConfirmation}
+        setShowModal={setShowDeleteConfirmation}
+        onConfirm={deleteConfirmed}
       />
-    </div>
-    <ModalRowDeletion
-      showModal={showDeleteConfirmation}
-      setShowModal={setShowDeleteConfirmation}
-      onConfirm={deleteConfirmed}
-    />
     </>
   );
 };
