@@ -86,6 +86,8 @@ const ManuelMeshForm = ({
           height_number_of_sticks: parseFloat(manuelMesh.numberOfSticks[0].toFixed(2)),
           width_number_of_sticks: parseFloat(manuelMesh.numberOfSticks[1].toFixed(2)),
           unit_mesh_weight: parseFloat(manuelCalculated.unitMeshWeight.toFixed(2)),
+          length_of_height_stick: parseFloat(manuelMesh.height.toFixed(2)),
+          length_of_width_stick: parseFloat(manuelMesh.width.toFixed(2)),
         },
         order: {
           piece: parseInt(manuelMesh.piece, 10),
@@ -102,7 +104,6 @@ const ManuelMeshForm = ({
   };
 
   const handleKesmeButtonClick = () => {
-    openKesmeTabFromManual();
     openOrdersTabFromManual();
   };
 
