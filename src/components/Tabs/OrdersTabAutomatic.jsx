@@ -642,35 +642,35 @@ const OrdersTabAutomatic = ({ enableKesmeTab }) => {
     <div className="flex flex-col w-full items-center">
       {!isLoading && !isError && (
         <div className="flex flex-row justify-between w-[80%]">
-          <div className="flex-1 overflow-x-auto ">
+          <div className="flex-1 overflow-x-auto p-10 ">
             <table
               id="orderTable"
-              className="w-full border-collapse border text-xs border-gray-800 text-center"
+              className=" w-full border-collapse border text-xs border-gray-800 text-center"
             >
-              <thead>
+              <thead >
                 {/* Conditional rendering based on isTableSmall */}
                 {isTableSmall ? (
                   // Headers for the smaller version of the table
                   <tr>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       HASIR KODU
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       HASIR TİPİ
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       HASIR İSMİ
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       BOY ÇUBUK UZUNLUĞU
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       EN ÇUBUK UZUNLUĞU
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       FİLİZ BOYU
                     </th>
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       SİPARİŞ SAYISI
                     </th>
                   </tr>
@@ -881,7 +881,7 @@ const OrdersTabAutomatic = ({ enableKesmeTab }) => {
 
                         let dynamicBgClass = useBlueBackground
                           ? "bg-table-blue-second-line"
-                          : "bg-table-yellow-second-line";
+                          : "bg-table-green-second-line";
                         bgClassMeshCode = dynamicBgClass;
                         bgClassMeshType = dynamicBgClass;
                         bgClassMeshName = dynamicBgClass;
@@ -893,10 +893,10 @@ const OrdersTabAutomatic = ({ enableKesmeTab }) => {
                         // Set the button background color based on the group
                         buttonBgClass = useBlueBackground
                           ? "bg-table-blue-second-line"
-                          : "bg-table-yellow-second-line";
+                          : "bg-table-green-second-line";
                         hoverBgClass = useBlueBackground
                           ? "bg-table-blue-first-line"
-                          : "bg-table-yellow-first-line";
+                          : "bg-table-green-first-line";
                       } else {
                         bgClassMeshCode = "bg-table-teal-second-line";
                         bgClassMeshType = "bg-table-teal-third-line";

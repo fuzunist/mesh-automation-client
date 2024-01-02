@@ -539,11 +539,11 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
         <div className="overflow-x-auto w-[80%]">
           {/* Error message div with a minimum height */}
           <div
-            className={`text-center p-2 rounded mb-4 ${
+            className={`text-center text-md font-normal p-2 rounded mb-4 ${
               Object.keys(checkedOrders).filter((key) => checkedOrders[key])
                 .length >= 2
                 ? "bg-body-light-gray"
-                : "bg-table-green-second-line text-green-800"
+                : "bg-red-200 text-red-900"
             }`}
             style={{ minHeight: "40px" }} // Set a minimum height
           >
@@ -565,29 +565,29 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
               {isTableSmall ? (
                 // Headers for the smaller version of the table
                 <tr>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     HASIR KODU
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     HASIR TİPİ
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     HASIR İSMİ
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     BOY ÇUBUK UZUNLUĞU
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     EN ÇUBUK UZUNLUĞU
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     FİLİZ BOYU
                   </th>
-                  <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                  <th className="border p-2 font-bold text-white bg-black">
                     SİPARİŞ SAYISI
                   </th>
                   {showCheckboxes && (
-                    <th className="border p-2 font-bold text-black bg-table-blue-first-line">
+                    <th className="border p-2 font-bold text-white bg-black">
                       SEÇ
                     </th>
                   )}{" "}
@@ -795,7 +795,7 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
 
                       let dynamicBgClass = useBlueBackground
                         ? "bg-table-blue-second-line"
-                        : "bg-table-yellow-second-line";
+                        : "bg-table-green-second-line";
                       bgClassMeshCode = dynamicBgClass;
                       bgClassMeshType = dynamicBgClass;
                       bgClassMeshName = dynamicBgClass;
