@@ -13,8 +13,21 @@ import Modal from "@/components/Modal";
 import KesmeButton from "../Buttons/KesmeButton";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
 import ModalRowDeletion from "@/components/ModalRowDeletion";
+import SiparisButton from "../Buttons/SiparisButton";
+import * as XLSX from "xlsx";
+import React from "react";
+import { useAddOrderMutation } from "../../store/reducers/kesme";
 
-const OrdersTabOriginalTable = () => {
+import meshFeatures from "../../contants/meshFeatures";
+import {
+  variable_1,
+  variable_2,
+  variable_3,
+  variable_4,
+} from "../../contants/meshVariables";
+import { initialValues, meshTypeOptions } from "../../contants/meshValues";
+
+const OrdersTabOriginalTable = ({}) => {
   const [isPrinting, setIsPrinting] = useState(false);
   const [isTableSmall, setIsTableSmall] = useState(false);
   const [sortedOrderList, setSortedOrderList] = useState([]);
@@ -27,12 +40,22 @@ const OrdersTabOriginalTable = () => {
   const [extraWidthLengthUsed, setExtraWidthLengthUsed] = useState(null);
   const [optimizedWidthOrderList, setOptimizedWidthOrderList] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [initialValues, setInitialValues] = useState([]);
   const [historyStack, setHistoryStack] = useState([]);
   const [applyColorChange, setApplyColorChange] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [totalWeight, setTotalWeight] = useState(0);
+  const [isButtonDisabled, setIsButtonDisabled] =
+    useState(/* default disabled state */);
+  const [calculatedCalculated, setCalculatedCalculated] = useState(
+    initialValues.calculated
+  );
+  const [selectedFileName, setSelectedFileName] = useState("");
+
+  console.log(
+    "ordersTabOriginalTable daki calculated değeri şudur",
+    calculatedCalculated
+  );
 
   const {
     data: orderList,
@@ -43,6 +66,13 @@ const OrdersTabOriginalTable = () => {
       console.error("An error occurred in myData query:", error);
     },
   });
+
+  const [addOrder, { isLoading: addOrderIsLoading, isError: addOrderIsError }] =
+    useAddOrderMutation({
+      onError: (error) => {
+        console.error("An error occurred in myData query:", error);
+      },
+    });
 
   const [deleteOrder, { isLoading: orderIsLoading, isError: orderIsError }] =
     useDeleteOrderMutation({
@@ -71,8 +101,6 @@ const OrdersTabOriginalTable = () => {
   const toggleTableSize = () => {
     setIsTableSmall(!isTableSmall);
   };
-
-  console.log("oderListi set lemeden önce, original tab", orderList);
 
   useEffect(() => {
     setSortedOrderList(orderList); // Initialize sortedOrderList with orderList
@@ -160,6 +188,20 @@ const OrdersTabOriginalTable = () => {
     setSelectedMeshName(null);
     setCheckedOrders({});
     return sortedData;
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFileName(file.name);
+      // Existing file processing logic
+      handleFileUpload(event); // Call your existing file upload handler
+    }
+  };
+
+  // Custom button click handler to trigger file input
+  const handleFileButtonClick = () => {
+    document.getElementById("fileInput").click();
   };
 
   const handleCheckboxChange = (order, orderId) => {
@@ -431,32 +473,6 @@ const OrdersTabOriginalTable = () => {
     });
   };
 
-  const openKesmeTab = () => {
-    if (!isButtonDisabled) {
-      const kesmeData = {
-        height_stick: {
-          diameter: calculated.diameter[0],
-          height: mesh.height,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[0],
-          total_height_weight: mesh.piece * calculated.totalHeigthWeight,
-        },
-        width_stick: {
-          diameter: calculated.diameter[1],
-          height: mesh.width,
-          number_of_sticks: mesh.piece * calculated.numberOfSticks[1],
-          total_width_weight: mesh.piece * calculated.totalWidthWeight,
-        },
-      };
-
-      addKesme(kesmeData);
-
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 1500);
-    }
-  };
-
   const [addKesme, { isLoading: addKesmeIsLoading, isError: addKesmeIsError }] =
     useAddKesmeMutation({
       onError: (error) => {
@@ -521,6 +537,287 @@ const OrdersTabOriginalTable = () => {
     }
   };
 
+  const openOrdersTab = (meshData, calculatedValues) => {
+    if (!isButtonDisabled) {
+      const orderData = {
+        information: {
+          mesh_type: meshData.type,
+          mesh_code: meshData.code,
+
+          mesh_name: meshData.name,
+        },
+        stick: {
+          height_diameter: parseFloat(calculatedValues.diameter[0].toFixed(2)),
+          width_diameter: parseFloat(calculatedValues.diameter[1].toFixed(2)),
+          height_apertureSize: parseFloat(
+            calculatedValues.apertureSize[0].toFixed(2)
+          ),
+          width_apertureSize: parseFloat(
+            calculatedValues.apertureSize[1].toFixed(2)
+          ),
+          back_filament: parseFloat(calculatedValues.backFilament.toFixed(2)),
+          front_filament: parseFloat(calculatedValues.frontFilament.toFixed(2)),
+          left_filament: parseFloat(calculatedValues.leftFilament.toFixed(2)),
+          right_filament: parseFloat(calculatedValues.rightFilament.toFixed(2)),
+        },
+        mesh: {
+          height_number_of_sticks: parseFloat(
+            calculatedValues.numberOfSticks[0].toFixed(2)
+          ),
+          width_number_of_sticks: parseFloat(
+            calculatedValues.numberOfSticks[1].toFixed(2)
+          ),
+          unit_mesh_weight: parseFloat(
+            calculatedValues.unitMeshWeight.toFixed(2)
+          ),
+          length_of_height_stick: parseFloat(meshData.height),
+          length_of_width_stick: parseFloat(meshData.width),
+        },
+        order: {
+          piece: parseInt(meshData.piece, 10),
+          total_weight: parseFloat(calculatedValues.totalWeight.toFixed(2)),
+        },
+      };
+
+      addOrder(orderData);
+      setShowMessage(true);
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1500);
+    }
+  };
+
+  // Define the function to update the state with the mesh data
+
+  const updateMesh = (newMeshData) => {
+    setMesh((prevMesh) => ({
+      ...prevMesh,
+      ...newMeshData,
+    }));
+  };
+
+  const handleSendOrder = () => {
+    console.log("Order submitted:", mesh);
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet);
+
+      for (const row of json) {
+        console.log("Original Hasır Adı:", row["Hasır Adı"]);
+        // Check and transform 'Hasır Adı' if it contains pairs of numbers
+        if (row["Hasır Adı"] && /[-_,. ]/.test(row["Hasır Adı"])) {
+          row["Hasır Adı"] = row["Hasır Adı"]
+            .toString()
+            .replace(/[-_,. ]+/g, "/");
+
+          console.log("Transformed Hasır Adı:", row["Hasır Adı"]);
+        }
+
+        const meshData = {
+          type: row["Hasır Tipi"],
+          code: row["Hasır Kodu"],
+          name: row["Hasır Adı"],
+          height: row["Hasır Boyu"],
+          width: row["Hasır Eni"],
+          numberOfHeightBars: 0,
+          numberOfWidthBars: 0,
+          piece: row["Sipariş Adedi"],
+          // Add other necessary fields from the row
+        };
+
+        // Calculate the 'calculated' values based on 'meshData'
+        const calculatedValues = calculateCalculatedValues(meshData); // Implement this function
+
+        try {
+          await openOrdersTab(meshData, calculatedValues); // Pass both meshData and calculatedValues
+        } catch (error) {
+          console.error("Error processing row:", error);
+        }
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const calculateCalculatedValues = (meshData) => {
+    const defaultCalculated = {
+      diameter: [4.5, 4.5],
+      apertureSize: [15, 5],
+      numberOfSticks: [0, 0],
+      frontFilament: 0,
+      backFilament: 0,
+      leftFilament: 0,
+      rightFilament: 0,
+      totalHeigthWeight: 0,
+      totalWidthWeight: 0,
+      unitMeshWeight: 0,
+      unitOfHeigthWeight: 0.7703774235224721,
+      unitOfWidthWeight: 0.331262292114663,
+    };
+
+    console.log("calculateCalculatedValues called with meshData:", meshData);
+
+    if (
+      !meshData.type ||
+      !meshData.code ||
+      !meshData.name ||
+      !meshData.height ||
+      !meshData.width ||
+      !meshData.piece
+    ) {
+      console.error("All mesh fields must be filled.");
+      return null;
+    }
+
+    if (
+      !meshFeatures[meshData.code] ||
+      !meshFeatures[meshData.code][meshData.name]
+    ) {
+      console.error("Please select a valid mesh name.");
+      return null;
+    }
+
+    const selectedMeshFeature = meshFeatures[meshData.code][meshData.name];
+
+    if (!selectedMeshFeature.diameter) {
+      console.error("Diameter information not found for the selected mesh.");
+      return null;
+    }
+
+    const result = { ...defaultCalculated };
+
+    console.log("selectedMeshFeature value", selectedMeshFeature);
+    console.log("result value", result);
+    console.log("selectedMeshFeature değeri", selectedMeshFeature);
+
+    if (selectedMeshFeature && selectedMeshFeature.diameter) {
+      result.diameter[0] = selectedMeshFeature.diameter.height;
+      result.diameter[1] = selectedMeshFeature.diameter.width;
+    }
+
+    console.log("diameter den geçmiş result value", result);
+
+    if (selectedMeshFeature && selectedMeshFeature.apertureSize) {
+      result.apertureSize[0] = selectedMeshFeature.apertureSize.height / 10;
+      result.apertureSize[1] = selectedMeshFeature.apertureSize.width / 10;
+    }
+
+    console.log("aperturesize dan geçmişresult value", result);
+
+    if (meshData.type === "Çit Hasırı") {
+      result.apertureSize[0] = 15;
+      result.apertureSize[1] = 5;
+    }
+
+    console.log("çit hasırından geçmiş result value", result);
+
+    if (variable_1(meshData)) {
+      result.numberOfSticks[0] = 0;
+      result.numberOfSticks[1] = 0;
+      result.backFilament = 10;
+      result.leftFilament = 2.5;
+      result.rightFilament = 2.5;
+    } else {
+      if (meshData.height === 500 && meshData.width === 215) {
+        result.numberOfSticks[1] =
+          meshData.height % result.apertureSize[1] === 0
+            ? meshData.height / result.apertureSize[1] +
+              meshData.numberOfWidthBars
+            : Math.floor(meshData.height / result.apertureSize[1] - 1) +
+              meshData.numberOfWidthBars;
+        result.numberOfSticks[0] =
+          meshData.width % result.apertureSize[0] === 0
+            ? meshData.width / result.apertureSize[0] +
+              1 +
+              meshData.numberOfHeightBars
+            : Math.floor(meshData.width / result.apertureSize[0] + 1) +
+              meshData.numberOfHeightBars;
+      } else {
+        result.numberOfSticks[0] =
+          Math.ceil(meshData.width / result.apertureSize[0]) +
+          meshData.numberOfHeightBars;
+        result.numberOfSticks[1] =
+          Math.ceil(meshData.height / result.apertureSize[1]) +
+          meshData.numberOfWidthBars;
+      }
+
+      result.backFilament =
+        (meshData.height -
+          (result.numberOfSticks[1] - 1) * result.apertureSize[1]) /
+        2;
+      result.leftFilament =
+        (meshData.width -
+          (result.numberOfSticks[0] - 1) * result.apertureSize[0]) /
+        2;
+      result.rightFilament = result.leftFilament;
+    }
+
+    console.log("ilk if bloğundan geçmiş result value", result);
+
+    if (variable_2(meshData)) result.frontFilament = 70;
+    else if (variable_3(meshData)) result.frontFilament = 71;
+    else if (variable_4(meshData)) result.frontFilament = 65;
+    else
+      result.frontFilament =
+        (meshData.height -
+          (result.numberOfSticks[1] - 1) * result.apertureSize[1]) /
+        2;
+
+    console.log("ikinci if bloğundan result value", result);
+
+    if (variable_1(meshData)) {
+      result.numberOfSticks[0] = Math.floor(
+        (meshData.width - result.leftFilament - result.rightFilament) /
+          result.apertureSize[0] +
+          1
+      );
+      result.numberOfSticks[1] = Math.floor(
+        (meshData.height - result.backFilament - result.frontFilament) /
+          result.apertureSize[1] +
+          1
+      );
+    }
+
+    result.unitOfHeigthWeight =
+      (((Math.PI * result.diameter[0] * result.diameter[0]) / 4) *
+        0.007847 *
+        meshData.height) /
+      100;
+    result.unitOfWidthWeight =
+      (((Math.PI * result.diameter[1] * result.diameter[1]) / 4) *
+        0.007847 *
+        meshData.width) /
+      100;
+    result.totalHeigthWeight =
+      result.unitOfHeigthWeight * result.numberOfSticks[0];
+    result.totalWidthWeight =
+      result.unitOfWidthWeight * result.numberOfSticks[1];
+    result.unitMeshWeight = result.totalHeigthWeight + result.totalWidthWeight;
+    result.totalWeight = result.unitMeshWeight * meshData.piece;
+
+    console.log("bastırmadan önce  result value", result);
+
+    console.log("Calculated values:", result);
+
+    return result;
+  };
+
+  const handleDownloadTemplate = () => {
+    const link = document.createElement('a');
+    link.href = 'public/hasir_siparis_bilgileri.xlsx'; // Path to your template file
+    link.download = 'Hasır Sipariş Bilgileri Şablonu.xlsx'; // The default filename for downloading
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <div className="flex flex-col w-full items-center">
@@ -535,6 +832,7 @@ const OrdersTabOriginalTable = () => {
                 {isTableSmall ? (
                   // Headers for the smaller version of the table
                   <tr>
+                    
                     <th className="border p-2 font-bold text-black bg-table-blue-first-line">
                       HASIR KODU
                     </th>
@@ -567,6 +865,9 @@ const OrdersTabOriginalTable = () => {
                   // Headers for the full version of the table
                   <>
                     <tr>
+                    <th className="border p-2 font-bold text-black bg-gray-700">
+                    
+                    </th>
                       <th
                         colSpan="3"
                         className="border p-2 font-bold uppercase text-black bg-table-teal-first-line"
@@ -596,6 +897,10 @@ const OrdersTabOriginalTable = () => {
                       )}
                     </tr>
                     <tr>
+                    <th className="border p-2 font-bold text-black bg-gray-400">
+                      
+                    </th>
+                    
                       <th className="border p-2 font-bold text-black bg-table-teal-second-line">
                         HASIR KODU
                       </th>
@@ -652,6 +957,9 @@ const OrdersTabOriginalTable = () => {
                       )}
                     </tr>
                     <tr className="bg-slate-50">
+                    <th className="border p-2 font-bold text-black bg-gray-400">
+                      No
+                    </th>
                       <th className="border p-2 font-bold text-black bg-table-teal-second-line">
                         Kodu
                       </th>
@@ -787,6 +1095,9 @@ const OrdersTabOriginalTable = () => {
 
                       return (
                         <tr key={index + 1000} className="text-center">
+                          <td className="border p-2 font-normal text-black bg-gray-400">
+                            {index + 1}
+                          </td>
                           <td
                             className={`border p-2 font-normal text-black ${bgClassMeshCode}`}
                           >
@@ -987,8 +1298,8 @@ const OrdersTabOriginalTable = () => {
           </div>
         )}
 
-        <div className="mt-6 flex flex-col">
-          <div className="mt-6 flex justify-center w-full space-x-5">
+        <div className="mt-6 flex flex-col items-center">
+          <div className="mt-6 mb-2 flex justify-center w-full space-x-5">
             <button
               className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
               onClick={handleDeleteAllOrder}
@@ -1001,7 +1312,35 @@ const OrdersTabOriginalTable = () => {
             >
               Yazdır
             </button>
+
+            
+              <input
+                type="file"
+                id="fileInput"
+                accept=".xlsx, .xls"
+                style={{ display: "none" }}
+                onChange={handleFileSelect}
+              />
+              <button
+                className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+                onClick={handleFileButtonClick}
+              >
+                Excel yükle
+              </button>
+              <button
+                className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+                onClick={handleDownloadTemplate}
+                
+              >
+                Boş Excel İndir
+              </button>
+            
           </div>
+          {selectedFileName && (
+            <span className="ml-2">
+              "{selectedFileName}" isimli Excel tablosu başarıyla yüklendi.
+            </span>
+          )}
         </div>
         <Modal
           showModal={showModal}

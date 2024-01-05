@@ -49,6 +49,8 @@ const AutomaticTab = ({}) => {
       if (selectedMeshFeature.diameter) {
         const result = { ...initialValues.calculated };
 
+        console.log("AutamaticTab deki result değeri şu", result);
+
         result.diameter[0] = meshFeatures[mesh.code][mesh.name].diameter.height;
         result.diameter[1] = meshFeatures[mesh.code][mesh.name].diameter.width;
 

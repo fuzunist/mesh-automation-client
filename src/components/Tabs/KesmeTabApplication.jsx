@@ -163,8 +163,7 @@ const KesmeTabApplication = () => {
     }
   };
 
-  console.log("Optimize edilmiş boy çubukları:", optimizedHeightSticks);
-  console.log("Optimize edilmiş en çubukları:", optimizedWidthSticks);
+ 
 
 
    // A function to aggregate kesmeList data by unique pairs of ÇAP and UZUNLUK

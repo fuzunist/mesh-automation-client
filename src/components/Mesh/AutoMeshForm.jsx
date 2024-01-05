@@ -4,6 +4,8 @@ import { initialValues, meshTypeOptions } from "../../contants/meshValues";
 import meshFeatures from "../../contants/meshFeatures";
 import { useAddOrderMutation } from "../../store/reducers/kesme";
 import SiparisButton from "../Buttons/SiparisButton";
+import React, { useState } from "react";
+import * as XLSX from "xlsx";
 
 const AutoMeshForm = ({
   mesh,
@@ -23,8 +25,6 @@ const AutoMeshForm = ({
     !mesh.piece ||
     filamentError;
 
- 
-
   const [addOrder, { isLoading: addOrderIsLoading, isError: addOrderIsError }] =
     useAddOrderMutation({
       onError: (error) => {
@@ -32,8 +32,11 @@ const AutoMeshForm = ({
       },
     });
 
-  // Function to opnen "KESME" tab
+  console.log("autoMeshForm daki calculated şu", calculated);
 
+  
+
+  // Function to opnen "KESME" tab
 
   const openOrdersTab = () => {
     if (!isButtonDisabled) {
@@ -46,7 +49,9 @@ const AutoMeshForm = ({
         stick: {
           height_diameter: parseFloat(calculated.diameter[0].toFixed(2)),
           width_diameter: parseFloat(calculated.diameter[1].toFixed(2)),
-          height_apertureSize: parseFloat(calculated.apertureSize[0].toFixed(2)),
+          height_apertureSize: parseFloat(
+            calculated.apertureSize[0].toFixed(2)
+          ),
           width_apertureSize: parseFloat(calculated.apertureSize[1].toFixed(2)),
           back_filament: parseFloat(calculated.backFilament.toFixed(2)),
           front_filament: parseFloat(calculated.frontFilament.toFixed(2)),
@@ -54,8 +59,12 @@ const AutoMeshForm = ({
           right_filament: parseFloat(calculated.rightFilament.toFixed(2)),
         },
         mesh: {
-          height_number_of_sticks: parseFloat(calculated.numberOfSticks[0].toFixed(2)),
-          width_number_of_sticks: parseFloat(calculated.numberOfSticks[1].toFixed(2)),
+          height_number_of_sticks: parseFloat(
+            calculated.numberOfSticks[0].toFixed(2)
+          ),
+          width_number_of_sticks: parseFloat(
+            calculated.numberOfSticks[1].toFixed(2)
+          ),
           unit_mesh_weight: parseFloat(calculated.unitMeshWeight.toFixed(2)),
           length_of_height_stick: parseFloat(mesh.height.toFixed(2)),
           length_of_width_stick: parseFloat(mesh.width.toFixed(2)),
@@ -65,7 +74,7 @@ const AutoMeshForm = ({
           total_weight: parseFloat(calculated.totalWeight.toFixed(2)),
         },
       };
-  
+
       addOrder(orderData);
       setShowMessage(true);
       setTimeout(() => {
@@ -73,8 +82,6 @@ const AutoMeshForm = ({
       }, 1500);
     }
   };
-  
-  
 
   const handleTypeChange = (value) => {
     setMesh((prevMesh) => {
@@ -89,7 +96,6 @@ const AutoMeshForm = ({
   const handleKesmeButtonClick = () => {
     openOrdersTab();
   };
-  
 
   return (
     <div className="flex flex-col xl:flex-row xl:items-end items-center gap-2  justify-center">
@@ -301,6 +307,7 @@ const AutoMeshForm = ({
           </div>
         </div>
       </div>
+      
       <div className="flex xl:-mt-2">
         <SiparisButton
           isButtonDisabled={isButtonDisabled}

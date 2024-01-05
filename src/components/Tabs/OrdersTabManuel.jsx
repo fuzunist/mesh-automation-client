@@ -73,12 +73,19 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
 
   useEffect(() => {
     setSortedOrderList(orderList); // Initialize sortedOrderList with orderList
-    console.log("oderListi set ledikten sonra, manuel tab", orderList);
-    console.log("sıralanmış orderlist, manuel tab", sortedOrderList);
+ 
   }, [orderList]);
 
+  const getFirstNumberFromString = (str) => {
+    if (typeof str === 'string' && str.includes('/')) {
+      return parseInt(str.split('/')[0], 10);
+    } else if (typeof str === 'string') {
+      return parseInt(str, 10);
+    }
+    return 0; // Default to 0 if not a string or if cannot parse to a number
+  };
+
   const handleSortByHeightStick = (orderListParam = orderList) => {
-    console.log("sıralamanın içi", orderListParam);
     setApplyColorChange(true);
     // Determine the list to sort - use provided list or the current version
     const listToSort = Array.isArray(orderListParam)
@@ -90,14 +97,8 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
       : [];
 
     const sortedData = [...listToSort].sort((a, b) => {
-      const meshNameA = parseInt(
-        a.order_details.information.mesh_name.split("/")[0],
-        10
-      );
-      const meshNameB = parseInt(
-        b.order_details.information.mesh_name.split("/")[0],
-        10
-      );
+      const meshNameA = getFirstNumberFromString(a.order_details.information.mesh_name);
+      const meshNameB = getFirstNumberFromString(b.order_details.information.mesh_name);
 
       if (meshNameA !== meshNameB) {
         return meshNameA - meshNameB;
