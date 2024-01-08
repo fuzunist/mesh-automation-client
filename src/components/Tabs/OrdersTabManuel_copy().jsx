@@ -9,7 +9,6 @@ import {
   printTable,
   toggleSort,
   optimizeMeshProductionBasic,
-  optimizeMeshProductionBasicVersionTwo,
 } from "@/utils/kesmeHelpers";
 import Modal from "@/components/Modal";
 import KesmeButton from "../Buttons/KesmeButton";
@@ -208,14 +207,14 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
           order.stick.front_filament,
           order.stick.back_filament
         ),
-        baseWidthStick: selectedMeshName?.length_of_width_stick,
+        baseWidthStick: selectedMeshName?.baseWidthStick,
         firstClickedId: selectedMeshName?.firstClickedId,
       };
 
       // Handling first click
       if (isCurrentlyChecked && Object.keys(prevState).length === 0) {
         currentSelectionCriteria.baseWidthStick =
-          order.mesh.length_of_width_stick ;
+          order.mesh.length_of_width_stick / 2;
         currentSelectionCriteria.firstClickedId = orderId;
       }
 
@@ -292,10 +291,7 @@ const OrdersTabManuel = ({ enableKesmeTab }) => {
       // Store initial values before optimization
       setInitialValues(orders);
 
-      console.log("Orders bedore sending to the optimize mesh production function", orders);
-
-      const optimized = optimizeMeshProductionBasicVersionTwo(orders);
-      console.log("Orders after sending to the optimize mesh production function", optimized);
+      const optimized = optimizeMeshProductionBasic(orders);
       setOptimizedWidthSticks(optimized.optimizedOrders);
       setExtraWidthLengthUsed(optimized.extraLengthUsed);
 
