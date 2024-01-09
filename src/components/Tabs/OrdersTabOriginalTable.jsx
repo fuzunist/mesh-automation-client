@@ -811,7 +811,7 @@ const OrdersTabOriginalTable = ({}) => {
 
   const handleDownloadTemplate = () => {
     const link = document.createElement('a');
-    link.href = 'public/hasir_siparis_bilgileri.xlsx'; // Path to your template file
+    link.href = 'public/hasir_siparis_bilgileri2.xlsx'; // Path to your template file
     link.download = 'Hasır Sipariş Bilgileri Şablonu.xlsx'; // The default filename for downloading
     document.body.appendChild(link);
     link.click();
