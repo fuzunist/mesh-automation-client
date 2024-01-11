@@ -511,9 +511,9 @@ const OrdersTabOriginalTable = ({}) => {
       addKesme(kesmeData);
     });
 
-    setShowMessage(true);
+   // setShowMessage(true);
     setTimeout(() => {
-      setShowMessage(false);
+   //   setShowMessage(false);
     }, 1500);
   };
 
@@ -537,54 +537,64 @@ const OrdersTabOriginalTable = ({}) => {
     }
   };
 
-  const openOrdersTab = (meshData, calculatedValues) => {
-    if (!isButtonDisabled) {
-      const orderData = {
-        information: {
-          mesh_type: meshData.type,
-          mesh_code: meshData.code,
+  const openOrdersTab = async (meshData, calculatedValues) => {
+    return new Promise((resolve, reject) => {
+      if (!isButtonDisabled) {
+        const orderData = {
+          information: {
+            mesh_type: meshData.type,
+            mesh_code: meshData.code,
+            mesh_name: meshData.name,
+          },
+          stick: {
+            height_diameter: parseFloat(
+              calculatedValues.diameter[0].toFixed(2)
+            ),
+            width_diameter: parseFloat(calculatedValues.diameter[1].toFixed(2)),
+            height_apertureSize: parseFloat(
+              calculatedValues.apertureSize[0].toFixed(2)
+            ),
+            width_apertureSize: parseFloat(
+              calculatedValues.apertureSize[1].toFixed(2)
+            ),
+            back_filament: parseFloat(calculatedValues.backFilament.toFixed(2)),
+            front_filament: parseFloat(
+              calculatedValues.frontFilament.toFixed(2)
+            ),
+            left_filament: parseFloat(calculatedValues.leftFilament.toFixed(2)),
+            right_filament: parseFloat(
+              calculatedValues.rightFilament.toFixed(2)
+            ),
+          },
+          mesh: {
+            height_number_of_sticks: parseFloat(
+              calculatedValues.numberOfSticks[0].toFixed(2)
+            ),
+            width_number_of_sticks: parseFloat(
+              calculatedValues.numberOfSticks[1].toFixed(2)
+            ),
+            unit_mesh_weight: parseFloat(
+              calculatedValues.unitMeshWeight.toFixed(2)
+            ),
+            length_of_height_stick: parseFloat(meshData.height),
+            length_of_width_stick: parseFloat(meshData.width),
+          },
+          order: {
+            piece: parseInt(meshData.piece, 10),
+            total_weight: parseFloat(calculatedValues.totalWeight.toFixed(2)),
+          },
+        };
 
-          mesh_name: meshData.name,
-        },
-        stick: {
-          height_diameter: parseFloat(calculatedValues.diameter[0].toFixed(2)),
-          width_diameter: parseFloat(calculatedValues.diameter[1].toFixed(2)),
-          height_apertureSize: parseFloat(
-            calculatedValues.apertureSize[0].toFixed(2)
-          ),
-          width_apertureSize: parseFloat(
-            calculatedValues.apertureSize[1].toFixed(2)
-          ),
-          back_filament: parseFloat(calculatedValues.backFilament.toFixed(2)),
-          front_filament: parseFloat(calculatedValues.frontFilament.toFixed(2)),
-          left_filament: parseFloat(calculatedValues.leftFilament.toFixed(2)),
-          right_filament: parseFloat(calculatedValues.rightFilament.toFixed(2)),
-        },
-        mesh: {
-          height_number_of_sticks: parseFloat(
-            calculatedValues.numberOfSticks[0].toFixed(2)
-          ),
-          width_number_of_sticks: parseFloat(
-            calculatedValues.numberOfSticks[1].toFixed(2)
-          ),
-          unit_mesh_weight: parseFloat(
-            calculatedValues.unitMeshWeight.toFixed(2)
-          ),
-          length_of_height_stick: parseFloat(meshData.height),
-          length_of_width_stick: parseFloat(meshData.width),
-        },
-        order: {
-          piece: parseInt(meshData.piece, 10),
-          total_weight: parseFloat(calculatedValues.totalWeight.toFixed(2)),
-        },
-      };
-
-      addOrder(orderData);
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 1500);
-    }
+        addOrder(orderData);
+       // setShowMessage(true);
+        setTimeout(() => {
+       //   setShowMessage(false);
+          resolve(); // Resolve the promise after the timeout
+        }, 1500);
+      } else {
+        resolve(); // Resolve immediately if the button is disabled
+      }
+    });
   };
 
   // Define the function to update the state with the mesh data
@@ -608,36 +618,38 @@ const OrdersTabOriginalTable = ({}) => {
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
+      const json = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: "" });
 
-      for (const row of json) {
-        console.log("Original Hasır Adı:", row["Hasır Adı"]);
-        // Check and transform 'Hasır Adı' if it contains pairs of numbers
+      console.log("Excel Rows Read:", json); // Log the entire read data
+
+  
+      for (const [index, row] of json.entries()) {
+        console.log(`Processing Row ${index + 1}:`, row); // Log each row as it's processed
+  
         if (row["Hasır Adı"] && /[-_,. ]/.test(row["Hasır Adı"])) {
           row["Hasır Adı"] = row["Hasır Adı"]
             .toString()
             .replace(/[-_,. ]+/g, "/");
-
           console.log("Transformed Hasır Adı:", row["Hasır Adı"]);
         }
-
+  
         const meshData = {
           type: row["Hasır Tipi"],
           code: row["Hasır Kodu"],
           name: row["Hasır Adı"],
           height: row["Hasır Boyu"],
           width: row["Hasır Eni"],
-          numberOfHeightBars: 0,
-          numberOfWidthBars: 0,
+          numberOfHeightBars: 0, // Assuming default value
+          numberOfWidthBars: 0,  // Assuming default value
           piece: row["Sipariş Adedi"],
-          // Add other necessary fields from the row
+          // Add other necessary fields from the row if needed
         };
-
-        // Calculate the 'calculated' values based on 'meshData'
-        const calculatedValues = calculateCalculatedValues(meshData); // Implement this function
-
+  
         try {
-          await openOrdersTab(meshData, calculatedValues); // Pass both meshData and calculatedValues
+          const calculatedValues = calculateCalculatedValues(meshData);
+          await openOrdersTab(meshData, calculatedValues);
+          console.log(`Row ${index + 1} processed`); // Log after processing each row
+
         } catch (error) {
           console.error("Error processing row:", error);
         }
@@ -645,6 +657,7 @@ const OrdersTabOriginalTable = ({}) => {
     };
     reader.readAsArrayBuffer(file);
   };
+  
 
   const calculateCalculatedValues = (meshData) => {
     const defaultCalculated = {
@@ -810,9 +823,10 @@ const OrdersTabOriginalTable = ({}) => {
   };
 
   const handleDownloadTemplate = () => {
-    const link = document.createElement('a');
-    link.href = 'https://mesh-automation.onrender.com/public/hasir_siparis_bilgileri2.xlsx'; // Path to your template file
-    link.download = 'Hasır Sipariş Bilgileri Şablonu.xlsx'; // The default filename for downloading
+    const link = document.createElement("a");
+    link.href =
+      "https://mesh-automation.onrender.com/public/hasir_siparis_bilgileri2.xlsx"; // Path to your template file
+    link.download = "Hasır Sipariş Bilgileri Yeni Şablonu.xlsx"; // The default filename for downloading
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -832,7 +846,6 @@ const OrdersTabOriginalTable = ({}) => {
                 {isTableSmall ? (
                   // Headers for the smaller version of the table
                   <tr>
-                    
                     <th className="border p-2 font-bold text-black bg-table-blue-first-line">
                       HASIR KODU
                     </th>
@@ -865,9 +878,7 @@ const OrdersTabOriginalTable = ({}) => {
                   // Headers for the full version of the table
                   <>
                     <tr>
-                    <th className="border p-2 font-bold text-black bg-gray-700">
-                    
-                    </th>
+                      <th className="border p-2 font-bold text-black bg-gray-700"></th>
                       <th
                         colSpan="3"
                         className="border p-2 font-bold uppercase text-black bg-table-teal-first-line"
@@ -897,10 +908,8 @@ const OrdersTabOriginalTable = ({}) => {
                       )}
                     </tr>
                     <tr>
-                    <th className="border p-2 font-bold text-black bg-gray-400">
-                      
-                    </th>
-                    
+                      <th className="border p-2 font-bold text-black bg-gray-400"></th>
+
                       <th className="border p-2 font-bold text-black bg-table-teal-second-line">
                         HASIR KODU
                       </th>
@@ -957,9 +966,9 @@ const OrdersTabOriginalTable = ({}) => {
                       )}
                     </tr>
                     <tr className="bg-slate-50">
-                    <th className="border p-2 font-bold text-black bg-gray-400">
-                      No
-                    </th>
+                      <th className="border p-2 font-bold text-black bg-gray-400">
+                        No
+                      </th>
                       <th className="border p-2 font-bold text-black bg-table-teal-second-line">
                         Kodu
                       </th>
@@ -1313,28 +1322,25 @@ const OrdersTabOriginalTable = ({}) => {
               Yazdır
             </button>
 
-            
-              <input
-                type="file"
-                id="fileInput"
-                accept=".xlsx, .xls"
-                style={{ display: "none" }}
-                onChange={handleFileSelect}
-              />
-              <button
-                className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-                onClick={handleFileButtonClick}
-              >
-                Excel yükle
-              </button>
-              <button
-                className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-                onClick={handleDownloadTemplate}
-                
-              >
-                Boş Excel İndir
-              </button>
-            
+            <input
+              type="file"
+              id="fileInput"
+              accept=".xlsx, .xls"
+              style={{ display: "none" }}
+              onChange={handleFileSelect}
+            />
+            <button
+              className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+              onClick={handleFileButtonClick}
+            >
+              Excel yükle
+            </button>
+            <button
+              className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
+              onClick={handleDownloadTemplate}
+            >
+              Boş Excel İndir
+            </button>
           </div>
           {selectedFileName && (
             <span className="ml-2">
