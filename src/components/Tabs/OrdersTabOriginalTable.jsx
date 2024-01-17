@@ -11,6 +11,7 @@ import {
 } from "@/utils/kesmeHelpers";
 import Modal from "@/components/Modal";
 import UploadSuccessModal from "@/components/UploadSuccessModal";
+import ResetSuccessModal from "@/components/ResetSuccessModal";
 import EditOrderModal from "@/components/EditOrderModal";
 import KesmeButton from "../Buttons/KesmeButton";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
@@ -72,6 +73,8 @@ const OrdersTabOriginalTable = ({
   const [showEditModal, setShowEditModal] = useState(false);
 
   const { triggerReset } = useSharedReset();
+  const [showResetSuccessModal, setShowResetSuccessModal] = useState(false);
+
 
   const {
     data: orderList,
@@ -126,6 +129,7 @@ const OrdersTabOriginalTable = ({
     handleDeleteAllOrder();
     deleteAllKesme(); // Add this line to also delete all Kesme information
     console.log("All orders and Kesme information have been reset");
+    handleResetSuccess(); // This should trigger the ResetSuccessModal
   };
 
   const handleDeleteOrder = (order_id) => {
@@ -223,6 +227,11 @@ const OrdersTabOriginalTable = ({
     setCheckedOrders({});
     return sortedData;
   };
+
+  const handleResetSuccess = () => {
+    setShowResetSuccessModal(true); // This sets the state to show the modal
+  };
+  
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -1469,6 +1478,10 @@ const OrdersTabOriginalTable = ({
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
       />
+      <ResetSuccessModal
+      show={showResetSuccessModal}
+      onClose={() => setShowResetSuccessModal(false)}
+    />
     </>
   );
 };
