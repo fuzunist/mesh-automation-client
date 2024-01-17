@@ -9,7 +9,7 @@ import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from '@material-tailwind/re
 
 function App() {
   const [isKesmeTabActive, setIsKesmeTabActive] = useState(false);
-  const [activeTab, setActiveTab] = useState('2'); 
+  const [activeTab, setActiveTab] = useState('1'); 
   const [meshData, setMeshData] = useState({});
   const divRef = useRef(false);
 
