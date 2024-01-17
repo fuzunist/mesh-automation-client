@@ -123,7 +123,7 @@ const UploadSuccessModal = ({ show, onClose, count, failedRows }) => {
   
         <div style={{ marginTop: "20px" }}>
           <button style={buttonStyle} onClick={onClose}>
-            Close
+            Kapat
           </button>
         </div>
       </div>
