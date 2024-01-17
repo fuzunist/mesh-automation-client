@@ -1,7 +1,7 @@
 import Input from "../Input";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
 import { useAddOrderMutation } from "../../store/reducers/kesme";
-import SiparisButton from "../Buttons/SiparisButton";
+import SiparisButtonForManuelTab from "../Buttons/SiparisButtonForManuelTab";
 
 const ManuelMeshForm = ({
   manuelCalculated,
@@ -325,8 +325,8 @@ const ManuelMeshForm = ({
           </div>
         </div>
       </div>
-      <div className="flex  xl:-mt-2">
-       <SiparisButton isButtonDisabled={isButtonDisabled} openKesmeTab={handleKesmeButtonClick} />
+      <div className="flex  xl:mt-2">
+       <SiparisButtonForManuelTab isButtonDisabled={isButtonDisabled} openKesmeTab={handleKesmeButtonClick} />
       </div>
     </div>
   );

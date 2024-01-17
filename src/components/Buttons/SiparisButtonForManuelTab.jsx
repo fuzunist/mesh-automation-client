@@ -1,4 +1,4 @@
-const SiparisButton = ({isButtonDisabled, openKesmeTab, buttonText}) => {
+const SiparisButtonForManuelTab = ({isButtonDisabled, openKesmeTab}) => {
   return (
     <button
       className={`text-white h-full font-bold truncate px-2 py-[4.5px] rounded ${
@@ -7,9 +7,9 @@ const SiparisButton = ({isButtonDisabled, openKesmeTab, buttonText}) => {
       disabled={isButtonDisabled}
       onClick={openKesmeTab}
     >
-      {buttonText}
+      Siparişe Gönder
     </button>
   );
 };
 
-export default SiparisButton;
+export default SiparisButtonForManuelTab;

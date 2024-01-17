@@ -79,6 +79,18 @@ const kesme = createApi({
       invalidatesTags: ["orders"],
     }),
 
+    updateOrder: builder.mutation({
+      query: ( { order_id, orderData } ) =>{
+        console.log("orderData ın değeri bu: ", orderData);
+        return ({
+        
+        url: `/order/${order_id}`,
+        method: "PUT", 
+        body: { order_details: orderData },
+      })},
+      invalidatesTags: ["orders"],
+    }),
+
     deleteOrder: builder.mutation({
       query: (order_id) => ({
         url: `/order/${order_id}`,
@@ -103,6 +115,7 @@ export const {
   useDeleteAllKesmeMutation,
   useGetAllOrderQuery,
   useAddOrderMutation,
+  useUpdateOrderMutation,
   useDeleteOrderMutation,
   useDeleteAllOrderMutation,
 } = kesme;

@@ -1,4 +1,4 @@
-import {useRef,  useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   useGetAllOrderQuery,
   useDeleteOrderMutation,
@@ -35,8 +35,7 @@ import OrdersTabManuel from "./OrdersTabManuel";
 import OrdersTabAutomatic from "./OrdersTabAutomatic";
 import OrdersTabOriginalTable from "./OrdersTabOriginalTable";
 
-const OrdersTab = ( { enableKesmeTab } ) => {
-
+const OrdersTab = ({ enableKesmeTab, openAutomaticTab, switchToAutomaticTab }) => {
   const [calculated, setCalculated] = useState(initialValues.calculated);
   const [mesh, setMesh] = useState(initialValues.mesh);
   const [showMessage, setShowMessage] = useState(false);
@@ -48,32 +47,28 @@ const OrdersTab = ( { enableKesmeTab } ) => {
   const divRef = useRef();
 
   let isMeshValid = true;
-  
 
-  
-
-
-
-
+  const handleEditClick = (data) => {
+    openAutomaticTab(data);
+    switchToAutomaticTab(); // Add this line
+  };
 
   return (
-
     <Tabs value="7" className="flex flex-col w-full items-center">
-        
-        <TabsHeader className="flex flex-row w-[700px] " indicatorProps={{
-            className: "bg-gray-600/20 shadow-none !text-gray-900",
-          }}>
+      <TabsHeader
+        className="flex flex-row w-[700px] "
+        indicatorProps={{
+          className: "bg-gray-600/20 shadow-none !text-gray-900",
+        }}
+      >
         <Tab value={"7"}>Orijinal Sipariş Tablosu</Tab>
-          <Tab value={"8"}>Yarı Otomatik Hesap</Tab>
-          <Tab value={"9"}>Tam Otomatik Hesap (Beta)</Tab>
-        </TabsHeader>
-     
-      
-        <TabsBody>
+        <Tab value={"8"}>Yarı Otomatik Hesap</Tab>
+        <Tab value={"9"}>Tam Otomatik Hesap (Beta)</Tab>
+      </TabsHeader>
+
+      <TabsBody>
         <TabPanel key={"original_table_order"} value={"7"}>
-          <OrdersTabOriginalTable 
-           
-          />
+        <OrdersTabOriginalTable openAutomaticTab={openAutomaticTab} switchToAutomaticTab={switchToAutomaticTab} />
         </TabPanel>
         <TabPanel key={"manuel_order"} value={"8"}>
           <OrdersTabManuel enableKesmeTab={enableKesmeTab} />
@@ -82,8 +77,7 @@ const OrdersTab = ( { enableKesmeTab } ) => {
           <OrdersTabAutomatic enableKesmeTab={enableKesmeTab} />
         </TabPanel>
       </TabsBody>
-      </Tabs>
-   
+    </Tabs>
   );
 };
 

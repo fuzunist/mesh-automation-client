@@ -1,7 +1,6 @@
 import React from "react";
 
-const ModalRowDeletion = ({ showModal, setShowModal, onConfirm }) => {
-  if (!showModal) return null;
+const EditOrderModal = ({ show, onClose }) => {  if (!show) return null;
 
   const modalStyle = {
     position: "fixed",
@@ -27,25 +26,18 @@ const ModalRowDeletion = ({ showModal, setShowModal, onConfirm }) => {
 
   const buttonStyle = {
     padding: "10px 20px",
-    margin: "0 10px",
-    marginTop: "20px",
+    margin: "0 30px",
     borderRadius: "5px",
     border: "none",
     cursor: "pointer",
     fontWeight: "bold",
-  };
-
-  const confirmButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#dc3545",
-    color: "white",
-  };
-
-  const cancelButtonStyle = {
-    ...buttonStyle,
     backgroundColor: "#6c757d",
     color: "white",
+    marginTop: "40px",
   };
+
+
+
   const h1Style = {
     fontSize: "22px",
     marginBottom: "10px",
@@ -54,37 +46,47 @@ const ModalRowDeletion = ({ showModal, setShowModal, onConfirm }) => {
   };
 
   const pStyle = {
-    fontSize: "18px",
-    marginBottom: "10px",
-    color: "#dc3545",
-    fontWeight: 600,
+    fontSize: "22px", // Adjust the font size as needed
+    marginBottom: "0px", // Space below the paragraph
+    marginTop: "10px",
+    color: "black",
+  };
+
+  const h4Style = {
+    fontSize: "22px", // Adjust the font size as needed
+    marginBottom: "0px", // Space below the header
+    color: "green",
   };
 
   return (
-    <div style={modalStyle} onClick={() => setShowModal(false)}>
+    <div style={modalStyle} onClick={onClose}>
       <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
-        <h1 style={h1Style}>Bu satırı silmek istediğinize emin misiniz?</h1>
-        <p style={pStyle}>(Satır silindikten sonra geri alınamaz.)</p>
+        
+      <h1  style={h1Style}>
+          1 satır seçtiniz. 
+         
+        </h1>
+        
+        <h1  style={h1Style}>
+           Seçtiğiniz satırı düzenlemek için lütfen sol üsttteki 
+         
+        </h1>
+        <h1  style={h1Style}>
+          'Otomatik Hesapla' bölümüne gidiniz.
+         
+        </h1>
+        
         <div style={{ marginTop: "20px" }}>
-          <button
-            style={cancelButtonStyle}
-            onClick={() => setShowModal(false)}
-          >
-            İptal Et
-          </button>
-          <button
-            style={confirmButtonStyle}
-            onClick={() => {
-              onConfirm();
-              setShowModal(false);
-            }}
-          >
-            Satırı Sil
+          <button style={buttonStyle} onClick={onClose}>
+            Kapat
           </button>
         </div>
       </div>
     </div>
   );
+  
+  
 };
 
-export default ModalRowDeletion;
+
+export default EditOrderModal;

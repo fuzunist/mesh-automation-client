@@ -10,6 +10,8 @@ import {
   optimizeMeshProductionBasic,
 } from "@/utils/kesmeHelpers";
 import Modal from "@/components/Modal";
+import UploadSuccessModal from "@/components/UploadSuccessModal";
+import EditOrderModal from "@/components/EditOrderModal";
 import KesmeButton from "../Buttons/KesmeButton";
 import { useAddKesmeMutation } from "../../store/reducers/kesme";
 import ModalRowDeletion from "@/components/ModalRowDeletion";
@@ -26,8 +28,21 @@ import {
   variable_4,
 } from "../../contants/meshVariables";
 import { initialValues, meshTypeOptions } from "../../contants/meshValues";
+import { useSharedReset } from "../../store/hooks/kesme.jsx";
+import { useDispatch } from "react-redux";
+import { setRowData } from "../../store/reducers/edit";
 
-const OrdersTabOriginalTable = ({}) => {
+import { useDeleteAllKesmeMutation } from "../../store/reducers/kesme";
+import { FaPencilAlt } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
+
+const OrdersTabOriginalTable = ({
+  openAutomaticTab,
+  onChangeTab,
+  switchToAutomaticTab,
+}) => {
+  const dispatch = useDispatch();
+
   const [isPrinting, setIsPrinting] = useState(false);
   const [isTableSmall, setIsTableSmall] = useState(false);
   const [sortedOrderList, setSortedOrderList] = useState([]);
@@ -51,11 +66,12 @@ const OrdersTabOriginalTable = ({}) => {
     initialValues.calculated
   );
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [uploadSuccessCount, setUploadSuccessCount] = useState(0);
+  const [showUploadSuccessModal, setShowUploadSuccessModal] = useState(false);
+  const [failedRows, setFailedRows] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  console.log(
-    "ordersTabOriginalTable daki calculated değeri şudur",
-    calculatedCalculated
-  );
+  const { triggerReset } = useSharedReset();
 
   const {
     data: orderList,
@@ -90,8 +106,26 @@ const OrdersTabOriginalTable = ({}) => {
     },
   });
 
+  const [
+    deleteAllKesme,
+    { isLoading: allKesmeIsLoading, isError: allKesmeIsError },
+  ] = useDeleteAllKesmeMutation({
+    onError: (error) => {
+      console.error("An error occurred in myData query:", error);
+    },
+  });
+
   const handleDeleteAllOrder = () => {
+    console.log("handleDeleteAllOrder called in OrdersTabOriginalTable");
     deleteAllOrder();
+    console.log("Calling triggerReset in OrdersTabOriginalTable");
+    triggerReset(); // This will signal to reset the Kesme tab as well
+  };
+
+  const handleSifirlaButton = () => {
+    handleDeleteAllOrder();
+    deleteAllKesme(); // Add this line to also delete all Kesme information
+    console.log("All orders and Kesme information have been reset");
   };
 
   const handleDeleteOrder = (order_id) => {
@@ -511,9 +545,9 @@ const OrdersTabOriginalTable = ({}) => {
       addKesme(kesmeData);
     });
 
-   // setShowMessage(true);
+    // setShowMessage(true);
     setTimeout(() => {
-   //   setShowMessage(false);
+      //   setShowMessage(false);
     }, 1500);
   };
 
@@ -586,9 +620,9 @@ const OrdersTabOriginalTable = ({}) => {
         };
 
         addOrder(orderData);
-       // setShowMessage(true);
+        // setShowMessage(true);
         setTimeout(() => {
-       //   setShowMessage(false);
+          //   setShowMessage(false);
           resolve(); // Resolve the promise after the timeout
         }, 1500);
       } else {
@@ -613,51 +647,86 @@ const OrdersTabOriginalTable = ({}) => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
+
     reader.onload = async (e) => {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: "" });
+      const json = XLSX.utils.sheet_to_json(worksheet, {
+        raw: false,
+        defval: "",
+      });
 
-      console.log("Excel Rows Read:", json); // Log the entire read data
+      console.log("Excel Rows Read:", json);
 
-  
+      let successCount = 0;
+      let failedRowDetails = []; // Array to store details of failed rows
       for (const [index, row] of json.entries()) {
-        console.log(`Processing Row ${index + 1}:`, row); // Log each row as it's processed
-  
+        console.log(`Processing Row ${index + 1}:`, row);
+
+        // Process the row data
         if (row["Hasır Adı"] && /[-_,. ]/.test(row["Hasır Adı"])) {
           row["Hasır Adı"] = row["Hasır Adı"]
             .toString()
             .replace(/[-_,. ]+/g, "/");
-          console.log("Transformed Hasır Adı:", row["Hasır Adı"]);
         }
-  
+
         const meshData = {
           type: row["Hasır Tipi"],
           code: row["Hasır Kodu"],
           name: row["Hasır Adı"],
           height: row["Hasır Boyu"],
           width: row["Hasır Eni"],
-          numberOfHeightBars: 0, // Assuming default value
-          numberOfWidthBars: 0,  // Assuming default value
+          numberOfHeightBars: 0,
+          numberOfWidthBars: 0,
           piece: row["Sipariş Adedi"],
-          // Add other necessary fields from the row if needed
         };
-  
+
         try {
           const calculatedValues = calculateCalculatedValues(meshData);
           await openOrdersTab(meshData, calculatedValues);
-          console.log(`Row ${index + 1} processed`); // Log after processing each row
-
+          console.log(`Row ${index + 1} processed`);
+          successCount++;
         } catch (error) {
-          console.error("Error processing row:", error);
+          console.error(`Error processing row ${index + 1}:`, error);
+          failedRowDetails.push({ index: index + 1, row: row }); // Store the index and row details
         }
       }
+      setSelectedFileName(""); // Resetting the file name here
+      setUploadSuccessCount(successCount);
+      setFailedRows(failedRowDetails); // Update state with failed row details
+      setShowUploadSuccessModal(true);
     };
+
     reader.readAsArrayBuffer(file);
   };
-  
+
+  const handleEditClick = (order, order_id) => {
+    // Prepare the data to be sent
+    const dataToSend = {
+      code: order.information.mesh_code,
+
+      type: order.information.mesh_type,
+      name: order.information.mesh_name,
+      height: order.mesh.length_of_height_stick,
+      width: order.mesh.length_of_width_stick,
+      piece: order.order.piece,
+      numberOfHeightBars: 0,
+      numberOfWidthBars: 0,
+      which_row_to_update: order_id,
+      // Add any other fields needed from the order object
+    };
+    console.log(
+      "İşte şimdi handleEditClick called with dataToSend:",
+      dataToSend
+    );
+
+    // Call the function passed from parent component
+    openAutomaticTab(dataToSend);
+    switchToAutomaticTab();
+    setShowEditModal(true);
+  };
 
   const calculateCalculatedValues = (meshData) => {
     const defaultCalculated = {
@@ -832,6 +901,11 @@ const OrdersTabOriginalTable = ({}) => {
     document.body.removeChild(link);
   };
 
+  const handleCloseUploadSuccessModal = () => {
+    setShowUploadSuccessModal(false);
+    setUploadSuccessCount(0); // Reset the count
+  };
+
   return (
     <>
       <div className="flex flex-col w-full items-center">
@@ -906,6 +980,9 @@ const OrdersTabOriginalTable = ({}) => {
                       {!isPrinting && (
                         <th className="border p-2 font-bold uppercase text-black bg-red-500"></th>
                       )}
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-500"></th>
+                      )}
                     </tr>
                     <tr>
                       <th className="border p-2 font-bold text-black bg-gray-400"></th>
@@ -961,6 +1038,9 @@ const OrdersTabOriginalTable = ({}) => {
                       >
                         TOPLAM
                       </th>
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-100"></th>
+                      )}
                       {!isPrinting && (
                         <th className="border p-2 font-bold uppercase text-black bg-red-100"></th>
                       )}
@@ -1047,6 +1127,11 @@ const OrdersTabOriginalTable = ({}) => {
                       {!isPrinting && (
                         <th className="border p-2 font-bold uppercase text-black bg-red-100">
                           SATIR SİL
+                        </th>
+                      )}
+                      {!isPrinting && (
+                        <th className="border p-2 font-bold uppercase text-black bg-red-100">
+                          DÜZENLE
                         </th>
                       )}
                     </tr>
@@ -1275,10 +1360,22 @@ const OrdersTabOriginalTable = ({}) => {
                               {!isPrinting && (
                                 <td className="border p-2 font-medium uppercase text-black bg-red-100">
                                   <button
-                                    className="bg-red-500 text-white font-bold py-1 px-3 rounded"
+                                    className="bg-red-500 text-red-50 font-bold py-1 px-3 rounded"
                                     onClick={() => confirmDelete(order_id)}
                                   >
-                                    X
+                                    <FaTrashAlt size="18px" />
+                                  </button>
+                                </td>
+                              )}
+                              {!isPrinting && (
+                                <td className="border p-2 font-medium uppercase text-black bg-red-100">
+                                  <button
+                                    className="bg-red-500 text-red-50 font-bold py-1 px-3 rounded"
+                                    onClick={() =>
+                                      handleEditClick(order, order_id)
+                                    }
+                                  >
+                                    <FaPencilAlt size="18px" />
                                   </button>
                                 </td>
                               )}
@@ -1311,7 +1408,7 @@ const OrdersTabOriginalTable = ({}) => {
           <div className="mt-6 mb-2 flex justify-center w-full space-x-5">
             <button
               className="text-white font-bold py-2 px-4 rounded bg-black hover:bg-button-new-hover"
-              onClick={handleDeleteAllOrder}
+              onClick={handleSifirlaButton}
             >
               Sıfırla
             </button>
@@ -1344,7 +1441,7 @@ const OrdersTabOriginalTable = ({}) => {
           </div>
           {selectedFileName && (
             <span className="ml-2">
-              "{selectedFileName}" isimli Excel tablosu başarıyla yüklendi.
+              "{selectedFileName}" isimli Excel tablosu yükleniyor...
             </span>
           )}
         </div>
@@ -1361,6 +1458,16 @@ const OrdersTabOriginalTable = ({}) => {
         showModal={showDeleteConfirmation}
         setShowModal={setShowDeleteConfirmation}
         onConfirm={deleteConfirmed}
+      />
+      <UploadSuccessModal
+        show={showUploadSuccessModal}
+        onClose={() => setShowUploadSuccessModal(false)}
+        count={uploadSuccessCount}
+        failedRows={failedRows} // Pass the failed rows to the modal
+      />
+      <EditOrderModal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
       />
     </>
   );

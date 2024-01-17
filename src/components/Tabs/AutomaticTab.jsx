@@ -14,7 +14,7 @@ import {
 import { useRef, useState, useEffect } from "react";
 import AutoMeshForm from "../Mesh/AutoMeshForm";
 
-const AutomaticTab = ({}) => {
+const AutomaticTab = ({ meshDataEditing, clearEditingMeshData }) => {
   const [calculated, setCalculated] = useState(initialValues.calculated);
   const [mesh, setMesh] = useState(initialValues.mesh);
   const [showMessage, setShowMessage] = useState(false);
@@ -200,7 +200,9 @@ const AutomaticTab = ({}) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col text-black items-center justify-center px-4 py-2 gap-y-10 mt-4 w-full">
-        <AutoMeshForm 
+        <AutoMeshForm
+        editingMeshData={meshDataEditing}
+        clearEditingMeshData={clearEditingMeshData}
          mesh={mesh}
          setCalculated={setCalculated}
          setMesh={setMesh}
